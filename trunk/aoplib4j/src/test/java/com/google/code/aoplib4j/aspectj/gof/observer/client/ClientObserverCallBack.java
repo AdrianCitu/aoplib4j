@@ -14,8 +14,8 @@
  */
 package com.google.code.aoplib4j.aspectj.gof.observer.client;
 
+import com.google.code.aoplib4j.aspectj.gof.observer.NotifyInformation;
 import com.google.code.aoplib4j.aspectj.gof.observer.ObserverCallback;
-import com.google.code.aoplib4j.aspectj.gof.observer.aspect.NotifyInformation;
 
 /**
  * @author Adrian Citu
@@ -26,7 +26,7 @@ public class ClientObserverCallBack extends ObserverCallback {
     /* (non-Javadoc)
      * @see com.google.code.aoplib4j.aspectj.gof.observer.ObserverCallback#update(com.google.code.aoplib4j.aspectj.gof.observer.SubjectInformation)
      */
-    public void update(NotifyInformation si) {
+    public void notifyObserver(NotifyInformation si) {
         
         if(si.getMethod().getName().equals("sell")) {
           ((Client)si.getObserver()).buy();  

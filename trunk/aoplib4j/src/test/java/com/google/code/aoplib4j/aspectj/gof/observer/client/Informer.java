@@ -15,7 +15,7 @@
 
 package com.google.code.aoplib4j.aspectj.gof.observer.client;
 
-import com.google.code.aoplib4j.aspectj.gof.observer.annotation.Observer;
+import com.google.code.aoplib4j.aspectj.gof.observer.Observer;
 
 
 /**
@@ -25,9 +25,9 @@ import com.google.code.aoplib4j.aspectj.gof.observer.annotation.Observer;
  *
  */
 @Observer(callbackClass = InformerObserverCallBack.class)
-public class Informer extends Client {
+public final class Informer extends Client {
 
-    public Informer(String name) {
+    public Informer(final String name) {
         super("Informer code name:" + name);
     }
 

@@ -17,9 +17,10 @@ package com.google.code.aoplib4j.aspectj.gof.observer.client;
 
 import java.util.Vector;
 
-import com.google.code.aoplib4j.aspectj.gof.observer.annotation.AddAsObserver;
-import com.google.code.aoplib4j.aspectj.gof.observer.annotation.NotifyObservers;
-import com.google.code.aoplib4j.aspectj.gof.observer.annotation.Subject;
+import com.google.code.aoplib4j.aspectj.gof.observer.RegisterObserver;
+import com.google.code.aoplib4j.aspectj.gof.observer.NotifyObservers;
+import com.google.code.aoplib4j.aspectj.gof.observer.Subject;
+import com.google.code.aoplib4j.aspectj.gof.observer.UnregisterObservers;
 
 /**
  * A drug dealer class.
@@ -57,13 +58,31 @@ public class Dealer {
 
     /**
      * @param o a client to add
-     * @return true if added or false otherwise.
      */
-    @AddAsObserver
-    public final boolean addClient(final Client o) {
-        return clients.add(o);
+    @RegisterObserver
+    public final void addClient(final Client o) {
+        clients.add(o);
     }
 
+    /**
+     * @param o a client
+     * @param i param.
+     */
+    @RegisterObserver
+    public final void doSomethingWithClient(final Client o, final int i) {
+        //do nothing.
+    }
+
+    /**
+     * @param o a client
+     * @param i param.
+     */
+    @RegisterObserver
+    public static final void staticDoSomethingWithClient(
+            final Client o, final int i) {
+        //do nothing.
+    }
+    
     /**
      * @param o
      * @return
@@ -75,6 +94,7 @@ public class Dealer {
     /**
      * 
      */
+    @UnregisterObservers
     public void removeAllClients() {
         clients.removeAllElements();
     }
@@ -84,6 +104,11 @@ public class Dealer {
      */
     public String getName() {
         return this.name;
+    }
+    
+    @UnregisterObservers
+    public void noDealingAnymore() {
+        
     }
 
 }
