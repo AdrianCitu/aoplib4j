@@ -15,29 +15,18 @@
 
 package com.google.code.aoplib4j.aspectj.gof.observer;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
+ * Annotation to be used on classes to mark them as a GOF Subject.
+ * 
  * @author Adrian Citu
  *
  */
-public interface Subject {
-
-    /**
-     * @param o
-     */
-    void addObserver(Observer o);
-
-    /**
-     * @return
-     */
-    int countObservers();
-
-    /**
-     *
-     */
-    void deleteObservers();
-
-    /**
-     * @return
-     */
-    Observer[] getAllObservers();
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Subject {
 }

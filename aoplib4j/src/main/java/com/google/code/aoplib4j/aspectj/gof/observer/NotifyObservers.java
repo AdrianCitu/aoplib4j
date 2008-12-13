@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package com.google.code.aoplib4j.aspectj.gof.observer.annotation;
+package com.google.code.aoplib4j.aspectj.gof.observer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,12 +23,13 @@ import java.lang.annotation.Target;
 
 
 /**
- *
+ * Annotation to mark the methods of classes annotated with the {@link Subject}
+ * annotation to notify a change to the class to all the attached observers.
+ * 
  * @author Adrian Citu
  *
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface NotifyObservers {
-
 }

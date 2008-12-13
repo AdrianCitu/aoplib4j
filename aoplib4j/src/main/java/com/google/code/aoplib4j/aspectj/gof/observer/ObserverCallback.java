@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008-2008 the original author or authors.
+ *  Copyright 2008 the original author or authors.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -14,9 +14,12 @@
  */
 package com.google.code.aoplib4j.aspectj.gof.observer;
 
-import com.google.code.aoplib4j.aspectj.gof.observer.aspect.NotifyInformation;
+
 
 /**
+ * Abstract class that must be implemented to code the behavior
+ * of an {@link Observer} when is notified by a {@link Subject}.
+ *  
  * @author Adrian Citu
  *
  */
@@ -30,7 +33,14 @@ public abstract class ObserverCallback {
     }
 
     /**
-     * @param si
+     * Method called a method annotated with the {@link NotifyObservers} 
+     * annotation is executed on a class annotated with the {@link Subject}
+     * annotation.
+     * @see NotifyInformation.
+     * 
+     * @param notifyInformation the object containing the notification 
+     * information.
      */
-    public abstract void update(NotifyInformation si);
+    public abstract void notifyObserver(NotifyInformation notifyInformation);
 }
+
