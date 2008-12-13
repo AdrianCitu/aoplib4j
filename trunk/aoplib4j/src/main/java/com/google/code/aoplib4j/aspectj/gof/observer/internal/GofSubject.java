@@ -13,25 +13,41 @@
  *  limitations under the License.
  */
 
-package com.google.code.aoplib4j.aspectj.gof.observer.annotation;
+package com.google.code.aoplib4j.aspectj.gof.observer.internal;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-import com.google.code.aoplib4j.aspectj.gof.observer.ObserverCallback;
 
 /**
+ * Interface representing the Subject from the Observer pattern(
+ * http://en.wikipedia.org/wiki/Observer_pattern).
+ * 
  * @author Adrian Citu
  *
  */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Observer {
+public interface GofSubject {
 
     /**
-     * @return
+     * Add a new observer.
+     *
+     * @param o the new observer to be attached to the subject.
      */
-    Class < ? extends ObserverCallback > callbackClass();
+    void addObserver(GofObserver o);
+
+    /**
+     * 
+     * @return the number of attached observers.
+     */
+    int countObservers();
+
+    /**
+     * Removes all the observers attached to this subject.
+     */
+    void deleteObservers();
+
+    /**
+     * @return array of observers attached to the subject.
+     */
+    GofObserver[] getAllObservers();
 }
+
+

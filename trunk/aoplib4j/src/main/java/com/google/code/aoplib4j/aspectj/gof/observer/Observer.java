@@ -15,9 +15,26 @@
 
 package com.google.code.aoplib4j.aspectj.gof.observer;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+
 /**
+ * Annotation to be used on classes to mark them as a GOF Observer.
+ * 
  * @author Adrian Citu
  *
  */
-public interface Observer {
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Observer {
+
+    /**
+     * The class that contains the behavior to execute by an Observer of when 
+     * the subject notify a change.
+     * 
+     */
+    Class < ? extends ObserverCallback > callbackClass();
 }

@@ -12,7 +12,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.google.code.aoplib4j.aspectj.gof.observer.annotation;
+package com.google.code.aoplib4j.aspectj.gof.observer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,11 +20,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation to be put on methods having a single parameter. If the method 
+ * parameter is annotated with the {@link Observer} annotation, the parameter
+ * will be added as a observer of the current class (if the class is annotated
+ * with the {@link Subject} annotation). 
+ *  
  * @author Adrian Citu
  *
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface AddAsObserver {
+public @interface RegisterObserver {
 
 }

@@ -12,13 +12,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.google.code.aoplib4j.aspectj.gof.observer.aspect;
+
+package com.google.code.aoplib4j.aspectj.gof.observer.internal;
 
 /**
+ * Interface representing the Observer object from the Observer pattern (
+ * http://en.wikipedia.org/wiki/Observer_pattern).
+ * 
  * @author Adrian Citu
  *
  */
-final aspect ObserverAspect2 {
-    
-    //declare parents : @Subject implements Subject;
+public interface GofObserver {
 }
