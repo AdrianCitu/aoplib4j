@@ -15,7 +15,7 @@
 
 package com.google.code.aoplib4j.aspectj.gof.observer.client;
 
-import com.google.code.aoplib4j.aspectj.gof.observer.annotation.Observer;
+import com.google.code.aoplib4j.aspectj.gof.observer.Observer;
 
 /**
  * A drug dealer client.
