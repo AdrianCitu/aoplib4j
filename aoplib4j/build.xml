@@ -6,7 +6,7 @@
 	</description>
 
 	<property file="build.properties" />
-	<property file="commonBuild.properties" />
+	<property file="commonbuild.properties" />
 
 	<!-- Build classpath -->
 	<path id="classpath">
