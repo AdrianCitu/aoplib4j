@@ -32,10 +32,12 @@ import com.google.code.aoplib4j.aspectj.gof.observer.ObserverCallback;
  *
  */
 @Aspect
-public final class ObserverAspect {
+final class ObserverAspect {
     
     /**
-     * the classes annotated with the @Subject will automatically 
+     * the classes annotated with the 
+     * {@link com.google.code.aoplib4j.aspectj.gof.observer.Subject} annotation 
+     * will automatically 
      * implement the {@link GofSubject} interface and the implementation
      * will be {@link GofSubjectImpl}.
      */
@@ -46,7 +48,8 @@ public final class ObserverAspect {
     private GofSubject subject = null;
 
     /**
-     * the classes annotated with the @Observer will automatically 
+     * the classes annotated with the {@link Observer} annotation will 
+     * automatically 
      * implement the {@link GofObserver} interface.
      */
     @SuppressWarnings("unused")

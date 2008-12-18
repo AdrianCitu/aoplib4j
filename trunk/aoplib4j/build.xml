@@ -368,7 +368,7 @@
 		<mkdir dir="${javadoc.dir}"/>
 
 	    <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" packagenames="*"
-	              access="public" use="true" notree="false" nonavbar="false"
+	              access="private" use="true" notree="false" nonavbar="false"
 	              noindex="false" splitindex="true" author="true" version="true"
 	              nodeprecatedlist="false" nodeprecated="false">
 	            <classpath refid="classpath" />
