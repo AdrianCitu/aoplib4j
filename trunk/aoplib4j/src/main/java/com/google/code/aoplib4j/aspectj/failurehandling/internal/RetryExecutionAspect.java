@@ -14,119 +14,97 @@
  */
 package com.google.code.aoplib4j.aspectj.failurehandling.internal;
 
-import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 
 import com.google.code.aoplib4j.aspectj.failurehandling.RetryExecution;
 
 /**
  * Aspect that handles the method execution exceptions.
- *  
+ * 
  * @author Adrian Citu
- *
+ * 
  */
 @Aspect
 final class RetryExecutionAspect {
-    
+
     /**
      * the logger to use.
      */
-    private static Logger logger = 
-        Logger.getLogger(RetryExecutionAspect.class.getName());
-    
+    private static Logger logger = Logger.getLogger(RetryExecutionAspect.class
+            .getName());
+
     /**
-     * Pointcut representing the execution of the methods annotated with the 
+     * Pointcut representing the execution of the methods annotated with the
      * {@link RetryExecution} annotation.
+     * 
+     * @param retryAnnotation
+     *            the annotation of the method.
      */
     @Pointcut("execution("
             + "@com.google.code.aoplib4j.aspectj.failurehandling"
-            + ".RetryExecution * * (..)) ")
-    void retryExecutionPointcut() {
-    }
-    
-    /**
-     * @param pjp object created by AspectJ framework providing access to the 
-     * around advice. 
-     * @return the result of the method intercepted by the advice.
-     * @throws Throwable any exception thrown by the execution of the 
-     * intercepted method.
-     */
-    @Around("retryExecutionPointcut()")
-    public Object retryExecutionAdvice(final ProceedingJoinPoint pjp) 
-        throws Throwable {
-        
-        RetryExecution re = getMethodAnnotation(pjp);
-        
-        if (re != null) {
-            /*retrieve the exception class to catch*/
-            final Class< ? extends Throwable > exceptionToCatch = 
-                re.exceptionToCatch();
-            
-            /*the maximum number of method re-execution*/
-            final int maxRetry = re.maxRetry();
-            
-            /*the waiting time between 2 consecutive executions */
-            final long waitTime = re.waitTime();
-            
-            int counter = 0;
-            
-            while (true) {
-                try {
-                    
-                    return pjp.proceed();
-                } catch (Throwable e) {
-                    logger.info("Catched the exception " + e);
-                    
-                    if (exceptionToCatch.equals(e.getClass())) {
-                        if (++counter > maxRetry) {
-                            throw e;
-                        } else {
-                            if (waitTime > 0) {
-                                Thread.sleep(waitTime);  
-                            }
-                            logger.info("The method will be re-executed " 
-                                    + (maxRetry - counter) + " times");
-                        }
-                    } else {
-                        logger.info("Throw this exception because it's not " 
-                                + "treated by the aspect:" + e);
-                        throw e;
-                    }
-                } 
-            }
-        } else {
-            return pjp.proceed();
-        }
-   
-        
+            + ".RetryExecution * * (..)) && @annotation(retryAnnotation)")
+    void retryExecutionPointcut(final RetryExecution retryAnnotation) {
     }
 
     /**
+     * Advice executed around the annotated method. 
+     * @see RetryExecution.
      * 
-     * @param pjp object created by AspectJ framework representing the execution
-     * joinpoint.
-     * @return annotation attached to the method retrieved from the 
-     * {@link ProceedingJoinPoint}.
+     * @param retryAnnotation
+     *            the annotation of the method.
+     * @param pjp
+     *            object created by AspectJ framework providing access to the
+     *            around advice.
+     * @return the result of the method intercepted by the advice.
+     * @throws Throwable
+     *             any exception thrown by the execution of the intercepted
+     *             method.
      */
-    private RetryExecution getMethodAnnotation(final ProceedingJoinPoint pjp) {
-        RetryExecution returnValue = null;
-        
-        Signature sgn = pjp.getSignature();
-        
-        if (sgn instanceof MethodSignature) {
-            
-            Method method = ((MethodSignature) sgn).getMethod();
-            logger.info("Executing method :" + method.toGenericString());
-            returnValue = method.getAnnotation(RetryExecution.class);
+    @Around("retryExecutionPointcut(retryAnnotation)")
+    public Object retryExecutionAdvice(final RetryExecution retryAnnotation,
+            final ProceedingJoinPoint pjp) throws Throwable {
+
+        /* retrieve the exception class to catch */
+        final Class< ? extends Throwable> exceptionToCatch = retryAnnotation
+                .exceptionToCatch();
+
+        /* the maximum number of method re-execution */
+        final int maxRetry = retryAnnotation.maxRetry();
+
+        /* the waiting time between 2 consecutive executions */
+        final long waitTime = retryAnnotation.waitTime();
+
+        int counter = 0;
+
+        while (true) {
+            try {
+
+                return pjp.proceed();
+            } catch (Throwable e) {
+                logger.info("Catched the exception " + e);
+
+                if (exceptionToCatch.equals(e.getClass())) {
+                    if (++counter > maxRetry) {
+                        throw e;
+                    } else {
+                        if (waitTime > 0) {
+                            Thread.sleep(waitTime);
+                        }
+                        logger.info("The method will be re-executed "
+                                + (maxRetry - counter) + " times");
+                    }
+                } else {
+                    logger.info("Throw this exception because it's not "
+                            + "treated by the aspect:" + e);
+                    throw e;
+                }
+            }
         }
-        
-        return returnValue;
+
     }
 }
