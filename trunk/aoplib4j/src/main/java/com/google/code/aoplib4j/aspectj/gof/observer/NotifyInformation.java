@@ -16,9 +16,6 @@ package com.google.code.aoplib4j.aspectj.gof.observer;
 
 import java.lang.reflect.Method;
 
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
-
 import com.google.code.aoplib4j.aspectj.gof.observer.internal.GofObserver;
 import com.google.code.aoplib4j.aspectj.gof.observer.internal.GofSubject;
 
@@ -34,10 +31,22 @@ import com.google.code.aoplib4j.aspectj.gof.observer.internal.GofSubject;
 public final class NotifyInformation {
 
     /**
-     * the {@link JoinPoint} delegate.
+     * The instance on which the notification of the observers was 
+     * triggered.
      */
-    private JoinPoint delegate = null;
-
+    private GofSubject subject = null;
+    
+    /**
+     * The {@link Method} on which the notification was triggered.
+     */
+    private Method method = null;
+    
+    /**
+     * The arguments of the method on which the notification was 
+     * triggered.
+     */
+    private Object[] methodArguments = null;
+    
     /**
      * the instance of the observer that must be notified.
      */
@@ -45,12 +54,22 @@ public final class NotifyInformation {
 
     /**
      * The default constructor.
-     *
-     * @param jp Aspect JoinPoint containing the execution environment.
-     * @param obs the observer
+     * 
+     * @param sbj the instance on which the notification of the observers was 
+     * triggered.
+     * @param metd The method on which the notification was triggered.
+     * @param arguments the arguments of the method on which the notification 
+     * was triggered.
+     * @param obs the instance of the observer that must be notified.
      */
-    public NotifyInformation(final JoinPoint jp, final GofObserver obs) {
-        this.delegate = jp;
+    public NotifyInformation(final GofSubject sbj, 
+            final Method metd, 
+            final Object[] arguments,
+            final GofObserver obs) {
+        
+        this.subject = sbj;
+        this.method = metd;
+        this.methodArguments = arguments;
         this.observer = obs;
     }
 
@@ -58,7 +77,7 @@ public final class NotifyInformation {
      * @return the {@link Method} on which the notification was triggered.
      */
     public Method getMethod() {
-        return ((MethodSignature) this.delegate.getSignature()).getMethod();
+        return this.method;
     }
     
     /**
@@ -66,7 +85,7 @@ public final class NotifyInformation {
      * triggered.
      */
     public Object[] getMethodArguments() {
-        return this.delegate.getArgs();
+        return this.methodArguments;
     }
     
     /**
@@ -74,7 +93,7 @@ public final class NotifyInformation {
      * triggered.
      */
     public GofSubject getSubject() {
-        return (GofSubject) this.delegate.getTarget();
+        return this.subject;
     }
     
     /**
@@ -82,13 +101,5 @@ public final class NotifyInformation {
      */
     public GofObserver getObserver() {
         return this.observer;
-    }
-    
-    /**
-     * @return the AspectJ {@link JoinPoint} created at the execution of the 
-     * method annotated with {@link NotifyObservers}. Use this if you need 
-     */
-    public JoinPoint getEecutionJoinPoint() {
-        return this.delegate;
     }
 }

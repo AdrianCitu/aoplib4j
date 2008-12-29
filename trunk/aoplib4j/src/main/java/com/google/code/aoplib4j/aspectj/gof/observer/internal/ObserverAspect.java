@@ -15,11 +15,14 @@
 
 package com.google.code.aoplib4j.aspectj.gof.observer.internal;
 
+import java.lang.reflect.Method;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.DeclareParents;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 
 import com.google.code.aoplib4j.aspectj.gof.observer.NotifyInformation;
 import com.google.code.aoplib4j.aspectj.gof.observer.Observer;
@@ -154,7 +157,8 @@ final class ObserverAspect {
                 annotation.callbackClass();
 
             ObserverCallback instance = callbackClass.newInstance();
-            instance.notifyObserver(new NotifyInformation(thisJoinPoint, ob));
+            instance.notifyObserver(
+                    this.cresteInstanceofNotifyInformation(thisJoinPoint, ob));
         }
     }
     
@@ -181,4 +185,20 @@ final class ObserverAspect {
     public void unregisterObserversAdvice(final GofSubject sbj) {
         sbj.deleteObservers();
     }
+    
+    /**
+     * @param jp AspectJ join point.
+     * @param obs instance of the observer.
+     * @return a new instance of {@link NotifyInformation}.
+     */
+    private NotifyInformation cresteInstanceofNotifyInformation(
+        final JoinPoint jp, 
+        final GofObserver obs) {
+            
+            Method method =  ((MethodSignature) jp.getSignature()).getMethod();
+            Object[] methodArguments = jp.getArgs();
+            GofSubject sbj =  (GofSubject) jp.getTarget();
+            
+            return new NotifyInformation(sbj, method, methodArguments, obs);
+        }
 }
