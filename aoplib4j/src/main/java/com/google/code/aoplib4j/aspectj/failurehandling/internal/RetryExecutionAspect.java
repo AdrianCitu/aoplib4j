@@ -42,6 +42,14 @@ final class RetryExecutionAspect {
      * Pointcut representing the execution of the methods annotated with the
      * {@link RetryExecution} annotation.
      * 
+     * <pre>
+     * AspectJ pointcut:
+     * 
+     * execution(@com.google.code.aoplib4j.aspectj.failurehandling
+     *  .RetryExecution * * (..)) 
+     *  && @annotation(retryAnnotation)
+     * </pre>
+     * 
      * @param retryAnnotation
      *            the annotation of the method.
      */
@@ -53,7 +61,7 @@ final class RetryExecutionAspect {
 
     /**
      * Advice executed around the annotated method. 
-     * @see RetryExecution.
+     * @see RetryExecution
      * 
      * @param retryAnnotation
      *            the annotation of the method.

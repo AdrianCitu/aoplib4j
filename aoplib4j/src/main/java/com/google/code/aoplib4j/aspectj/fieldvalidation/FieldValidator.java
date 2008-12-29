@@ -12,35 +12,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.google.code.aoplib4j.aspectj.gof.observer;
-
-
+package com.google.code.aoplib4j.aspectj.fieldvalidation;
 
 /**
- * Abstract class that must be implemented to code the behavior
- * of an {@link Observer} when is notified by a {@link Subject}.
- *  
+ * Root class for the field validators.
+ * 
  * @author Adrian Citu
  *
  */
-public abstract class ObserverCallback {
-
+public abstract class FieldValidator {
+    
     /**
-     * Default constructor.
+     * The default constructor.
      */
-    public ObserverCallback() {
-
+    public FieldValidator() {
+        
     }
-
+    
     /**
-     * Method called a method annotated with the {@link NotifyObservers} 
-     * annotation is executed on a class annotated with the {@link Subject}
-     * annotation.
-     * @see NotifyInformation
+     * Method to implement the validation of the field.
      * 
-     * @param notifyInformation the object containing the notification 
-     * information.
+     * @param fldInfor object containing the information about the field
+     * validation.
+     * @throws Exception any exception to signal that the new value to be 
+     * assigned to the field is not valid.
      */
-    public abstract void notifyObserver(NotifyInformation notifyInformation);
+    public abstract void validate(FieldInformation fldInfor) 
+        throws Exception;
 }
-
