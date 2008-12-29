@@ -370,7 +370,7 @@
 	    <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" packagenames="*"
 	              access="private" use="true" notree="false" nonavbar="false"
 	              noindex="false" splitindex="true" author="true" version="true"
-	              nodeprecatedlist="false" nodeprecated="false">
+	              nodeprecatedlist="false" nodeprecated="false" failonerror="true">
 	            <classpath refid="classpath" />
 	    </javadoc>
 	</target>	

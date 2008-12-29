@@ -64,6 +64,14 @@ final class ObserverAspect {
      * and having as unique parameter a class annotated
      * with the {@link Observer} annotation.
      * 
+     * <pre>
+     * AspectJ pointcut:
+     * execution(@com.google.code.aoplib4j.aspectj.gof.observer
+     *  .RegisterObserver * * (..))
+     *  && this(sbj) && args(obs)
+     * 
+     * </pre>
+     * 
      * @param sbj the instance of {@link GofObserver} on which the annotated
      * method is called.
      * @param obs the instance of {@link GofObserver} that is the parameter 
@@ -99,6 +107,12 @@ final class ObserverAspect {
      * {@link com.google.code.aoplib4j.aspectj.gof.observer.NotifyObservers} 
      * annotation.
      * 
+     * <pre>
+     * AspectJ pointcut:
+     * execution(@com.google.code.aoplib4j.aspectj.gof.observer
+     *  .NotifyObservers * * (..))
+     * && this(sbj)
+     * </pre>
      * @param sbj instance of {@link GofSubject}
      */
     @Pointcut("execution(@com.google.code.aoplib4j.aspectj.gof.observer."
