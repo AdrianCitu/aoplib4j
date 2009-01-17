@@ -3,4 +3,17 @@
     <fileset name="all" enabled="true" check-config-name="aopLib4j" local="false">
         <file-match-pattern match-pattern="." include-pattern="true"/>
     </fileset>
+    <filter name="FilesFromPackage" enabled="true">
+        <filter-data value="src/test/java"/>
+        <filter-data value="src/test/java/com"/>
+        <filter-data value="src/test/java/com/google"/>
+        <filter-data value="src/test/java/com/google/code"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/failurehandling"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/fieldvalidation"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/gof"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/gof/observer"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/gof/observer/client"/>
+    </filter>
 </fileset-config>
