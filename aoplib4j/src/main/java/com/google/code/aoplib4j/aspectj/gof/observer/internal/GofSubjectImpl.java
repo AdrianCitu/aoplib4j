@@ -15,8 +15,9 @@
 
 package com.google.code.aoplib4j.aspectj.gof.observer.internal;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -31,10 +32,11 @@ import java.util.Vector;
 public final class GofSubjectImpl implements GofSubject {
 
     /**
-     * list of attached observers.
+     * set of attached observers.
      */
-    private List < GofObserver > observers = new Vector < GofObserver >();
-
+    private Set < GofObserver > observers = 
+        Collections.synchronizedSet(new HashSet< GofObserver >());
+    
     /**
      * {@inheritDoc}
      */
