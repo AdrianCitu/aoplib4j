@@ -1,3 +1,0 @@
-  * [list ↑ Home]
-  * [Articles HOWTO articles]
-    * [FieldValidationHowTo Field validation]
