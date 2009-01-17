@@ -57,6 +57,9 @@ public class ObserverTest extends TestCase {
         super.setUp();
         dealer.addClient(client1);
         dealer.addClient(client2);
+        
+        //add a second time the same client(to check the issue#23). 
+        dealer.addClient(client2);
         dealer.addClient(informer1);
 
     }
