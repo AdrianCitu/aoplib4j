@@ -14,6 +14,7 @@
  */
 package com.google.code.aoplib4j.aspectj.fieldvalidation;
 
+
 /**
  * Validator for the {@link String} objects (used for testing purposes).
  * 
@@ -22,11 +23,14 @@ package com.google.code.aoplib4j.aspectj.fieldvalidation;
  */
 public class StringValidator extends FieldValidator {
 
-    /* (non-Javadoc)
-     * @see com.google.code.aoplib4j.aspectj.fieldvalidation.FieldValidator#validate(com.google.code.aoplib4j.aspectj.fieldvalidation.FieldInformation)
+    /**
+     * @see com.google.code.aoplib4j.aspectj.fieldvalidation.FieldValidator
+     *  #validate(
+     *  com.google.code.aoplib4j.aspectj.fieldvalidation.FieldInformation)
      */
-    @Override
-    public void validate(FieldInformation fldInfo) throws Exception {
+    public final void validate(final FieldInformation fldInfo) 
+        throws Exception {
+        
         if (fldInfo.getNewValueToAssign() == null) {
             throw new NullPointerException("null field");
         }

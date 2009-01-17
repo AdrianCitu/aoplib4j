@@ -162,7 +162,8 @@ class FieldValidatorAspect {
         logger.info("The field is static:" + staticField);
         
         FieldInformation fldInfp = 
-            new FieldInformation(oldValue, newValue, staticField, fieldName);
+            new FieldInformationImpl(
+                    oldValue, newValue, staticField, fieldName);
         
         validatorInstance.validate(fldInfp); 
     }
