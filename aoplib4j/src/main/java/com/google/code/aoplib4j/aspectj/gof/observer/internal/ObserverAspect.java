@@ -199,6 +199,6 @@ final class ObserverAspect {
             Object[] methodArguments = jp.getArgs();
             GofSubject sbj =  (GofSubject) jp.getTarget();
             
-            return new NotifyInformation(sbj, method, methodArguments, obs);
+            return new NotifyInformationImpl(sbj, method, methodArguments, obs);
         }
 }
