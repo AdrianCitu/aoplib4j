@@ -1,12 +1,8 @@
-#summary How to use {{{@Validate}}} annotation.
+#summary How to use @Validate annotation.
 #labels Phase-Implementation,Featured
 
-= Introduction =
+=== Introduction ===
 This page is a small tutorial about the {{{@Validation}}} annotation.
-
-
-= User Guide =
-
 
 === How to use the {{{@Validation}}} annotation (in 2 seconds) ===
 
