@@ -21,85 +21,38 @@ import com.google.code.aoplib4j.aspectj.gof.observer.internal.GofSubject;
 
 
 /**
- * Object automatically created by the framework at the execution of the 
- * methods annotated with {@link NotifyObservers} and passed as parameter 
+ * Interface containing the notification informations.
+ * Instances implementing this interface will be  created automatically by 
+ * the framework at the execution of the methods annotated with 
+ * {@link NotifyObservers} and passed as parameter 
  * to the method {@link ObserverCallback#notifyObserver(NotifyInformation)}.
+ * 
+ * see {@link ObserverCallback}.
  * 
  * @author Adrian Citu
  *
  */
-public final class NotifyInformation {
-
-    /**
-     * The instance on which the notification of the observers was 
-     * triggered.
-     */
-    private GofSubject subject = null;
-    
-    /**
-     * The {@link Method} on which the notification was triggered.
-     */
-    private Method method = null;
-    
-    /**
-     * The arguments of the method on which the notification was 
-     * triggered.
-     */
-    private Object[] methodArguments = null;
-    
-    /**
-     * the instance of the observer that must be notified.
-     */
-    private GofObserver observer = null;
-
-    /**
-     * The default constructor.
-     * 
-     * @param sbj the instance on which the notification of the observers was 
-     * triggered.
-     * @param metd The method on which the notification was triggered.
-     * @param arguments the arguments of the method on which the notification 
-     * was triggered.
-     * @param obs the instance of the observer that must be notified.
-     */
-    public NotifyInformation(final GofSubject sbj, 
-            final Method metd, 
-            final Object[] arguments,
-            final GofObserver obs) {
-        
-        this.subject = sbj;
-        this.method = metd;
-        this.methodArguments = arguments;
-        this.observer = obs;
-    }
+public interface NotifyInformation {
 
     /**
      * @return the {@link Method} on which the notification was triggered.
      */
-    public Method getMethod() {
-        return this.method;
-    }
+    Method getMethod();
     
     /**
      * @return the arguments of the method on which the notification was 
      * triggered.
      */
-    public Object[] getMethodArguments() {
-        return this.methodArguments;
-    }
+    Object[] getMethodArguments();
     
     /**
      * @return the instance on which the notification of the observers was 
      * triggered.
      */
-    public GofSubject getSubject() {
-        return this.subject;
-    }
+    GofSubject getSubject();
     
     /**
      * @return the instance of the observer that must be notified.
      */
-    public GofObserver getObserver() {
-        return this.observer;
-    }
+    GofObserver getObserver();
 }
