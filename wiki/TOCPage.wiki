@@ -1,3 +1,4 @@
   * [http://code.google.com/p/aoplib4j ↑ Project Home]
   * HOWTO articles
     * [FieldValidationHowTo Field validation using annotations]
+    * [FailureHandlingHowTo Failure handling using annotations]
