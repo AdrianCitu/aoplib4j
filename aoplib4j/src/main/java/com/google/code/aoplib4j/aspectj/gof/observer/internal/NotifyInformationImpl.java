@@ -94,14 +94,14 @@ final class NotifyInformationImpl implements NotifyInformation {
     * @return the instance on which the notification of the observers was 
     * triggered.
     */
-   public GofSubject getSubject() {
+   public Object getSubject() {
        return this.subject;
    }
    
    /**
     * @return the instance of the observer that must be notified.
     */
-   public GofObserver getObserver() {
+   public Object getObserver() {
        return this.observer;
    }
 }

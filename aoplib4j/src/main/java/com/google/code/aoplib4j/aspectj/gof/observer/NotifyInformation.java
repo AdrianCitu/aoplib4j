@@ -16,9 +16,6 @@ package com.google.code.aoplib4j.aspectj.gof.observer;
 
 import java.lang.reflect.Method;
 
-import com.google.code.aoplib4j.aspectj.gof.observer.internal.GofObserver;
-import com.google.code.aoplib4j.aspectj.gof.observer.internal.GofSubject;
-
 
 /**
  * Interface containing the notification informations.
@@ -49,10 +46,10 @@ public interface NotifyInformation {
      * @return the instance on which the notification of the observers was 
      * triggered.
      */
-    GofSubject getSubject();
+    Object getSubject();
     
     /**
      * @return the instance of the observer that must be notified.
      */
-    GofObserver getObserver();
+    Object getObserver();
 }
