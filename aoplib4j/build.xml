@@ -373,5 +373,13 @@
 	              nodeprecatedlist="false" nodeprecated="false" failonerror="true">
 	            <classpath refid="classpath" />
 	    </javadoc>
+		
+		<!-- copy the html documentation to the site/doc folder-->
+		<copy todir="${docs.dir}">
+		    <fileset dir="${basedir}/docs">
+		      <include name = "**/*.html"/>
+		    </fileset>
+		</copy>
+
 	</target>	
 </project>
