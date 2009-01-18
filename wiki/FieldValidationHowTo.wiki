@@ -122,6 +122,6 @@ For the validation process the work flow is the following:
  * Do the validation by calling {{{FieldValidator#validate(FieldInformation fldInfor) }}} 
 
 
-== Critics, enhancements and ... what i don't like about this solution ==
+=== Critics, enhancements and ... what i don't like about this solution ===
  * The user validation class must inherit from {{{FieldValidator}}} class. It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the validation class using the non-arguments constructor by introspection (see [http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance() Class.newInstance()]). 
    
