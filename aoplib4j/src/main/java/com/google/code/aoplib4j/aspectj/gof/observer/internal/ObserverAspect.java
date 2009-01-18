@@ -143,7 +143,7 @@ final class ObserverAspect {
      * {@link ObserverCallback} instance by introspection.
      */
     @AfterReturning("notifyObserversPointcut(sbj)")
-    public void addObserverAdvice(final GofSubject sbj,
+    public void notifyObserverAdvice(final GofSubject sbj,
             final JoinPoint thisJoinPoint)
         throws InstantiationException, IllegalAccessException {
 

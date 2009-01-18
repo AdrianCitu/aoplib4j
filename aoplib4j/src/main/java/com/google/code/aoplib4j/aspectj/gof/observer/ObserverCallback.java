@@ -33,7 +33,7 @@ public abstract class ObserverCallback {
     }
 
     /**
-     * Method called a method annotated with the {@link NotifyObservers} 
+     * Method called when a method annotated with the {@link NotifyObservers} 
      * annotation is executed on a class annotated with the {@link Subject}
      * annotation.
      * @see NotifyInformation
