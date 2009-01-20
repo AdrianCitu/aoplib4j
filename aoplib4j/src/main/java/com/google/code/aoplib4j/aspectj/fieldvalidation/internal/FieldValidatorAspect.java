@@ -98,7 +98,7 @@ class FieldValidatorAspect {
      *  
      * @param validateAnnot the field {@link Validate} annotation.
      * @param newValue the new value to be assigned to the field.
-     * @param jp AspectJ joinpoint.
+     * @param jpsp AspectJ joinpoint static part.
      * @param instance the instance on which the intercepted field is present.
      * @throws Exception  exception thrown by execution of 
      * {@link FieldValidator#validate(FieldInformation)}.
@@ -108,13 +108,13 @@ class FieldValidatorAspect {
     public void validateFieldAdvice(
             final Validate validateAnnot, 
             final Object newValue, 
-            final JoinPoint jp, 
+            final JoinPoint.StaticPart jpsp, 
             final Object instance) throws Exception {
         
         FieldValidator validatorInstance = null;
         Object oldValue = null;
         
-        String fieldName = getFieldName(jp);
+        String fieldName = getFieldName(jpsp);
         
         logger.info("Validating field: " + fieldName);
         
@@ -138,7 +138,7 @@ class FieldValidatorAspect {
         }
         
         try {
-             oldValue = getFieldValue(jp, instance);  
+             oldValue = getFieldValue(jpsp, instance);  
         } catch (IllegalArgumentException e) {
             logger.severe("Error retrieving field actual value: " + e);
             
@@ -174,7 +174,7 @@ class FieldValidatorAspect {
      * 
      * @param validateAnnot the field {@link Validate} annotation.
      * @param newValue the new value to be assigned to the field.
-     * @param jp AspectJ joinpoint.
+     * @param jpsp AspectJ joinpoint static part.
      * @throws Exception  exception thrown by execution of 
      * {@link FieldValidator#validate(FieldInformation)}.
      */
@@ -182,9 +182,9 @@ class FieldValidatorAspect {
     public void validateStaticFieldAdvice(
             final Validate validateAnnot, 
             final Object newValue, 
-            final JoinPoint jp) throws Exception {
+            final JoinPoint.StaticPart jpsp) throws Exception {
         
-        this.validateFieldAdvice(validateAnnot, newValue, jp, null);
+        this.validateFieldAdvice(validateAnnot, newValue, jpsp, null);
     }
     
     /**
@@ -213,7 +213,7 @@ class FieldValidatorAspect {
     /**
      * Retrieve the value of the annotated field.
      * 
-     * @param jp AspectJ joinpoint.
+     * @param jp AspectJ joinpoint static part.
      * 
      * @param classInstance the instance of the class; used if the field is not
      * static.
@@ -221,8 +221,9 @@ class FieldValidatorAspect {
      * @throws IllegalAccessException
      *     if cannot retrieve the field value by introspection
      */
-    private Object getFieldValue(final JoinPoint jp, final Object classInstance)
-        throws IllegalAccessException {
+    private Object getFieldValue(
+            final JoinPoint.StaticPart jp, final Object classInstance)
+            throws IllegalAccessException {
 
         Object returnValue = null;
         
@@ -246,10 +247,10 @@ class FieldValidatorAspect {
     }
     
     /**
-     * @param jp AspectJ joinpoint.
+     * @param jp AspectJ joinpoint static part.
      * @return the name of the field.
      */
-    private String getFieldName(final JoinPoint jp) {
+    private String getFieldName(final JoinPoint.StaticPart jp) {
         Field field =  ((FieldSignature) jp.getSignature()).getField();
         
         return field.getName();
