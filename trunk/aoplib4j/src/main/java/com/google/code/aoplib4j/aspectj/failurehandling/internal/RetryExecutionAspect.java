@@ -56,7 +56,7 @@ final class RetryExecutionAspect {
     @Pointcut("execution("
             + "@com.google.code.aoplib4j.aspectj.failurehandling"
             + ".RetryExecution * * (..)) && @annotation(retryAnnotation)")
-    void retryExecutionPointcut(final RetryExecution retryAnnotation) {
+    public void retryExecutionPointcut(final RetryExecution retryAnnotation) {
     }
 
     /**
