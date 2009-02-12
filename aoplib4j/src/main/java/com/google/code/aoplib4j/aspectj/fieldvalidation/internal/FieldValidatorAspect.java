@@ -62,7 +62,7 @@ class FieldValidatorAspect {
             + "* *.*)" 
             + "&& @annotation(validateAnnot) " 
             + "&& args(newValue) && this(instance)")
-    void validateNonStaticFieldPointcut(
+    public void validateNonStaticFieldPointcut(
             final Validate validateAnnot, 
             final Object newValue, 
             final Object instance) {
@@ -87,7 +87,7 @@ class FieldValidatorAspect {
             + "static * *.*)"
             + "&& @annotation(validateAnnot) " 
             + "&& args(newValue)")
-    void validateStaticFieldPointcut(
+    public void validateStaticFieldPointcut(
             final Validate validateAnnot, 
             final Object newValue) {
     }

@@ -84,7 +84,8 @@ final class ObserverAspect {
             + "@com.google.code.aoplib4j.aspectj.gof.observer"
             + ".RegisterObserver * * (..)) "
             + "&& this(sbj) && args(obs)")
-    void addObserverPointcut(final GofSubject sbj, final GofObserver obs) {
+    public void addObserverPointcut(
+            final GofSubject sbj, final GofObserver obs) {
 
     }
 
@@ -121,7 +122,7 @@ final class ObserverAspect {
     @Pointcut("execution(@com.google.code.aoplib4j.aspectj.gof.observer."
             + "NotifyObservers * * (..))"
             + " && this(sbj)")
-    void notifyObserversPointcut(final GofSubject sbj) {
+    public void notifyObserversPointcut(final GofSubject sbj) {
 
     }
 
@@ -172,7 +173,7 @@ final class ObserverAspect {
     @Pointcut("execution(@com.google.code.aoplib4j.aspectj.gof.observer."
             + "UnregisterObservers * * (..))"
             + " && this(sbj)")
-    void unregisterObserversPointcut(final GofSubject sbj) {
+    public void unregisterObserversPointcut(final GofSubject sbj) {
     }
     
     /**
