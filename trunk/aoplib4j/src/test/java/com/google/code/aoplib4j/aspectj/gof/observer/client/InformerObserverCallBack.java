@@ -15,7 +15,6 @@
 package com.google.code.aoplib4j.aspectj.gof.observer.client;
 
 import com.google.code.aoplib4j.aspectj.gof.observer.NotifyInformation;
-import com.google.code.aoplib4j.aspectj.gof.observer.ObserverCallback;
 
 /**
  * @author Adrian Citu
