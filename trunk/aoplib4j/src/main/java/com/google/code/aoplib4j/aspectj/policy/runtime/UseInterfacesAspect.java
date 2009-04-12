@@ -14,6 +14,7 @@
  */
 package com.google.code.aoplib4j.aspectj.policy.runtime;
 
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +26,9 @@ import org.aspectj.lang.annotation.Pointcut;
 /**
  * Aspect implementing the item 52 ("Refer to objects by their interfaces") 
  * from the Effective Java (2-end edition).
+ * This is a partial implementation since it handles only the return value for
+ * the {@link java.util.Collection} and {@link java.util.Map} interfaces.
+ * 
  * 
  * @author Adrian Citu
  *
