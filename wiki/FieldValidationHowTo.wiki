@@ -1,17 +1,17 @@
-#summary How to use @Validate annotation.
+#summary How to use the @Validate annotation.
 #labels Phase-Implementation,Featured
 
 === Introduction ===
-This page is a small tutorial about the {{{@Validation}}} annotation.
+This page is a small tutorial about the {{{@Validate}}} annotation.
 
-=== How to use the {{{@Validation}}} annotation (in 2 seconds) ===
+=== How to use the {{{@Validate}}} annotation (in 2 seconds) ===
 
   # Create your own validation class extending the {{{FieldValidator}}} class.
-  # Annotate the field to validate with the {{{@Validation}}} annotation and pass as value of the {{{validationClass}}} your own validation class name.
+  # Annotate the field to validate with the {{{@Validate}}} annotation and pass as value of the {{{validationClass}}} your own validation class name.
 
 
-=== How to use the {{{@Validation}}} annotation (in 5 minutes) ===
-The {{{@Validation}}} annotation is should be added on fields on which a validation should be done.
+=== How to use the {{{@Validate}}} annotation (in 5 minutes) ===
+The {{{@Validate}}} annotation is should be added on fields on which a validation should be done.
 The annotation have a single parameter ({{{validationClass}}}) representing the class that will be instantiated and used for the validation. 
 
 Code example (taken from the JUnit tests):
@@ -83,7 +83,7 @@ public interface FieldInformation {
 }}}  
 
  
-=== The {{{@Validation}}} annotation: under the hood ===
+=== The {{{@Validate}}} annotation: under the hood ===
 For the validation process the work flow is the following:
  * Intercept the assignment of a field annotated with {{{Validate}}}
 
