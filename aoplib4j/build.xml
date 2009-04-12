@@ -91,8 +91,8 @@
 	                      executejUnitTests
 	 ###########################################################################
     -->
-	<target name="executeJUnitTests" depends="compileTests" 
-		description="Execute the JUnit tests">
+	<target name="executeJUnitTestsAndMakeReports" depends="compileTests" 
+		description="Execute the JUnit tests and create reports">
 
 		<junit fork="yes" printsummary="yes" showoutput="no" 
 			haltonerror="false" haltonfailure="false" 
@@ -194,7 +194,7 @@
 	    <target name="executeJUnitTestsWithAspectsWovenByJavaagent" 
 	        depends="clean, prepare, createAopLib4Jjar" 
 	        description="Execute the JUnit tests having the aoplib4j jar as 
-	    	external lib for java (use javaagent to wovw the aspects)">
+	    	external lib for java (use javaagent to wove the aspects)">
 	    
 	        <javac srcDir="${tests.dir}" destdir="${classes.dir}">
 	              <classpath refid="classpath" />
@@ -204,9 +204,9 @@
 	        </javac>
 	        
 	        <junit fork="yes" printsummary="yes" 
-	            showoutput="false" haltonerror="true" 
+	            showoutput="false" haltonerror="true"
 	            haltonfailure="true" failureproperty="junit.failed">
-	    
+	        	
 	            <!--jvmarg value="-Xms512M" />
 	                <jvmarg value="-Xmx512M" /-->
 	        	<jvmarg value="-javaagent:${aspectj.lib.dir}/aspectjweaver.jar"/>
@@ -215,7 +215,6 @@
 	    
 	            <classpath>
 	                <pathelement location="${classes.dir}" />
-	                <pathelement location="${junit.lib.dir}/junit.jar" />
 	                <pathelement location="${dist.dir}/${dist.jar.name}.jar" />
 	            </classpath>
 	    
@@ -249,7 +248,7 @@
     <target name="createDistribution" 
         description="created the distribution">
 
-        <antcall target="executeJUnitTests"/>
+        <antcall target="executeJUnitTestsAndMakeReports"/>
         <antcall target="executeJUnitTestsWithAspectsWovenByAjc"/>
         <antcall target="executeJUnitTestsWithAspectsWovenByJavaagent"/>
         <antcall target="checkstyle"/>
@@ -296,6 +295,7 @@
 		<delete dir="${build.dir}" />
 		<delete dir="${classes.dir}" />
 
+
 	</target>
 
 	<!--
@@ -331,7 +331,7 @@
 				<attribute name="Implementation-Title" 
 					value="${application.name}" />
 				<attribute name="Implementation-Version" 
-					value="${project.version}-${aa.stamp.datetime}" />
+					value="${application.version}-${aa.stamp.datetime}" />
 			</section>
 
 			<!-- add the OSGI stuff here-->
