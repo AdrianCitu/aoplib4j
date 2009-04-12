@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fileset-config file-format-version="1.2.0" simple-config="true">
-    <fileset name="all" enabled="true" check-config-name="aopLib4j" local="false">
+    <local-check-config name="aopLib4jCheckstyle" location="tools/checkstyle/aopLib4JCheckstyle.xml" type="project" description="">
+        <additional-data name="protect-config-file" value="false"/>
+    </local-check-config>
+    <fileset name="all" enabled="true" check-config-name="aopLib4jCheckstyle" local="true">
         <file-match-pattern match-pattern="." include-pattern="true"/>
     </fileset>
     <filter name="FilesFromPackage" enabled="true">
