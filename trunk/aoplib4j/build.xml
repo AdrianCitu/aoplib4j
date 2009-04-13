@@ -86,6 +86,34 @@
 		</iajc>
 	</target>
 
+	   <!--
+	     ###########################################################################
+	                      compileTestsWithAoplibInClasspath
+	     ###########################################################################
+	    -->
+	    <target name="compileTestsWithAoplib4j" 
+	    	depends="clean, prepare, createAopLib4Jjar" 
+	        description="compile the tests sources using ajc and the aoplib4j">
+
+	        <iajc destDir="${classes.dir}" 
+	            Xlintwarnings="false" 
+	        	showWeaveInfo="false" 
+	        	source="1.5" 
+	        	debug="true"
+	        	inpath="${dist.dir}/${dist.jar.name}.jar"
+	        	>
+
+	            <sourceroots>
+	                <pathelement location="${tests.dir}" />
+	            </sourceroots>
+
+	            <classpath>
+	                <pathelement location="${extlib.dir}/aspectjrt.jar" />
+	                <path refid="classpath" />
+	                <pathelement location="${classes.dir}" />
+	            </classpath>
+	        </iajc>
+	    </target>
 	<!--
 	 ###########################################################################
 	                      executejUnitTests

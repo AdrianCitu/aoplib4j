@@ -149,6 +149,6 @@ public final class UseInterfacesAspect {
             + ")"
             + " *..*.*(..))")
     private static final String NO_IMPL_COLLECTION = 
-        "Return the Colection interface or another interface not the real " 
+        "Return the Collection interface or another interface not the real " 
         + "implementation";
 }
