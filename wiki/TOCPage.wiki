@@ -1,6 +1,8 @@
+#labels Featured
   * [http://code.google.com/p/aoplib4j ↑ Project Home]
   * HOWTO articles
     * [FieldValidationHowTo Field validation using annotations]
     * [FailureHandlingHowTo Failure handling using annotations]
     * [ObserverPatternHowTo Implementing the Observer pattern using annotations]
+    * [PolicyEnforcementHowTo Applying policy enforcement rules]
   * [ProjectAnalysys Project analysys]
