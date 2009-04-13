@@ -93,34 +93,4 @@ public class RuntimePolicyTest  extends TestCase {
         //should not thrown error since the return value is not null.
         INSTANCE.returnNotNullCollection();
     }
-
-    /**
-     * Test that verifies the methods should return interfaces and not 
-     * implementations of interfaces. 
-     */
-    public final void testRuntimePolicyForReturnInterfacesNotObjects() {
- 
-        /* correct calls; no exception is raised*/
-        INSTANCE.returnInterfaceCollection();
-        
-        /* correct calls; no exception is raised*/
-        INSTANCE.returnInterfaceMap();
-        
-        String errorMsg = "UnsupportedOperationException should be thrown"
-            + " because the method returns an implementation not an interface.";
-        
-        try {
-            INSTANCE.returnVectorNotInterface();
-            fail(errorMsg);
-        } catch (UnsupportedOperationException e) {
-          //nothing to do
-        }
-        
-        try {
-            INSTANCE.returnHashMapNotInterface();
-            fail(errorMsg);
-        } catch (UnsupportedOperationException e) {
-          //nothing to do
-        }
-    }
 }

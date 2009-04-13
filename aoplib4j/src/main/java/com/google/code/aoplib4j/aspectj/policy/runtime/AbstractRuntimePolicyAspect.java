@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.DeclarePrecedence;
 
 /**
  * Abstract class containing the common behavior for all the runtime policies
@@ -29,10 +28,6 @@ import org.aspectj.lang.annotation.DeclarePrecedence;
  *
  */
 @Aspect
-@DeclarePrecedence(
-        "com.google.code.aoplib4j.aspectj.policy.runtime.UseInterfacesAspect," 
-        + "com.google.code.aoplib4j.aspectj.policy.runtime." 
-        + "ReturnEmptyCollectionsAspect")
 abstract class AbstractRuntimePolicyAspect {
 
     

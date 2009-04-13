@@ -55,20 +55,9 @@ class TestedClass {
     public Collection<String> returnNotNullCollection() {
         return new Vector<String>();
     }
-
-    public Collection<String> returnInterfaceCollection() {
-        return new Vector<String>();
-    }
-    
-    public Vector<String> returnVectorNotInterface() {
-        return new Vector<String>();
-    }
-    
-    public HashMap<String,String> returnHashMapNotInterface() {
-        return new HashMap<String,String>();
-    }
     
     public Map<String,String> returnInterfaceMap() {
         return new HashMap<String,String>();
     }
+
 }

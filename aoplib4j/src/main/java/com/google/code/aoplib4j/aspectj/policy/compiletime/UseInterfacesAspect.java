@@ -12,16 +12,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.google.code.aoplib4j.aspectj.policy.runtime;
+package com.google.code.aoplib4j.aspectj.policy.compiletime;
 
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.DeclareWarning;
 
 /**
  * Aspect implementing the item 52 ("Refer to objects by their interfaces") 
@@ -34,14 +28,68 @@ import org.aspectj.lang.annotation.Pointcut;
  *
  */
 @Aspect
-public final class UseInterfacesAspect extends AbstractRuntimePolicyAspect {
+public final class UseInterfacesAspect {
     
     /**
-     * The logger.
+     * Default constructor. This is an utility class so don't want to make 
+     * instances of this class.
      */
-    private Logger logger =
-        Logger.getLogger(UseInterfacesAspect.class.getName());
-
+    private UseInterfacesAspect() {
+        
+    }
+    
+    /**
+     * Pointcut containing the execution of the methods returning 
+     * implementations of {@link java.util.Map} and not an interface.
+     * 
+     *  <pre>
+     *  execution(
+     *      (
+     *          java.util.HashMap+
+     *          || java.util.Hashtable+ 
+     *          || java.util.concurrent.ConcurrentHashMap+ 
+     *          || java.util.WeakHashMap+ 
+     *          || java.util.TreeMap+ 
+     *          || java.awt.RenderingHints+ 
+     *          || java.util.Properties+ 
+     *          || java.util.LinkedHashMap+ 
+     *          || java.util.IdentityHashMap+ 
+     *          || java.util.EnumMap+ 
+     *          || java.util.IdentityHashMap+ 
+     *          || java.util.IdentityHashMap+ 
+     *          || java.util.IdentityHashMap+ 
+     *          || java.util.IdentityHashMap+ 
+     *          || java.util.IdentityHashMap+
+     *       ) 
+     *       *..*.*(..)
+     *     )
+     *  </pre>
+     */
+    @SuppressWarnings("unused")
+    @DeclareWarning(
+            "execution("
+            + "(java.util.HashMap+"
+            + " || java.util.Hashtable+" 
+            + " || java.util.concurrent.ConcurrentHashMap+"
+            + " || java.util.WeakHashMap+"
+            + " || java.util.TreeMap+"
+            + " || java.awt.RenderingHints+"
+            + " || java.util.Properties+"
+            + " || java.util.LinkedHashMap+"
+            + " || java.util.IdentityHashMap+"
+            + " || java.util.EnumMap+"
+            + " || java.util.IdentityHashMap+"
+            + " || java.util.IdentityHashMap+"
+            + " || java.util.IdentityHashMap+"
+            + " || java.util.IdentityHashMap+"
+            + " || java.util.IdentityHashMap+"
+            + ")"
+            + " *..*.*(..))")
+    private static final String NO_IMPL_MAPS = 
+        "Return the Map interface or another interface not the real " 
+        + "implementation";
+    
+    
     /**
      * Pointcut containing the execution of the methods that returns an 
      * implementation of {@link java.util.Collection} and not an interface.
@@ -75,7 +123,9 @@ public final class UseInterfacesAspect extends AbstractRuntimePolicyAspect {
      *         )
      * </pre>
      */
-    @Pointcut("execution(" 
+    @SuppressWarnings("unused")
+    @DeclareWarning(
+            "execution(" 
             + "(java.util.TreeSet+"
             + " || java.util.Vector+"
             + " || java.util.concurrent.SynchronousQueue+"
@@ -98,81 +148,7 @@ public final class UseInterfacesAspect extends AbstractRuntimePolicyAspect {
             + " || java.util.concurrent.ArrayBlockingQueue+"
             + ")"
             + " *..*.*(..))")
-    public void collectionsImplemReturnMethodPointcut() {
-    }
-    
-    /**
-     * Pointcut containing the execution of the methods returning 
-     * implementations of {@link java.util.Map} and not an interface.
-     * 
-     *  <pre>
-     *  execution(
-     *      (
-     *          java.util.HashMap+
-     *          || java.util.Hashtable+ 
-     *          || java.util.concurrent.ConcurrentHashMap+ 
-     *          || java.util.WeakHashMap+ 
-     *          || java.util.TreeMap+ 
-     *          || java.awt.RenderingHints+ 
-     *          || java.util.Properties+ 
-     *          || java.util.LinkedHashMap+ 
-     *          || java.util.IdentityHashMap+ 
-     *          || java.util.EnumMap+ 
-     *          || java.util.IdentityHashMap+ 
-     *          || java.util.IdentityHashMap+ 
-     *          || java.util.IdentityHashMap+ 
-     *          || java.util.IdentityHashMap+ 
-     *          || java.util.IdentityHashMap+
-     *       ) 
-     *       *..*.*(..)
-     *     )
-     *  </pre>
-     */
-    @Pointcut("execution("
-            + "(java.util.HashMap+"
-            + " || java.util.Hashtable+" 
-            + " || java.util.concurrent.ConcurrentHashMap+"
-            + " || java.util.WeakHashMap+"
-            + " || java.util.TreeMap+"
-            + " || java.awt.RenderingHints+"
-            + " || java.util.Properties+"
-            + " || java.util.LinkedHashMap+"
-            + " || java.util.IdentityHashMap+"
-            + " || java.util.EnumMap+"
-            + " || java.util.IdentityHashMap+"
-            + " || java.util.IdentityHashMap+"
-            + " || java.util.IdentityHashMap+"
-            + " || java.util.IdentityHashMap+"
-            + " || java.util.IdentityHashMap+"
-            + ")"
-            + " *..*.*(..))")
-    public void mapsImplemReturnMethodPointcut() {
-    }
-    
-    /**
-     * If the object returned by the 
-     * {@link #collectionsImplemReturnMethodPointcut()} or by the 
-     * {@link #mapsImplemReturnMethodPointcut()}
-     * is not an interface then an error message will be logged or a runtime 
-     * exception will be thrown ({@link UnsupportedOperationException}) if the
-     * {@link AbstractRuntimePolicyAspect#THROW_EXCEPTION_FOR_VIOLATIONS} 
-     * system property is not null.
-     * 
-     * @param ret the returning object from the pointcut execution.
-     * @param staticJp the static part of the Aspectj joinpoint
-     */
-    @AfterReturning(
-            value = "collectionsImplemReturnMethodPointcut()" 
-                    + " || mapsImplemReturnMethodPointcut()",
-                    returning = "ret")
-    public void implementationNotInterfaceReturnMethodPointcut(
-            final Object ret,
-            final JoinPoint.StaticPart staticJp) {
-
-        String errorMessage = "Method " + staticJp.getSignature()
-                + " should not return an obkect, it should return an "
-                + "interface.(see Item 52 from \"Effective Java\"" + " book)";
-
-        throwExceptionOrLogIt(errorMessage, logger, Level.SEVERE);
-    }
+    private static final String NO_IMPL_COLLECTION = 
+        "Return the Colection interface or another interface not the real " 
+        + "implementation";
 }
