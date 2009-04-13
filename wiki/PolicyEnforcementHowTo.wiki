@@ -17,7 +17,7 @@ programming practices, comply with specified rules. The {{{aoplib4j}}} contains 
 === Don't use {{{System.out.print*(...)}}} ===
 I think it's not a good idea to use {{{System.out.print*(...)}}} because it cannot be visible into the log files and (eventually) will be visible in production to the console.
 
-This rule is applied at compile time so it must compile the code with the {{{ajc}}} compiler. If in the code a {{{java.io.PrintStream.print*(...)}}} is found the compiler will raise a warning.
+This rule is applied at compile time so it must compile the code with the {{{ajc}}} compiler. If a {{{java.io.PrintStream.print*(...)}}} is found, the compiler will raise a warning.
 Example (taken from the JUnit tests)
 {{{
 [iajc] warning at System.out.println("I buy !");
@@ -38,7 +38,7 @@ based on certain usage patterns. In our case the {{{@DeclareWarning}}} construct
 }}}
 
 === Use only private fields in your classes ===
-It's always a good practice to not expose directly the non final fields of your classes if the class accessible outside his package.Expose this fields by providing accessor methods. Joshua Bloch in his "Effective Java (2-end edition)" book explains very well why [http://books.google.be/books?id=ka2VUBqHiWkC&printsec=frontcover&dq=effective+java+item+43&hl=fr#PPA71,M1 it should not use public fields.] This rule, as the first one is applied at compile time so the output of the compiler should be:
+It's always a good practice to not expose directly the non final fields of your classes if the class accessible outside his package.This fields sould be exposed by providing accessor methods. Joshua Bloch in his "Effective Java (2-end edition)" book explains very well why [http://books.google.be/books?id=ka2VUBqHiWkC&printsec=frontcover&dq=effective+java+item+43&hl=fr#PPA71,M1 it should not use public fields.] This rule, as the first one, is applied at compile time so the output of the compiler would be:
 {{{
 [iajc] warning at public String publicString = null;
 [iajc] ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -61,7 +61,7 @@ Under the hood the same mechanism of weave-time warning is used. Here is the Asp
 === Return interfaces of an object from a method, not a implementation class. ===
 This is also an "advice" taken from the "Effective Java"(Item 52).If appropriate interface type exists, then parameters, return values variables and fields should declared using the interface type. Basically code like this should be avoid :
 {{{
-  //don't return a implemenation and don't use as parameter an implementation
+  //don't return a implementation and don't use as parameter an implementation
   public HashMap<String,String>  someMethod(Vector<String> param) {
   .....
   }
@@ -73,7 +73,7 @@ and replaced by:
   }
 }}}
 
-The {{{aoplib4j}}} offer a limited implementation for this rule. Firstly, it verifies only the return values of the methods (the same rule should apply of class fields and method parameters) and it can verifies only the sub-clases of the {{{java.util.Collection}}} and {{{java.util.Map}}}; the [http://code.google.com/p/aoplib4j/issues/detail?id=35 issue#35] has been created for a more general implementation. This rule is also a compile time warning and the {{{ajc}}} message warning will be:
+The {{{aoplib4j}}} offer a limited implementation for this rule. Firstly, it verifies only the return values of the methods (the same rule should apply of class fields and method parameters) and it verifies only the sub-classes of the {{{java.util.Collection}}} and {{{java.util.Map}}}; the [http://code.google.com/p/aoplib4j/issues/detail?id=35 issue#35] has been created for a more general implementation. This rule is also a compile time warning and the {{{ajc}}} message warning will be:
 {{{
 [iajc] warning at public Vector<String> returnVectorNotInterface() {
 [iajc] ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
