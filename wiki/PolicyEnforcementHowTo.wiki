@@ -22,7 +22,8 @@ Example (taken from the JUnit tests)
 {{{
 [iajc] warning at System.out.println("I buy !");
 [iajc] ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[iajc] /src/test/java/com/google/code/aoplib4j/aspectj/gof/observer/client/Client.java:38:0::0 "Don\'t use System.out.print*(..). Use a logger API."
+[iajc] /src/test/java/com/google/code/aoplib4j/aspectj/gof/observer/client/Client.java:38:0::0 
+"Don\'t use System.out.print*(..). Use a logger API."
 [iajc] 	see also: com/google/code/aoplib4j/aspectj/policy/compiletime/NoSysOutAspect.java::0
  
 }}}
@@ -42,7 +43,8 @@ It's always a good practice to not expose directly the non final fields of your 
 {{{
 [iajc] warning at public String publicString = null;
 [iajc] ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[iajc] /src/test/java/com/google/code/aoplib4j/aspectj/policy/compiletime/CompileTimePolicy.java:43:0::0 "Don\'t use non final public, protected or default fields. Make all non final fields private and use set/get methods."
+[iajc] /src/test/java/com/google/code/aoplib4j/aspectj/policy/compiletime/CompileTimePolicy.java:43:0::0 
+"Don\'t use non final public, protected or default fields. Make all non final fields private and use set/get methods."
 [iajc] 	see also: com/google/code/aoplib4j/aspectj/policy/compiletime/OnlyPrivateFieldsAspect.java::0
 
 }}}
@@ -77,7 +79,8 @@ The {{{aoplib4j}}} offer a limited implementation for this rule. Firstly, it ver
 {{{
 [iajc] warning at public Vector<String> returnVectorNotInterface() {
 [iajc] ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[iajc] /src/test/java/com/google/code/aoplib4j/aspectj/policy/compiletime/CompileTimePolicy.java:67:0::0 "Return the Collection interface or another interface not the real implementation"
+[iajc] /src/test/java/com/google/code/aoplib4j/aspectj/policy/compiletime/CompileTimePolicy.java:67:0::0 
+"Return the Collection interface or another interface not the real implementation"
 [iajc] 	see also: com/google/code/aoplib4j/aspectj/policy/compiletime/UseInterfacesAspect.java::0
 }}}
 
