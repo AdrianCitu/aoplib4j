@@ -1,0 +1,413 @@
+<?xml version="1.0"?>
+<project name="aoplib4j" basedir="." default="compile">
+
+	<description>
+	    Ant script file for the aoplib4j.
+	</description>
+
+	<property file="build.properties" />
+	<property file="commonbuild.properties" />
+
+	<!-- Build classpath -->
+	<path id="classpath">
+		<fileset dir="${extlib.dir}">
+			<include name="*.jar" />
+		</fileset>
+
+		<fileset dir="${junit.lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+
+		<fileset dir="${aspectj.lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<property name="build.classpath" refid="classpath" />
+
+    <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+         <classpath>
+             <pathelement location="${aspectj.lib.dir}/aspectjtools.jar" />
+         </classpath>
+     </taskdef>
+	
+	<!--
+	 ###########################################################################
+	              compile
+	 ###########################################################################
+	-->
+	<target name="compile" depends="clean, prepare" description="compile the sources">
+	    
+		<!--outxmlfile will create a aop.xml file in ${bin}/META-INF  -->
+		<iajc srcdir="${src.dir}" destDir="${classes.dir}" 
+			Xlintwarnings="true" showWeaveInfo="true" source="1.5" debug="true" 
+			outxmlfile="META-INF/aop.xml">
+
+			<classpath>
+				<pathelement location="${extlib.dir}/aspectjrt.jar" />
+				<path refid="classpath" />
+			</classpath>
+		</iajc>
+
+	   <!--javac srcdir="${src.dir}" destdir="${classes.dir}" debug="true">
+	    <classpath refid="classpath" />
+	   </javac-->
+	
+	   <copy todir="${classes.dir}" preservelastmodified="true">
+	    <fileset dir="${resources.dir}">
+	          <include name="**/*" />
+	    </fileset>
+	   </copy>
+	</target>
+
+
+	<!--
+	 ###########################################################################
+	                  compileTests
+	 ###########################################################################
+	-->
+	<target name="compileTests" depends="clean, prepare, compile" 
+		description="compile the tests sources">
+
+		<iajc destDir="${classes.dir}" 
+			Xlintwarnings="true" showWeaveInfo="true" source="1.5" debug="true">
+
+			<sourceroots>
+				<!-- the aspects code are woven directly into the test bytecode-->
+				<pathelement location="${src.dir}" />
+				<pathelement location="${tests.dir}" />
+			</sourceroots>
+
+			<classpath>
+				<pathelement location="${extlib.dir}/aspectjrt.jar" />
+				<path refid="classpath" />
+				<pathelement location="${classes.dir}" />
+			</classpath>
+		</iajc>
+	</target>
+
+	   <!--
+	     ###########################################################################
+	                      compileTestsWithAoplibInClasspath
+	     ###########################################################################
+	    -->
+	    <target name="compileTestsWithAoplib4j" 
+	    	depends="clean, prepare, createAopLib4Jjar" 
+	        description="compile the tests sources using ajc and the aoplib4j">
+
+	        <iajc destDir="${classes.dir}" 
+	            Xlintwarnings="false" 
+	        	showWeaveInfo="false" 
+	        	source="1.5" 
+	        	debug="true"
+	        	inpath="${dist.dir}/${dist.jar.name}.jar"
+	        	>
+
+	            <sourceroots>
+	                <pathelement location="${tests.dir}" />
+	            </sourceroots>
+
+	            <classpath>
+	                <pathelement location="${extlib.dir}/aspectjrt.jar" />
+	                <path refid="classpath" />
+	                <pathelement location="${classes.dir}" />
+	            </classpath>
+	        </iajc>
+	    </target>
+	<!--
+	 ###########################################################################
+	                      executejUnitTests
+	 ###########################################################################
+    -->
+	<target name="executeJUnitTestsAndMakeReports" depends="compileTests" 
+		description="Execute the JUnit tests and create reports">
+
+		<junit fork="yes" printsummary="yes" showoutput="no" 
+			haltonerror="false" haltonfailure="false" 
+			failureproperty="junit.failed">
+
+			<!--jvmarg value="-Xms512M" />
+			<jvmarg value="-Xmx512M" /-->
+
+			<classpath refid="classpath" />
+
+			<classpath>
+				<pathelement location="${classes.dir}" />
+				<pathelement location="${junit.lib.dir}/junit.jar" />
+			</classpath>
+
+			<formatter type="xml" />
+
+			<batchtest todir="${junit.reports.dir}/xml">
+				<fileset dir="${tests.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${junit.reports.dir}/xml">
+			<fileset dir="${junit.reports.dir}/xml">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.reports.dir}/html" />
+		</junitreport>
+
+	</target>
+
+    <!--
+     ###########################################################################
+                   executeJUnitTestsWithAspectsWovenByAjc
+          -compile the tests wth ajc
+          -use the inpath flag of the ajc to wove the aspects into tests
+          -execute the test using JUnit                    
+     ###########################################################################
+     -->
+    <target name="executeJUnitTestsWithAspectsWovenByAjc" 
+        depends="clean, prepare, createAopLib4Jjar" 
+        description="Execute the JUnit tests having the aoplib4j jar as external lib for ajc">
+            
+        <!-- compile only the tests; use inpath flag to wove the aspects code into the tests bytecode-->
+        <iajc destDir="${classes.dir}" 
+                Xlintwarnings="true" showWeaveInfo="true" source="1.5" debug="true">
+
+             <sourceroots>
+                    <pathelement location="${tests.dir}" />
+             </sourceroots>
+                
+             <!-- inpath contains the aoplib4j jar to wove the aspects into the tests code-->
+             <inpath>
+                  <pathelement location="${dist.dir}/${dist.jar.name}.jar"/>
+              </inpath>
+
+              <classpath>
+                    <pathelement location="${extlib.dir}/aspectjrt.jar" />
+                    <path refid="classpath" />
+                    <pathelement location="${classes.dir}" />
+                    
+                    <pathelement location="${dist.dir}/${dist.jar.name}.jar" />
+              </classpath>
+        </iajc>
+        
+        <junit fork="yes" printsummary="yes" 
+            showoutput="false" haltonerror="true" 
+            haltonfailure="true" failureproperty="junit.failed">
+    
+            <!--jvmarg value="-Xms512M" />
+                <jvmarg value="-Xmx512M" /-->
+    
+            <classpath refid="classpath" />
+    
+            <classpath>
+                <pathelement location="${classes.dir}" />
+                <pathelement location="${junit.lib.dir}/junit.jar" />
+                <pathelement location="${dist.dir}/${dist.jar.name}.jar" />
+            </classpath>
+    
+            <batchtest todir="${junit.reports.dir}/xml">
+                <fileset dir="${tests.dir}">
+                    <include name="**/*Test.java" />
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+	
+	<!--
+	 ###########################################################################
+	            executeJUnitTestsWithAspectsWovenByJavaagent
+	       -compile the tests wth java.
+	       -execute the test using JUnit using the LTW to wove the aspects into tests.                   
+	 ###########################################################################
+	 -->
+	    <target name="executeJUnitTestsWithAspectsWovenByJavaagent" 
+	        depends="clean, prepare, createAopLib4Jjar" 
+	        description="Execute the JUnit tests having the aoplib4j jar as 
+	    	external lib for java (use javaagent to wove the aspects)">
+	    
+	        <javac srcDir="${tests.dir}" destdir="${classes.dir}">
+	              <classpath refid="classpath" />
+	              <classpath location="${classes.dir}" />
+	              <classpath location="${junit.lib.dir}/junit.jar" />
+	              <classpath location="${dist.dir}/${dist.jar.name}.jar" />
+	        </javac>
+	        
+	        <junit fork="yes" printsummary="yes" 
+	            showoutput="false" haltonerror="true"
+	            haltonfailure="true" failureproperty="junit.failed">
+	        	
+	            <!--jvmarg value="-Xms512M" />
+	                <jvmarg value="-Xmx512M" /-->
+	        	<jvmarg value="-javaagent:${aspectj.lib.dir}/aspectjweaver.jar"/>
+	        	
+	            <classpath refid="classpath" />
+	    
+	            <classpath>
+	                <pathelement location="${classes.dir}" />
+	                <pathelement location="${dist.dir}/${dist.jar.name}.jar" />
+	            </classpath>
+	    
+	            <batchtest todir="${junit.reports.dir}/xml">
+	                <fileset dir="${tests.dir}">
+	                    <include name="**/*Test.java" />
+	                </fileset>
+	            </batchtest>
+	        </junit>
+	    </target>
+	
+	<!--
+	 ###########################################################################
+	                      createAopLib4Jjar
+	 ###########################################################################
+	-->
+	<target name="createAopLib4Jjar" 
+		depends="clean, prepare, compile, createManifest" 
+		description="created the jar file for aoplib4j">
+
+		<jar destfile="${dist.dir}/${dist.jar.name}.jar" 
+			basedir="${classes.dir}" manifest="${java.io.tmpdir}/MANIFEST.MF" />
+
+	</target>
+
+    <!--
+     ###########################################################################
+                          createDistribution
+     ###########################################################################
+    -->
+    <target name="createDistribution" 
+        description="created the distribution">
+
+        <antcall target="executeJUnitTestsAndMakeReports"/>
+        <antcall target="executeJUnitTestsWithAspectsWovenByAjc"/>
+        <antcall target="executeJUnitTestsWithAspectsWovenByJavaagent"/>
+        <antcall target="checkstyle"/>
+
+    	<antcall target="createAopLib4Jjar"/>
+        
+        <antcall target="docs"/>
+    	
+    	<zip destfile="${dist.dir}/${dist.jar.name}-all.zip">
+    		   
+    		   <!-- docs -->
+    		   <tarfileset dir="${docs.dir}" prefix="/docs">
+    		      <include name="**/*.*"/>
+    		   </tarfileset>
+    		
+    		   <!-- sources -->
+    		   <tarfileset dir="${src.dir}" prefix="/src">
+    		      <include name="**/*.java"/>
+    		   </tarfileset>
+    		   
+    		   <!-- external sources-->
+    		   <tarfileset dir="${extlib.dir}" prefix="/lib">
+                <include name="*.jar"/>
+    		   </tarfileset>
+    		   <tarfileset dir="${aspectj.lib.dir}" prefix="/lib">
+                <include name="aspectjweaver.jar"/>
+    		   </tarfileset>
+    		
+    		   <!-- aoplib4j jar-->
+    		   <tarfileset dir="${dist.dir}">
+    		    <include name="${dist.jar.name}.jar"/>
+    		   </tarfileset>
+    	</zip>
+    </target>
+	
+	<!--
+	 ###########################################################################
+	                  clean
+	 ###########################################################################
+	-->
+	<target name="clean" description="clen all the important folders">
+		<delete dir="${dist.dir}" />
+		<delete dir="${site.dir}" />
+		<delete dir="${build.dir}" />
+		<delete dir="${classes.dir}" />
+
+
+	</target>
+
+	<!--
+	 ###########################################################################
+	                      prepare
+	 ###########################################################################
+	-->
+	<target name="prepare" description="clen all the important folders">
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${reports.dir}" />
+		<mkdir dir="${junit.reports.dir}" />
+		<mkdir dir="${junit.reports.dir}/xml" />
+		<mkdir dir="${junit.reports.dir}/html" />
+	</target>
+
+	<!--
+     ###########################################################################
+                          createManifest
+     ###########################################################################
+    -->
+	<target name="createManifest">
+		<tstamp>
+			<format property="aa.stamp.datetime" pattern="yyyyMMdd-HHmm" />
+		</tstamp>
+
+		<manifest file="${java.io.tmpdir}/MANIFEST.MF">
+			<attribute name="Built-By" value="${userName}" />
+			<section name="${project.package.root.path}/">
+				<attribute name="Sealed" value="yes" />
+				<attribute name="Specification-Title" 
+					value="${application.name.long}" />
+				<attribute name="Implementation-Title" 
+					value="${application.name}" />
+				<attribute name="Implementation-Version" 
+					value="${application.version}-${aa.stamp.datetime}" />
+			</section>
+
+			<!-- add the OSGI stuff here-->
+		</manifest>
+	</target>
+
+	<!--
+	 ###########################################################################
+	                          checkstyle
+	 ###########################################################################
+	 -->
+    <target name="checkstyle">
+        <taskdef resource="checkstyletask.properties" 
+        	classpath="${checkstyle.lib.dir}/checkstyle-all-4.4.jar" />
+    	
+        <checkstyle config="${checkstyle.lib.dir}/aopLib4JCheckstyle.xml" 
+        	failureProperty="checkstyleViolation" maxwarnings="0" maxerrors="0">
+        	
+            <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+           </fileset>
+        </checkstyle>
+    </target>
+
+    <!--
+     ###########################################################################
+                              docs
+     ###########################################################################
+     -->	
+	<target name="docs"
+		description="Generates the oficial documentation (javadoc, tutorials, etc...)">
+	    
+		<!-- create the javadoc -->
+		<mkdir dir="${javadoc.dir}"/>
+
+	    <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" packagenames="*"
+	              access="private" use="true" notree="false" nonavbar="false"
+	              noindex="false" splitindex="true" author="true" version="true"
+	              nodeprecatedlist="false" nodeprecated="false" failonerror="true">
+	            <classpath refid="classpath" />
+	    </javadoc>
+		
+		<!-- copy the html documentation to the site/doc folder-->
+		<copy todir="${docs.dir}">
+		    <fileset dir="${basedir}/docs">
+		      <include name = "**/*.html"/>
+		    </fileset>
+		</copy>
+
+	</target>	
+</project>
