@@ -36,7 +36,7 @@ public final class ReturnEmptyCollectionsAspect
     /**
      * The logger.
      */
-    private Logger logger =
+    private static final Logger LOGGER =
         Logger.getLogger(ReturnEmptyCollectionsAspect.class.getName());
     
     /**
@@ -85,7 +85,7 @@ public final class ReturnEmptyCollectionsAspect
             + "empty Collection/Map/Array.(see Item 43 from \"Effective Java\""
             + " second edition book)";
             
-            throwExceptionOrLogIt(errorMessage, logger, Level.SEVERE);
+            throwExceptionOrLogIt(errorMessage, LOGGER, Level.SEVERE);
         }
     }
     

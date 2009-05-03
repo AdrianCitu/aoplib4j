@@ -35,8 +35,8 @@ final class RetryExecutionAspect {
     /**
      * the logger to use.
      */
-    private static Logger logger = Logger.getLogger(RetryExecutionAspect.class
-            .getName());
+    private static final Logger LOGGER = 
+        Logger.getLogger(RetryExecutionAspect.class.getName());
 
     /**
      * Pointcut representing the execution of the methods annotated with the
@@ -94,7 +94,7 @@ final class RetryExecutionAspect {
 
                 return pjp.proceed();
             } catch (Throwable e) {
-                logger.info("Catched the exception " + e);
+                LOGGER.info("Catched the exception " + e);
 
                 if (exceptionToCatch.equals(e.getClass())) {
                     if (++counter > maxRetry) {
@@ -103,11 +103,11 @@ final class RetryExecutionAspect {
                         if (waitTime > 0) {
                             Thread.sleep(waitTime);
                         }
-                        logger.info("The method will be re-executed "
+                        LOGGER.info("The method will be re-executed "
                                 + (maxRetry - counter) + " times");
                     }
                 } else {
-                    logger.info("Throw this exception because it's not "
+                    LOGGER.info("Throw this exception because it's not "
                             + "treated by the aspect:" + e);
                     throw e;
                 }
