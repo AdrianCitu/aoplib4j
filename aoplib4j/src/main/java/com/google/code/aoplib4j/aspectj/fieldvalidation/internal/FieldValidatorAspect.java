@@ -39,8 +39,8 @@ class FieldValidatorAspect {
     /**
      * the logger to use.
      */
-    private static Logger logger = Logger.getLogger(FieldValidatorAspect.class
-            .getName());
+    private static final Logger LOGGER = 
+        Logger.getLogger(FieldValidatorAspect.class.getName());
     
     /**
      * Pointcut for the assignment of a non-static fields annotated with the 
@@ -116,22 +116,22 @@ class FieldValidatorAspect {
         
         String fieldName = getFieldName(jpsp);
         
-        logger.info("Validating field: " + fieldName);
+        LOGGER.info("Validating field: " + fieldName);
         
         try {
             validatorInstance = createValidatorInstance(validateAnnot);    
         } catch (InstantiationException e) {
-            logger.severe("Error creating validator: " + e);
+            LOGGER.severe("Error creating validator: " + e);
             
             //don't want to interfere with the current execution.
             return;
         } catch (IllegalAccessException e) {
-            logger.severe("Error creating validator: " + e);
+            LOGGER.severe("Error creating validator: " + e);
             
            //don't want to interfere with the current execution.
            return;
         }  catch (RuntimeException e) {
-            logger.severe("Error creating validator: " + e);
+            LOGGER.severe("Error creating validator: " + e);
             
             //don't want to interfere with the current execution.
             return;
@@ -140,17 +140,17 @@ class FieldValidatorAspect {
         try {
              oldValue = getFieldValue(jpsp, instance);  
         } catch (IllegalArgumentException e) {
-            logger.severe("Error retrieving field actual value: " + e);
+            LOGGER.severe("Error retrieving field actual value: " + e);
             
             //don't want to interfere with the current execution.
             return;
         } catch (IllegalAccessException e) {
-            logger.severe("Error retrieving field actual value: " + e);
+            LOGGER.severe("Error retrieving field actual value: " + e);
             
             //don't want to interfere with the current execution.
             return;
         } catch (RuntimeException e) {
-            logger.severe("Error retrieving field actual value: " + e);
+            LOGGER.severe("Error retrieving field actual value: " + e);
             
             //don't want to interfere with the current execution.
             return;
@@ -159,7 +159,7 @@ class FieldValidatorAspect {
         
         boolean staticField = fieldIsStatic(instance);
         
-        logger.info("The field is static:" + staticField);
+        LOGGER.info("The field is static:" + staticField);
         
         FieldInformation fldInfp = 
             new FieldInformationImpl(
@@ -206,7 +206,7 @@ class FieldValidatorAspect {
         Class < ? extends FieldValidator > validatorClass = 
             validateAnnot.validationClass();
         
-        logger.info("Creating a validator instance of " + validatorClass);
+        LOGGER.info("Creating a validator instance of " + validatorClass);
         return validatorClass.newInstance();
     }
 
@@ -229,7 +229,7 @@ class FieldValidatorAspect {
         
         Field field =  ((FieldSignature) jp.getSignature()).getField();
         
-        logger.info("Retrieve qctuql vqlue for the field " + field);
+        LOGGER.info("Retrieve qctuql vqlue for the field " + field);
         boolean wasAccessible = field.isAccessible();
         
         try {
