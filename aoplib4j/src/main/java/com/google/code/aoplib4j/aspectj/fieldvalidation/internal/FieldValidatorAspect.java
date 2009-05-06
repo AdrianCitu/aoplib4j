@@ -76,8 +76,7 @@ class FieldValidatorAspect {
      * set(@com.google.code.aoplib4j.aspectj.fieldvalidation.Validate 
      *      static * *.*)
      *  && @annotation(validateAnnot) 
-     *  && args(newValue) 
-     *  && this(instance)
+     *  && args(newValue)
      * </pre>
      * @param validateAnnot the field {@link Validate} annotation.
      * @param newValue the new value to be assigned to the field.
@@ -111,6 +110,20 @@ class FieldValidatorAspect {
             final JoinPoint.StaticPart jpsp, 
             final Object instance) throws Exception {
         
+        this.validateField(validateAnnot, newValue, jpsp, instance); 
+    }
+
+    /**
+     * @param validateAnnot the field {@link Validate} annotation.
+     * @param newValue the new value to be assigned to the field.
+     * @param jpsp AspectJ joinpoint static part.
+     * @param instance the instance on which the intercepted field is present.
+     * @throws Exception  exception thrown by execution of 
+     * {@link FieldValidator#validate(FieldInformation)}.
+     */
+    private void validateField(final Validate validateAnnot,
+            final Object newValue, final JoinPoint.StaticPart jpsp,
+            final Object instance) throws Exception {
         FieldValidator validatorInstance = null;
         Object oldValue = null;
         
@@ -165,7 +178,7 @@ class FieldValidatorAspect {
             new FieldInformationImpl(
                     oldValue, newValue, staticField, fieldName);
         
-        validatorInstance.validate(fldInfp); 
+        validatorInstance.validate(fldInfp);
     }
 
     /**
@@ -184,7 +197,7 @@ class FieldValidatorAspect {
             final Object newValue, 
             final JoinPoint.StaticPart jpsp) throws Exception {
         
-        this.validateFieldAdvice(validateAnnot, newValue, jpsp, null);
+        this.validateField(validateAnnot, newValue, jpsp, null);
     }
     
     /**
@@ -229,7 +242,7 @@ class FieldValidatorAspect {
         
         Field field =  ((FieldSignature) jp.getSignature()).getField();
         
-        LOGGER.info("Retrieve qctuql vqlue for the field " + field);
+        LOGGER.info("Retrieve actual value for the field " + field);
         boolean wasAccessible = field.isAccessible();
         
         try {
