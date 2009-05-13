@@ -65,7 +65,7 @@ public final class ReturnEmptyCollectionsAspect
     }
     
     /**
-     * If the object returned by the {@link #notNullCollectionOrArrayPoitcut()}
+     * If the object returned by the {@link #notNullCollectionOrArrayPointcut()}
      * is null then an error message will be logged or a runtime exception
      * will be thrown ({@link UnsupportedOperationException}) if the
      * {@link AbstractRuntimePolicyAspect#THROW_EXCEPTION_FOR_VIOLATIONS} 
