@@ -398,7 +398,10 @@
 	    <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" packagenames="*"
 	              access="private" use="true" notree="false" nonavbar="false"
 	              noindex="false" splitindex="true" author="true" version="true"
-	              nodeprecatedlist="false" nodeprecated="false" failonerror="true">
+	              nodeprecatedlist="false" nodeprecated="false" failonerror="true"
+	              doctitle="${application.name} API Documentation (${application.version})"
+	    	      windowtitle="${application.name} API Documentation"
+	    	      >
 	            <classpath refid="classpath" />
 	    </javadoc>
 		
