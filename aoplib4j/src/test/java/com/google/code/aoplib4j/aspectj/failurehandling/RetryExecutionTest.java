@@ -77,6 +77,7 @@ public class RetryExecutionTest extends TestCase {
      * an error is thrown at the execution.
      * The tests are made on static and not static methods.
      */
+    @SuppressWarnings(value={"all"})
     public final void testExecutionAndException() {
         try {
             cwex.throwException();
