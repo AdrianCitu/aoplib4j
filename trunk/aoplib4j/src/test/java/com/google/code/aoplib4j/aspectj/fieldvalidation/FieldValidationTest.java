@@ -38,6 +38,7 @@ public class FieldValidationTest extends TestCase {
      * Test {@link StringValidator}; the test should not pass because the input
      * string is null.
      */
+    @SuppressWarnings(value={"all"})
     public final void testSetStringAsNull() {
         
         try {
@@ -52,6 +53,7 @@ public class FieldValidationTest extends TestCase {
      * Test {@link StringValidator}; the test should not pass because the input
      * string is null.
      */
+    @SuppressWarnings(value={"all"})
     public final void testSetStaticStringAsNull() {
         
         try {
