@@ -16,6 +16,6 @@ For more details about LTW please refer to the [http://www.eclipse.org/aspectj/d
 ==== Weave aspect at compile time using ajc compiler ====
   * download and install AspectJ
   * download aoplib4j
-  * compile your project code with ajc (AspectJ Compiler); use the {{{-aspectpath}}} compiler option to weave the aspects into the project code.
+  * compile your project code with ajc (AspectJ Compiler); use the {{{-aspectpath pathto/aoplib4j-x.x.x.jar}}} compiler option to weave the aoplib4j aspects into the project code.
 
 For the full list of ajc options please refer to the [http://www.eclipse.org/aspectj/doc/released/devguide/ajc-ref.html The AspectJ Development Environment Guide - chapter 2]
