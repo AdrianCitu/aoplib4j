@@ -114,45 +114,7 @@
 	            </classpath>
 	        </iajc>
 	    </target>
-	<!--
-	 ###########################################################################
-	                      executejUnitTests
-	 ###########################################################################
-    -->
-	<target name="executeJUnitTestsAndMakeReports" depends="compileTests" 
-		description="Execute the JUnit tests and create reports">
 
-		<junit fork="yes" printsummary="yes" showoutput="no" 
-			haltonerror="false" haltonfailure="false" 
-			failureproperty="junit.failed">
-
-			<!--jvmarg value="-Xms512M" />
-			<jvmarg value="-Xmx512M" /-->
-
-			<classpath refid="classpath" />
-
-			<classpath>
-				<pathelement location="${classes.dir}" />
-				<pathelement location="${junit.lib.dir}/junit.jar" />
-			</classpath>
-
-			<formatter type="xml" />
-
-			<batchtest todir="${junit.reports.dir}/xml">
-				<fileset dir="${tests.dir}">
-					<include name="**/*Test.java" />
-				</fileset>
-			</batchtest>
-		</junit>
-
-		<junitreport todir="${junit.reports.dir}/xml">
-			<fileset dir="${junit.reports.dir}/xml">
-				<include name="TEST-*.xml" />
-			</fileset>
-			<report format="frames" todir="${junit.reports.dir}/html" />
-		</junitreport>
-
-	</target>
 
     <!--
      ###########################################################################
@@ -189,8 +151,8 @@
         </iajc>
         
         <junit fork="yes" printsummary="yes" 
-            showoutput="false" haltonerror="true" 
-            haltonfailure="true" failureproperty="junit.failed">
+            showoutput="false" haltonerror="false" 
+            haltonfailure="false" failureproperty="junit.failed">
     
             <!--jvmarg value="-Xms512M" />
                 <jvmarg value="-Xmx512M" /-->
@@ -203,12 +165,25 @@
                 <pathelement location="${dist.dir}/${dist.jar.name}.jar" />
             </classpath>
     
+            <formatter type="xml" />
+
             <batchtest todir="${junit.reports.dir}/xml">
                 <fileset dir="${tests.dir}">
                     <include name="**/*Test.java" />
                 </fileset>
             </batchtest>
         </junit>
+    	
+        <junitreport todir="${junit.reports.dir}/xml">
+                <fileset dir="${junit.reports.dir}/xml">
+                     <include name="TEST-*.xml" />
+                 </fileset>
+                 <report format="frames" todir="${junit.reports.dir}/html" />
+         </junitreport>
+    	
+        <fail message="Some JUnit tests failed (the test were woven by ajc)
+        	; see the reports into ${junit.reports.dir}/html folder" 
+             if="junit.failed"/>
     </target>
 
 	
@@ -224,6 +199,13 @@
 	        description="Execute the JUnit tests having the aoplib4j jar as 
 	    	external lib for java (use javaagent to wove the aspects)">
 	    
+	    	<!-- 
+	    	  delete the folder where the classes have been compiled to 
+	    	  be sure that junit not use already woven classes.
+	    	-->
+	    	<delete dir="${classes.dir}" />
+	    	<mkdir dir="${classes.dir}" />
+	    	
 	        <javac srcDir="${tests.dir}" destdir="${classes.dir}">
 	              <classpath refid="classpath" />
 	              <classpath location="${classes.dir}" />
@@ -231,9 +213,9 @@
 	              <classpath location="${dist.dir}/${dist.jar.name}.jar" />
 	        </javac>
 	        
-	        <junit fork="yes" printsummary="yes" 
-	            showoutput="false" haltonerror="true"
-	            haltonfailure="true" failureproperty="junit.failed">
+	        <junit fork="yes" printsummary="no" 
+	            showoutput="true" haltonerror="false"
+	            haltonfailure="false" failureproperty="junit.failed">
 	        	
 	            <!--jvmarg value="-Xms512M" />
 	                <jvmarg value="-Xmx512M" /-->
@@ -245,13 +227,26 @@
 	                <pathelement location="${classes.dir}" />
 	                <pathelement location="${dist.dir}/${dist.jar.name}.jar" />
 	            </classpath>
-	    
+
+	            <formatter type="xml" />
+
 	            <batchtest todir="${junit.reports.dir}/xml">
 	                <fileset dir="${tests.dir}">
 	                    <include name="**/*Test.java" />
 	                </fileset>
 	            </batchtest>
 	        </junit>
+
+	        <junitreport todir="${junit.reports.dir}/xml">
+	        	   <fileset dir="${junit.reports.dir}/xml">
+	                    <include name="TEST-*.xml" />
+	                </fileset>
+	                <report format="frames" todir="${junit.reports.dir}/html" />
+	        </junitreport>
+	    	
+	        <fail message="Some JUnit tests failed (the tests were woven by LTW)
+	        	; see the reports into ${junit.reports.dir}/html folder" 
+	            if="junit.failed"/>
 	    </target>
 	
 	<!--
@@ -276,9 +271,10 @@
     <target name="createDistribution" 
         description="created the distribution">
 
-        <antcall target="executeJUnitTestsAndMakeReports"/>
         <antcall target="executeJUnitTestsWithAspectsWovenByAjc"/>
+        	
         <antcall target="executeJUnitTestsWithAspectsWovenByJavaagent"/>
+        	
         <antcall target="checkstyle"/>
 
     	<antcall target="createAopLib4Jjar"/>
