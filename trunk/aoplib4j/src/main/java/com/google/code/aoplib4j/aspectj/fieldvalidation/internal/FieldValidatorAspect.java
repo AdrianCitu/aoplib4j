@@ -34,7 +34,7 @@ import com.google.code.aoplib4j.aspectj.fieldvalidation.Validate;
  *
  */
 @Aspect
-class FieldValidatorAspect {
+public final class FieldValidatorAspect {
 
     /**
      * the logger to use.

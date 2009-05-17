@@ -35,7 +35,7 @@ import com.google.code.aoplib4j.aspectj.gof.observer.ObserverCallback;
  *
  */
 @Aspect
-final class ObserverAspect {
+public final class ObserverAspect {
     
     /**
      * the classes annotated with the 
