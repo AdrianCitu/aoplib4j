@@ -293,6 +293,9 @@ For detach the Observers from the Subject a method annotated with {{{@Unregister
         sbj.deleteObservers();
     }
 }}} 
+
+And here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/gof/observer/internal/ObserverAspect.java ObserverAspect].
+
 === Enhancements ===
  # It will be a good idea to add a callback also when an Observer is detached from his Subject(if the Observer wants to make some actions just before of being detached).
  # For implementing the notification behavior the user must inherits from a class ({{{ObserverCallback}}}). It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the callback class using the non-arguments constructor by introspection (see [http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance() Class.newInstance()]). 
