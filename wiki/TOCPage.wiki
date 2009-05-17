@@ -4,4 +4,5 @@
     * [FailureHandlingHowTo Failure handling using annotations]
     * [ObserverPatternHowTo Implementing the Observer pattern using annotations]
     * [PolicyEnforcementHowTo Applying policy enforcement rules]
+  * [UserGuide User Guide]
   * [ProjectAnalysys Project analysys]
