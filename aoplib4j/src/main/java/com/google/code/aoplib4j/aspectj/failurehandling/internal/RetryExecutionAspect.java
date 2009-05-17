@@ -30,7 +30,7 @@ import com.google.code.aoplib4j.aspectj.failurehandling.RetryExecution;
  * 
  */
 @Aspect
-final class RetryExecutionAspect {
+public final class RetryExecutionAspect {
 
     /**
      * the logger to use.
