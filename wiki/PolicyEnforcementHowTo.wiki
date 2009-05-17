@@ -37,6 +37,7 @@ based on certain usage patterns. In our case the {{{@DeclareWarning}}} construct
     private static final String NO_SYS_OUT =  
         "Don't use System.out.print*(..). Use a logger API.";
 }}}
+Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/policy/compiletime/NoSysOutAspect.java NoSysOutAspect].
 
 === Use only private fields in your classes ===
 It's always a good practice to not expose directly the non final fields of your classes if the class accessible outside his package.This fields sould be exposed by providing accessor methods. Joshua Bloch in his "Effective Java (2-end edition)" book explains very well why [http://books.google.be/books?id=ka2VUBqHiWkC&printsec=frontcover&dq=effective+java+item+43&hl=fr#PPA71,M1 it should not use public fields.] This rule, as the first one, is applied at compile time so the output of the compiler would be:
@@ -59,6 +60,7 @@ Under the hood the same mechanism of weave-time warning is used. Here is the Asp
         + " Make all non final fields private and use set/get methods.";
 
 }}}
+Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/policy/compiletime/OnlyPrivateFieldsAspect.java OnlyPrivateFieldsAspect].
   
 === Return interfaces of an object from a method, not a implementation class. ===
 This is also an "advice" taken from the "Effective Java"(Item 52).If appropriate interface type exists, then parameters, return values variables and fields should declared using the interface type. Basically code like this should be avoid :
@@ -143,6 +145,8 @@ Pointcut capturing return values of subclasses of {{{java.util.Map}}}:
         + "implementation";
 }}}
 
+Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/policy/compiletime/UseInterfacesAspect.java UseInterfacesAspect].
+
 === Return empty arrays or collections from a method, not nulls. ===
 This is also taken from "Effective Java 2-end edition" (Item 43). 
 This rule is applied at runtime so, the code should be executed in order to verify the return values of the methods. The default behavior if a violation of the rule is found will be to log an error with the [http://java.sun.com/j2se/1.5.0/docs/api/java/util/logging/Level.html#SEVERE SEVERE level] (as you see the {{{java.util.logging}}} is used). Another possible behavior is to throw an [http://java.sun.com/j2se/1.5.0/docs/api/java/lang/UnsupportedOperationException.html java.lang.UnsupportedOperationException] by executing the code with the system variable {{{THROW_EXCEPTION_FOR_VIOLATIONS}}} (the value of the constant {{{com.google.code.aoplib4j.aspectj.policy.runtime.AbstractRuntimePolicyAspect#THROW_EXCEPTION_FOR_VIOLATIONS}}}) set to {{{true}}}.
@@ -179,3 +183,4 @@ For retrieving the returned value of the pointcut the {{{@AfterReturning}}} advi
 }}}
 
 As you can see this rule have a major drawback; the faulty code must be executed in order to be found.  
+Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/policy/runtime/ReturnEmptyCollectionsAspect.java ReturnEmptyCollectionsAspect].
