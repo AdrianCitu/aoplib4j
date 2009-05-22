@@ -23,6 +23,26 @@
 		</fileset>
 	</path>
 
+	<path id="cobertura.classpath">
+	    <fileset dir="${cobertura.dir}">
+	    	 <include name="*.jar" />
+	    </fileset>
+
+        <fileset dir="${extlib.dir}">
+            <include name="*.jar" />
+        </fileset>
+
+        <fileset dir="${junit.lib.dir}">
+            <include name="*.jar" />
+        </fileset>
+
+        <fileset dir="${aspectj.lib.dir}">
+            <include name="*.jar" />
+        </fileset>
+	</path>
+	
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
+	
 	<property name="build.classpath" refid="classpath" />
 
     <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
@@ -128,6 +148,13 @@
         depends="clean, prepare, createAopLib4Jjar" 
         description="Execute the JUnit tests having the aoplib4j jar as external lib for ajc">
             
+        <!-- 
+           delete the folder where the classes have been compiled to 
+           be sure that junit not use already woven classes.
+         -->
+        <delete dir="${classes.dir}" />
+        <mkdir dir="${classes.dir}" />
+    	
         <!-- compile only the tests; use inpath flag to wove the aspects code into the tests bytecode-->
         <iajc destDir="${classes.dir}" 
                 Xlintwarnings="true" showWeaveInfo="true" source="1.5" debug="true">
@@ -318,7 +345,12 @@
 		<delete dir="${site.dir}" />
 		<delete dir="${build.dir}" />
 		<delete dir="${classes.dir}" />
-
+		
+	    <!-- cobertura stuff -->
+	    <delete dir="${instrumented.dir}" />
+        <delete file="cobertura.log" />
+        <delete file="cobertura.ser" />
+	    <delete dir="${test.classes.dir}"/>
 
 	</target>
 
@@ -334,6 +366,13 @@
 		<mkdir dir="${junit.reports.dir}" />
 		<mkdir dir="${junit.reports.dir}/xml" />
 		<mkdir dir="${junit.reports.dir}/html" />
+
+		<!-- cobertura stuff -->
+		<mkdir dir="${instrumented.dir}" />
+	    <mkdir dir="${coverage.xml.dir}" />
+	    <mkdir dir="${coverage.summaryxml.dir}" />
+	    <mkdir dir="${coverage.html.dir}" />
+	    <mkdir dir="${test.classes.dir}"/>
 	</target>
 
 	<!--
@@ -407,6 +446,137 @@
 		      <include name = "**/*.html"/>
 		    </fileset>
 		</copy>
-
 	</target>	
+
+	<!--
+	###########################################################################
+	                    instrument the code with cobertura
+	###########################################################################
+	-->    
+    <target name="instrument">
+        <!--
+            Remove the coverage data file and any old instrumentation.
+        -->
+        <delete file="cobertura.ser"/>
+        <delete dir="${instrumented.dir}" />
+
+        <!--
+            Instrument the application classes, writing the
+            instrumented classes into ${build.instrumented.dir}.
+        -->
+        <cobertura-instrument todir="${instrumented.dir}">
+
+            <ignore regex="org.apache.log4j.*" />
+            	
+            <fileset dir="${classes.dir}">
+                <!--
+                    Instrument all the application classes, but
+                    don't instrument the test classes.
+                -->
+                <include name="**/*.class" />
+            	<!-- don't instrument the runtime policy aspects since are used at compilation time-->
+            	<exclude name="com/google/code/aoplib4j/aspectj/policy/compiletime/*.class" />
+                <exclude name="**/*Test.class" />
+            </fileset>
+        </cobertura-instrument>
+    </target>
+
+	   <!--
+	     ###########################################################################
+	             executeJUnitTestsWithAspectsWovenByAjcAndInstrumentedCode
+	          -compile the tests wth ajc
+	          -use the inpath flag of the ajc to wove the aspects into tests
+	          -execute the test using JUnit                    
+	     ###########################################################################
+	     -->
+	    <target name="executeJUnitTestsWithAspectsWovenByAjcAndInstrumentedCode">
+	        
+	        <junit fork="yes" printsummary="yes" 
+	            showoutput="false" haltonerror="false" 
+	            haltonfailure="false" failureproperty="junit.failed">
+	    	            
+	            <!--
+	                 The instrumented classes reference classes used by the
+	                 Cobertura runtime, so Cobertura and its dependencies
+	                 must be on your classpath.
+	             -->
+	             <classpath refid="cobertura.classpath" />
+	    
+	            <!--
+	              Note the classpath order: instrumented classes are before the
+	              original (uninstrumented) classes.  This is important.
+	            -->
+	            <classpath>
+	            	<pathelement location="${instrumented.dir}" />
+	                <pathelement location="${classes.dir}" />
+	            	<pathelement location="${test.classes.dir}" />
+	                <pathelement location="${junit.lib.dir}/junit.jar" />
+	                <pathelement location="${dist.dir}/${dist.jar.name}.jar" />
+	            </classpath>
+	    
+	            <formatter type="xml" />
+
+	            <batchtest todir="${junit.reports.dir}/xml">
+	                <fileset dir="${tests.dir}">
+	                    <include name="**/*Test.java" />
+	                </fileset>
+	            </batchtest>
+	        </junit>
+	        
+	        <junitreport todir="${junit.reports.dir}/xml">
+	                <fileset dir="${junit.reports.dir}/xml">
+	                     <include name="TEST-*.xml" />
+	                 </fileset>
+	                 <report format="frames" todir="${junit.reports.dir}/html" />
+	         </junitreport>
+	        
+	        <fail message="Some JUnit tests failed (the test were woven by ajc)
+	            ; see the reports into ${junit.reports.dir}/html folder" 
+	             if="junit.failed"/>
+	    </target>
+
+
+    <target name="htmlCoverageReport">
+        <!--
+            Generate a series of HTML files containing the coverage
+            data in a user-readable form using nested source filesets.
+        -->
+        <cobertura-report destdir="${coverage.html.dir}">
+            <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </cobertura-report>
+    </target>
+
+    <!--
+     ###########################################################################
+                      compileTestsForInstrumentation - compiles the 
+                      test into the test.classes.dir folder
+     ###########################################################################
+    -->
+    <target name="compileTestsForInstrumentation" depends="clean, prepare, compile">
+    	
+        <iajc destDir="${test.classes.dir}" 
+            Xlintwarnings="true" showWeaveInfo="true" source="1.5" debug="true">
+
+            <sourceroots>
+                <!-- the aspects code are woven directly into the test bytecode-->
+                <pathelement location="${src.dir}" />
+                <pathelement location="${tests.dir}" />
+            </sourceroots>
+
+            <classpath>
+                <pathelement location="${extlib.dir}/aspectjrt.jar" />
+                <path refid="classpath" />
+                <pathelement location="${classes.dir}" />
+            </classpath>
+        </iajc>
+    </target>
+	
+    <target name="createCverageReports" depends="compile, 
+    	compileTestsForInstrumentation,
+    	instrument,executeJUnitTestsWithAspectsWovenByAjcAndInstrumentedCode,
+    	htmlCoverageReport" 
+    	description="Compile, instrument ourself, run the tests and generate JUnit and coverage reports."/>
+
 </project>
