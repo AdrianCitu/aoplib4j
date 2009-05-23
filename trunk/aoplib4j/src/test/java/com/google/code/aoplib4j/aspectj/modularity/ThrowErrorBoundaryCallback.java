@@ -28,9 +28,9 @@ public class ThrowErrorBoundaryCallback extends LogViolationCallback {
      * {@inheritDoc}
      */
     @Override
-    public void classViolation(ViolationInformation info) {    
-        super.classViolation(info);
-        throw new IllegalAccessError("ClassBoundary Violation");
+    public void boundaryViolation(ViolationInformation info) {    
+        super.boundaryViolation(info);
+        throw new IllegalAccessError("Class or Package Boundary Violation");
     }
 
 }

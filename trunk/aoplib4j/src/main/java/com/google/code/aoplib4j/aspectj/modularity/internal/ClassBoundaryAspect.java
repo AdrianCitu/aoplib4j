@@ -15,8 +15,6 @@
 package com.google.code.aoplib4j.aspectj.modularity.internal;
 
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -24,24 +22,18 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import com.google.code.aoplib4j.aspectj.modularity.BoundaryViolationCallback;
 import com.google.code.aoplib4j.aspectj.modularity.ClassBoundary;
-import com.google.code.aoplib4j.aspectj.modularity.ViolationInformation;
 
 /**
- * Aspect implementing the modularity functionality.
+ * Aspect implementing the modularity at the class level.
  * 
+ * @see ClassBoundary
+ *  
  * @author Adrian Citu
- * 
+ *
  */
 @Aspect
-final class BoundaryViolationAspect {
-
-    /**
-     * the logger to use.
-     */
-    private static final Logger LOGGER = Logger
-            .getLogger(BoundaryViolationAspect.class.getName());
+public final class ClassBoundaryAspect extends AbstractBoundary {
 
     /**
      * Pointcut intercepting the call of methods non private and
@@ -95,10 +87,16 @@ final class BoundaryViolationAspect {
      * the list of forbidden classes.
      * 
      * If the caller is present into the list of forbidden classes, the
-     * framework creates an instance of {@link BoundaryViolationCallback} (using
+     * framework creates an instance of 
+     * {@link 
+     * com.google.code.aoplib4j.aspectj.modularity.BoundaryViolationCallback}
+     * (using
      * as implementation class taken from {@link ClassBoundary#callbackClass()}
      * ) and call the callback method 
-     * {@link BoundaryViolationCallback#classViolation(ViolationInformation)}
+     * {@link 
+     * com.google.code.aoplib4j.aspectj.modularity.BoundaryViolationCallback
+     * #boundaryViolation(
+     * com.google.code.aoplib4j.aspectj.modularity.ViolationInformation)}
      * 
      * @param calledObj the instance of the called object
      * @param callerObj the instance of the caller object
@@ -108,6 +106,11 @@ final class BoundaryViolationAspect {
     public void callOfClassBoundaryAdvice(final Object calledObj,
             final Object callerObj, final JoinPoint jp) {
 
+        //the caller and called are the same instance
+        if (calledObj == callerObj) {
+            return;
+        }
+        
         ClassBoundary boundary = getClassBoundaryAnnotation(calledObj
                 .getClass());
 
@@ -119,28 +122,10 @@ final class BoundaryViolationAspect {
 
         Class< ? >[] forbiddenClasses = boundary.forbiddenClasses();
 
-        if (boundaryViolated(callerObj.getClass().getCanonicalName(),
+        if (classBoundaryViolated(callerObj.getClass().getCanonicalName(),
                 forbiddenClasses)) {
-
-            try {
-                BoundaryViolationCallback cllbck = 
-                    createCallBackInstance(boundary);
-
-                Method calledMethod = ((MethodSignature) jp.getSignature())
-                        .getMethod();
-
-                ViolationInformation bv = new ViolationInformationImpl(
-                        calledMethod.getName(), 
-                        calledObj.getClass().getCanonicalName(), 
-                        callerObj.getClass().getCanonicalName());
-
-                cllbck.classViolation(bv);
-
-            } catch (InstantiationException e) {
-                LOGGER.log(Level.WARNING, "Creation of call back failed", e);
-            } catch (IllegalAccessException e) {
-                LOGGER.log(Level.WARNING, "Creation of call back failed", e);
-            }
+            createAndExecuteCallback(
+                    calledObj, callerObj, jp, null, boundary);
         }
 
     }
@@ -148,14 +133,38 @@ final class BoundaryViolationAspect {
     /**
      * Advice executed before the execution of a static method found on an 
      * annotated class.
-     * The advice retrieve the called informations using the {@link StaticPart}
+     * The advice retrieve the called informations using the
+     * {@link org.aspectj.lang.JoinPoint.StaticPart}
      * object. Sincestatic pointcuts cannot retrieve the caller object
-     * using <code>this</code> pointcut this information is computing using the 
+     * using <code>this</code> pointcut the caller information is computed 
+     * using the 
      * stack trace of the current execution thread by creating a new
      * {@link Throwable} object and calling {@link Throwable#getStackTrace()}.
+     * (see {@link #getCallerInformation(String, String)}).
+     * After the caller and called classes are computed a violation check is 
+     * made See
+     * {@link #classBoundaryViolated(
+     * com.google.code.aoplib4j.aspectj.modularity.PackageBoundary, String)} 
+     * for more 
+     * information about the boundary violation check.
      * 
+     * 
+     * In the case of a violation, the framework creates an instance of 
+     * {@link 
+     * com.google.code.aoplib4j.aspectj.modularity.BoundaryViolationCallback} 
+     * (using
+     * as implementation class taken from 
+     * {@link 
+     * com.google.code.aoplib4j.aspectj.modularity.PackageBoundary#
+     * callbackClass()}) and call the callback method 
+     * {@link 
+     * com.google.code.aoplib4j.aspectj.modularity.BoundaryViolationCallback
+     * #boundaryViolation(
+     * com.google.code.aoplib4j.aspectj.modularity.ViolationInformation)}
      *
      * @param jpsp AspectJ join point static part.
+     * 
+     * @see {@link #classBoundaryViolated(String, Class[])} 
      */
     @Before("callOfStaticClassBoundaryPointcut()")
     public void callOfStaticClassBoundaryAdvice(
@@ -165,6 +174,8 @@ final class BoundaryViolationAspect {
 
         ClassBoundary boundary = getClassBoundaryAnnotation(calledClass);
 
+        //advice is called on a subclass; the annotation is not inherited by
+        //the subclasses.
         if (boundary == null) {
             return;
         }
@@ -177,26 +188,13 @@ final class BoundaryViolationAspect {
         StackTraceElement callerSte = this.getCallerInformation(calledClass
                 .getCanonicalName(), calledMethod.getName());
 
-        if (boundaryViolated(callerSte.getClassName(), forbiddenClasses)) {
+        if (classBoundaryViolated(callerSte.getClassName(), forbiddenClasses)) {
 
-            try {
-                BoundaryViolationCallback cllbck = 
-                    createCallBackInstance(boundary);
-
-                ViolationInformation bv = new ViolationInformationImpl(
-                        calledMethod.getName(), 
-                        calledClass.getCanonicalName(),
-                        callerSte.getClassName());
-
-                cllbck.classViolation(bv);
-            } catch (InstantiationException e) {
-                LOGGER.log(Level.WARNING, "Creation of call back failed", e);
-            } catch (IllegalAccessException e) {
-                LOGGER.log(Level.WARNING, "Creation of call back failed", e);
-            }
+            createAndExecuteCallback(calledClass, boundary, null, calledMethod,
+                    callerSte);
         }
     }
-
+    
     /**
      * Method that returns the {@link ClassBoundary} annotation from the object
      * passed as parameter or null if the class is not annotated.
@@ -210,76 +208,7 @@ final class BoundaryViolationAspect {
         
         return calledClass.getAnnotation(ClassBoundary.class);
     }
-
- 
-    /**
-     * Method that computes the information about the caller class. The
-     * information is stored into a {@link StackTraceElement} object.
-     * 
-     * The caller information is on the third position on the stack trace;
-     * the first position contains the call to this method, and the 
-     * second one to the
-     * {@link #callOfStaticClassBoundaryAdvice(StaticPart)}.
-     * 
-     * This method will return faulty results when a child class calls an
-     * inherited non overridden parent method. In this case the stack trace
-     * contains a call to the parent method directly.
-     * 
-     * <pre>
-     *  Example:
-     *  P - parent class 
-     *  P#method - a method of the parent
-     *  C - child class; it does not override the &quot;method&quot; method
-     *  
-     *  On the stack trace a call to C#method is in fact written as a call to
-     *  P#method.
-     * 
-     * </pre>
-     * 
-     * @param calledClassName
-     *            the canonical name of the called class name
-     * @param calledMethodName
-     *            the name of the called method.
-     * @return {@link StackTraceElement} represented the caller method.
-     */
-    private StackTraceElement getCallerInformation(
-            final String calledClassName, final String calledMethodName) {
-
-        StackTraceElement[] stes = new Throwable().getStackTrace();
-
-        return stes[2];
-    }
-
-    /**
-     * Creates an instance of boundary violation callback using the information
-     * from the {@link ClassBoundary#callbackClass()}.
-     * 
-     * @see BoundaryViolationCallback
-     * 
-     * @param boundaryAnnotation
-     *            the {@link ClassBoundary} annotation.
-     * 
-     * @return instance of a {@link BoundaryViolationCallback}.
-     * 
-     * @throws IllegalAccessException
-     *             if the instantiation fails (introspection is used)
-     * @throws InstantiationException
-     *             if the instantiation fails (introspection is used)
-     */
-    private BoundaryViolationCallback createCallBackInstance(
-            final ClassBoundary boundaryAnnotation)
-            throws InstantiationException, IllegalAccessException {
-
-        Class< ? extends BoundaryViolationCallback> callBackClass = 
-            boundaryAnnotation.callbackClass();
-
-        LOGGER.info("Creating a boundary callback instance of " 
-                + callBackClass);
-
-        return callBackClass.newInstance();
-
-    }
-
+    
     /**
      * Verifies a boundary violation by comparing the caller class with the
      * array of forbidden classes.
@@ -292,7 +221,7 @@ final class BoundaryViolationAspect {
      * @return true if a violation (if the target class is in into the array of
      *         forbidden classes), false otherwise.
      */
-    private boolean boundaryViolated(final String callerClassName,
+    private boolean classBoundaryViolated(final String callerClassName,
             final Class< ? >[] forbiddenClasses) {
         boolean returnValue = false;
 

@@ -12,28 +12,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.google.code.aoplib4j.aspectj.modularity;
+@PackageBoundary(
+        packagesList = {"com.google.code.aoplib4j.aspectj.modularity.pack.whitelist.allowedpackage"}, 
+        packagesListType = PackageBoundary.PackageListType.WHITELIST,
+        callbackClass=ThrowErrorBoundaryCallback.class)
+package com.google.code.aoplib4j.aspectj.modularity.pack.whitelist;
 
-/**
- * 
- * @author Adrian Citu
- * This is a class in which is forbidden to call methods from the CalledClass.
- * It is used by the junit tests.
- * 
- *  @see CalledClass
- * 
- *
- */
-public class ForbiddenCallerClass {
-    
-    private CalledClass called = new CalledClass();
-    
-    public void voidMethod() {
-        called.calledMethod();
-    }
+import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
 
-    public static void staticVoidMethod() {
-        CalledClass.calledStaticMethod();
-    }
-    
-}

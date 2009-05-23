@@ -12,22 +12,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.google.code.aoplib4j.aspectj.modularity;
+package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.allowedpackage;
+
+import com.google.code.aoplib4j.aspectj.modularity.clas.ClasCalledClass;
+import com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.BlackListPackageCalledClass;
 
 /**
- * Class that have the right to call the methods from the {@link CalledClass}.
+ * Class used for the package boundary.The class is a part of the allowed 
+ * package which means that it can call methods from the {@link ClasCalledClass}
+ * class.
  * @author Adrian Citu
  *
  */
-public class OkCallerClass {
+public class AllowedClass {
 
-    private CalledClass called = new CalledClass();
+    
+    private BlackListPackageCalledClass called = 
+        new BlackListPackageCalledClass();
     
     public void voidMethod() {
         called.calledMethod();
     }
     
     public static void staticVoidMethod() {
-        CalledClass.calledStaticMethod();
+        BlackListPackageCalledClass.calledStaticMethod();
     }
+    
 }

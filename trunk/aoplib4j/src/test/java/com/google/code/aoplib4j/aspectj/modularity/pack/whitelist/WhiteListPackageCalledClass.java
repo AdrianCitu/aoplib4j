@@ -12,20 +12,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.google.code.aoplib4j.aspectj.modularity;
+package com.google.code.aoplib4j.aspectj.modularity.pack.whitelist;
 
+import com.google.code.aoplib4j.aspectj.modularity.ClassBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
+import com.google.code.aoplib4j.aspectj.modularity.clas.ForbiddenCallerClass;
 
 /**
- * Target class; annotated with the {@link ClassBoundary} annotation.  
+ * Target class; annotated with the {@link PackageBoundary} annotation.  
  * This class forbidden the calls from the {@link ForbiddenCallerClass} class.
  *  
  * @author Adrian Citu
  *
  */
-@ClassBoundary(
-        forbiddenClasses={ForbiddenCallerClass.class}, 
-        callbackClass=ThrowErrorBoundaryCallback.class)
-public class CalledClass {
+@ClassBoundary( callbackClass=ThrowErrorBoundaryCallback.class,
+        forbiddenClasses = {String.class})
+@InjectedPkgBoundary
+public class WhiteListPackageCalledClass {
 
     /**
      * A normal method.
@@ -54,6 +59,6 @@ public class CalledClass {
      * This is done to test the the boundary inside the own class. 
      */
     public static void callerCalledStaticMethod() {
-        CalledClass.calledStaticMethod();
+        WhiteListPackageCalledClass.calledStaticMethod();
     }
 }

@@ -14,26 +14,17 @@
  */
 package com.google.code.aoplib4j.aspectj.modularity;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * Subclass of the {@link CalledClass}; the parent class is annotated with 
- * {@link ClassBoundary} annotation.This class is used by the JUnit test to 
- * verify the behavior of subclasses in the case of boundary violations.
- * 
- * 
  * @author Adrian Citu
  *
  */
-public class ChildOfCalledClass extends CalledClass {
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface InjectedPkgBoundary {
 
-    @Override
-    public void calledMethod() {
-        super.calledMethod();
-    }
-
-    @Override
-    public void callerCalledMethod() {
-        super.callerCalledMethod();
-    }
-
-    
 }

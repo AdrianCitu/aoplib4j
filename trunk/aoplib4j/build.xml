@@ -260,6 +260,13 @@
 	            <batchtest todir="${junit.reports.dir}/xml">
 	                <fileset dir="${tests.dir}">
 	                    <include name="**/*Test.java" />
+	                	<!-- 
+	                	blacklist package use PackageAnnotationIntroduction
+	                	to introduce package modularity annotations on classes
+	                	so, it does not work with LTW since PackageAnnotationIntroduction
+	                	must use ajc.
+	                	-->
+	                	<exclude name= "**/BlackListPackageBoundaryViolationTest.java"/>
 	                </fileset>
 	            </batchtest>
 	        </junit>
@@ -573,7 +580,7 @@
         </iajc>
     </target>
 	
-    <target name="createCverageReports" depends="compile, 
+    <target name="createCoverageReports" depends="compile, 
     	compileTestsForInstrumentation,
     	instrument,executeJUnitTestsWithAspectsWovenByAjcAndInstrumentedCode,
     	htmlCoverageReport" 
