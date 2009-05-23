@@ -12,23 +12,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.google.code.aoplib4j.aspectj.modularity;
+@PackageBoundary(
+        packagesList = {"com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage"}, 
+        packagesListType = PackageBoundary.PackageListType.BLACKLIST,
+        callbackClass=ThrowErrorBoundaryCallback.class)
+package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
 
-/**
- * Subclass of the {@link ForbiddenCallerClass}. This class is used by the 
- * JUnit test to verify the behavior of subclasses in the case of boundary 
- * violations.
- * @author Adrian Citu
- *
- */
-public class ChildOfForbiddenCallerClass extends ForbiddenCallerClass {
+import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
 
-    public void childMethod() {
-        
-    }
-    
-    public static void staticChildVoidMethod() {
-        
-    }    
-    
-}

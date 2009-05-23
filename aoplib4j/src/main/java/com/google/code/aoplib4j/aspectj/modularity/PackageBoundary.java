@@ -20,6 +20,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation to mark the classes on which the package boundary calls should be 
+ * applied.
+ * 
+ * This annotation should be put on the classes to mark from which packages
+ * the calls of the annotated class are allowed or forbidden.
+ * 
  * @author Adrian Citu
  *
  */
@@ -27,4 +33,48 @@ import java.lang.annotation.Target;
 @Target(ElementType.PACKAGE)
 public @interface PackageBoundary {
 
+
+    /**
+     * The list of packages on which the boundary will be applied. By default 
+     * it contains the list of forbidden packages. For setting the list of
+     * allowed packages set {@link #blackistPackages()} to false.
+     * 
+     */
+    String[] packagesList();
+    
+    /**
+     * The class the will be instantiated by the framework when a 
+     * boundary violation is detected. The default callback class is 
+     * {@link LogViolationCallback}.
+     * 
+     * @see LogViolationCallback
+     */
+    Class < ? extends BoundaryViolationCallback > callbackClass() 
+        default LogViolationCallback.class;
+    
+    /**
+     * Enumeration to express the type of packages contained into the 
+     * {@link #packagesList()}. If {@link PackageListType#BLACKLIST},
+     * the {@link #packagesList()} contains the list of forbidden packages, 
+     * if {@link PackageListType#WHITELIST} the {@link #packagesList()} contains
+     * the list of allowed packages.
+     */
+    PackageListType packagesListType();
+    
+    /**
+     * Enumeration containing the possible types of packages list.
+     * 
+     * @author Adrian Citu
+     *
+     */
+    public enum PackageListType {
+        /**
+         * the blacklist type.
+         */
+        BLACKLIST, 
+        /**
+         * the whitelist type.
+         */
+        WHITELIST;
+    }
 }

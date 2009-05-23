@@ -39,5 +39,5 @@ public abstract class BoundaryViolationCallback {
      * 
      * @param info object containing information about the boundary violation.
      */
-    public abstract void classViolation(final ViolationInformation info);
+    public abstract void boundaryViolation(final ViolationInformation info);
 }

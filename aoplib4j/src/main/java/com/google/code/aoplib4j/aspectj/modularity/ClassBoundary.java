@@ -21,7 +21,11 @@ import java.lang.annotation.Target;
 
 
 /**
- * Annotation to mark the classes on which the boundary calls should be applied.
+ * Annotation to mark the classes on which the class boundary calls should be 
+ * applied.
+ * 
+ * This annotation should be put on the classes to mark from which classes
+ * the calls of the annotated class are forbidden.
  * 
  * @author Adrian Citu
  *
@@ -45,4 +49,5 @@ public @interface ClassBoundary {
      */
     Class < ? extends BoundaryViolationCallback > callbackClass() 
         default LogViolationCallback.class;
+    
 }

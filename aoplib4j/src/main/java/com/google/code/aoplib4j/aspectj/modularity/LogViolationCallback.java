@@ -39,7 +39,7 @@ class LogViolationCallback extends BoundaryViolationCallback {
      * {@inheritDoc}
      */
     @Override
-    public void classViolation(final ViolationInformation info) {
+    public void boundaryViolation(final ViolationInformation info) {
         StringBuffer errorMessage = new StringBuffer();
         errorMessage.append("It is forbidden to call the method ")
         .append(info.getCalledClassName())
