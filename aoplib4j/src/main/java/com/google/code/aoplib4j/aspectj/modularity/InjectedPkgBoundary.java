@@ -20,6 +20,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation that should be added to classes of a package annotated with
+ * {@link PackageBoundary} in order to check the package boundary violation.
+ * 
+ * The best way of adding this annotation is to write a custom aspect.
+ * that
  * @author Adrian Citu
  *
  */

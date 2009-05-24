@@ -23,6 +23,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import com.google.code.aoplib4j.aspectj.modularity.ClassBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ListType;
 
 /**
  * Aspect implementing the modularity at the class level.
@@ -120,10 +121,8 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
             return;
         }
 
-        Class< ? >[] forbiddenClasses = boundary.forbiddenClasses();
-
-        if (classBoundaryViolated(callerObj.getClass().getCanonicalName(),
-                forbiddenClasses)) {
+        if (classBoundaryViolated(
+                callerObj.getClass().getCanonicalName(), boundary)) {
             createAndExecuteCallback(
                     calledObj, callerObj, jp, null, boundary);
         }
@@ -183,12 +182,11 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
         Method calledMethod = ((MethodSignature) jpsp.getSignature())
                 .getMethod();
 
-        Class< ? >[] forbiddenClasses = boundary.forbiddenClasses();
-
         StackTraceElement callerSte = this.getCallerInformation(calledClass
                 .getCanonicalName(), calledMethod.getName());
 
-        if (classBoundaryViolated(callerSte.getClassName(), forbiddenClasses)) {
+        if (classBoundaryViolated(
+                callerSte.getClassName(), boundary)) {
 
             createAndExecuteCallback(calledClass, boundary, null, calledMethod,
                     callerSte);
@@ -210,27 +208,27 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
     }
     
     /**
-     * Verifies a boundary violation by comparing the caller class with the
-     * array of forbidden classes.
+     * Verifies the violation of class boundary by retrieving the information
+     * from the {@link ClassBoundary} annotation (the classes list, the
+     * list type) and comparing with the class name passed as parameter.
      * 
-     * @param callerClassName
-     *            the caller class canonical name.
-     * @param forbiddenClasses
-     *            array of the forbidden classes.
-     * 
-     * @return true if a violation (if the target class is in into the array of
-     *         forbidden classes), false otherwise.
+     * @param classBoundary {@link ClassBoundary} annotation.
+     * @param callerClassName caller class name.
+     * @return true if a boundary violation; false otherwise.
      */
     private boolean classBoundaryViolated(final String callerClassName,
-            final Class< ? >[] forbiddenClasses) {
-        boolean returnValue = false;
-
-        for (Class< ? > forbiddenClass : forbiddenClasses) {
-            if (callerClassName.equals(forbiddenClass.getCanonicalName())) {
-                returnValue = true;
-                break;
-            }
+            final ClassBoundary classBoundary) {
+                
+        ListType listType = classBoundary.classesListType();
+        Class< ? >[] classesList = classBoundary.classesList();
+        
+        String[] classesNamesList = new String[classesList.length];
+        
+        for (int i = 0; i < classesList.length; i++) {
+            classesNamesList[i] = classesList[i].getCanonicalName();
         }
-        return returnValue;
+        
+        return searchStringIntoArray(
+                callerClassName, listType, classesNamesList);
     }
 }

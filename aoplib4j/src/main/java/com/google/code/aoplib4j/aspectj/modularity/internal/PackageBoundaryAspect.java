@@ -26,6 +26,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ListType;
 
 /**
  * Aspect implementing the modularity at the package level.
@@ -245,25 +246,9 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
             final String callerObjPackage) {
                 
         String[] packagesList = pkgBoundary.packagesList();
-        PackageBoundary.PackageListType listType = 
+        ListType listType = 
             pkgBoundary.packagesListType();
         
-        if (PackageBoundary.PackageListType.BLACKLIST.equals(listType)) {
-            for (String pkg : packagesList) {
-                if (callerObjPackage.equals(pkg)) {
-                    return true;
-                }
-            }
-            
-            return false;
-        //WHITELIST    
-        } else {
-            for (String pkg : packagesList) {
-                if (callerObjPackage.equals(pkg)) {
-                    return false;
-                }
-            }   
-            return true;    
-        }
+        return searchStringIntoArray(callerObjPackage, listType, packagesList);
     }
 }
