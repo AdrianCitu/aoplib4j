@@ -12,13 +12,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-@PackageBoundary(
-        packagesList = {"com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage"}, 
-        packagesListType = ListType.BLACKLIST,
-        callbackClass=ThrowErrorBoundaryCallback.class)
-package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
+package com.google.code.aoplib4j.aspectj.modularity;
 
-import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
-import com.google.code.aoplib4j.aspectj.modularity.ListType;
-import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
-
+/**
+ * Enumeration containing the possible types of lists.
+ * 
+ * @author Adrian Citu
+ *
+ */
+public enum ListType {
+    /**
+     * the blacklist type (mark a list as containing the forbidden values).
+     */
+    BLACKLIST, 
+    /**
+     * the whitelist type (mark a list as containing the allowed values).
+     */
+    WHITELIST;
+}

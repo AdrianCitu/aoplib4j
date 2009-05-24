@@ -15,6 +15,7 @@
 package com.google.code.aoplib4j.aspectj.modularity.clas;
 
 import com.google.code.aoplib4j.aspectj.modularity.ClassBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ListType;
 import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
 
 
@@ -26,8 +27,9 @@ import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
  *
  */
 @ClassBoundary(
-        forbiddenClasses={ForbiddenCallerClass.class}, 
-        callbackClass=ThrowErrorBoundaryCallback.class)
+        classesList={ForbiddenCallerClass.class}, 
+        callbackClass=ThrowErrorBoundaryCallback.class,
+        classesListType = ListType.BLACKLIST)
 public class ClasCalledClass {
 
     /**

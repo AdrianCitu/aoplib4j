@@ -35,10 +35,7 @@ public @interface PackageBoundary {
 
 
     /**
-     * The list of packages on which the boundary will be applied. By default 
-     * it contains the list of forbidden packages. For setting the list of
-     * allowed packages set {@link #blackistPackages()} to false.
-     * 
+     * The list of packages on which the boundary will be applied.
      */
     String[] packagesList();
     
@@ -54,27 +51,10 @@ public @interface PackageBoundary {
     
     /**
      * Enumeration to express the type of packages contained into the 
-     * {@link #packagesList()}. If {@link PackageListType#BLACKLIST},
+     * {@link #packagesList()}. If {@link ListType#BLACKLIST},
      * the {@link #packagesList()} contains the list of forbidden packages, 
-     * if {@link PackageListType#WHITELIST} the {@link #packagesList()} contains
+     * if {@link ListType#WHITELIST} the {@link #packagesList()} contains
      * the list of allowed packages.
      */
-    PackageListType packagesListType();
-    
-    /**
-     * Enumeration containing the possible types of packages list.
-     * 
-     * @author Adrian Citu
-     *
-     */
-    public enum PackageListType {
-        /**
-         * the blacklist type.
-         */
-        BLACKLIST, 
-        /**
-         * the whitelist type.
-         */
-        WHITELIST;
-    }
+    ListType packagesListType();
 }

@@ -35,10 +35,9 @@ import java.lang.annotation.Target;
 public @interface ClassBoundary {
 
     /**
-     * The classes on which the calls of the annotated class are
-     * forbidden.
+     * The list of classes on which the boundary will be applied.
      */
-    Class< ? >[] forbiddenClasses();
+    Class< ? >[] classesList();
     
     /**
      * The class the will be instantiated by the framework when a 
@@ -49,5 +48,14 @@ public @interface ClassBoundary {
      */
     Class < ? extends BoundaryViolationCallback > callbackClass() 
         default LogViolationCallback.class;
+    
+    /**
+     * Enumeration to express the type of packages contained into the 
+     * {@link #packagesList()}. If {@link ListType#BLACKLIST},
+     * the {@link #packagesList()} contains the list of forbidden packages, 
+     * if {@link ListType#WHITELIST} the {@link #packagesList()} contains
+     * the list of allowed packages.
+     */
+    ListType classesListType();
     
 }

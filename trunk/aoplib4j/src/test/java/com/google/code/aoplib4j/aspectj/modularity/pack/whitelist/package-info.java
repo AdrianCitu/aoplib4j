@@ -14,10 +14,11 @@
  */
 @PackageBoundary(
         packagesList = {"com.google.code.aoplib4j.aspectj.modularity.pack.whitelist.allowedpackage"}, 
-        packagesListType = PackageBoundary.PackageListType.WHITELIST,
+        packagesListType = ListType.WHITELIST,
         callbackClass=ThrowErrorBoundaryCallback.class)
 package com.google.code.aoplib4j.aspectj.modularity.pack.whitelist;
 
 import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ListType;
 import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
 

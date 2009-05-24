@@ -17,6 +17,7 @@ package com.google.code.aoplib4j.aspectj.modularity.pack.whitelist;
 import com.google.code.aoplib4j.aspectj.modularity.ClassBoundary;
 import com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary;
 import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ListType;
 import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
 import com.google.code.aoplib4j.aspectj.modularity.clas.ForbiddenCallerClass;
 
@@ -27,8 +28,10 @@ import com.google.code.aoplib4j.aspectj.modularity.clas.ForbiddenCallerClass;
  * @author Adrian Citu
  *
  */
-@ClassBoundary( callbackClass=ThrowErrorBoundaryCallback.class,
-        forbiddenClasses = {String.class})
+@ClassBoundary( 
+        callbackClass=ThrowErrorBoundaryCallback.class,
+        classesList = {String.class}, 
+        classesListType = ListType.BLACKLIST)
 @InjectedPkgBoundary
 public class WhiteListPackageCalledClass {
 

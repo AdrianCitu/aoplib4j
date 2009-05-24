@@ -23,6 +23,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 import com.google.code.aoplib4j.aspectj.modularity.BoundaryViolationCallback;
 import com.google.code.aoplib4j.aspectj.modularity.ClassBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ListType;
 import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
 import com.google.code.aoplib4j.aspectj.modularity.ViolationInformation;
 
@@ -195,4 +196,47 @@ abstract class AbstractBoundary {
               LOGGER.log(Level.WARNING, "Creation of call back failed", e);
           }
       }
+      /**
+       * @param stringTolook the string to look for
+       * @param listType the type of list
+       * @param stringArray the array of string on which the search should be 
+       * done
+       * @return true if the <code>stringArray</code> is a 
+       * {@link ListType#BLACKLIST} and the 
+       * <code>stringToLook</code> is present into the array. 
+       * false if the <code>stringArray</code> is a 
+       * {@link ListType#WHITELIST} and the 
+       * <code>stringToLook</code> is present into the array. 
+       */
+       boolean searchStringIntoArray(final String stringTolook,
+              final ListType listType, final String[] stringArray) {
+          
+          
+          if (stringTolook == null || stringArray == null || listType == null) {
+              LOGGER.log(Level.WARNING, 
+                      "One of the following parameters was null:"
+                      + " stringToLook:" + stringTolook
+                      + ", listType:" + listType
+                      + ", stringArray:" + stringArray);
+              return false;
+          }
+          
+          if (ListType.BLACKLIST.equals(listType)) {
+              for (String cls : stringArray) {
+                  if (stringTolook.equals(cls)) {
+                      return true;
+                  }
+              }
+              
+              return false;
+          //WHITELIST    
+          } else {
+              for (String cls : stringArray) {
+                  if (stringTolook.equals(cls)) {
+                      return false;
+                  }
+              }   
+              return true;    
+          }
+      }      
 }
