@@ -189,7 +189,8 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * 
      * @param jpsp AspectJ join point static part.
      * 
-     * @see {@link #packageBoundaryViolated(PackageBoundary, String)}
+     * @see 
+     * PackageBoundaryAspect#packageBoundaryViolated(PackageBoundary, String)
      */
     @Before("callOfStaticPackageBoundaryPointcut()")
     public void callOfStaticPackageBoundaryAdvice(

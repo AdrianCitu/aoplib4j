@@ -51,9 +51,9 @@ public @interface ClassBoundary {
     
     /**
      * Enumeration to express the type of packages contained into the 
-     * {@link #packagesList()}. If {@link ListType#BLACKLIST},
-     * the {@link #packagesList()} contains the list of forbidden packages, 
-     * if {@link ListType#WHITELIST} the {@link #packagesList()} contains
+     * {@link #classesList()}. If {@link ListType#BLACKLIST},
+     * the {@link #classesList()} contains the list of forbidden packages, 
+     * if {@link ListType#WHITELIST} the {@link #classesList()} contains
      * the list of allowed packages.
      */
     ListType classesListType();
