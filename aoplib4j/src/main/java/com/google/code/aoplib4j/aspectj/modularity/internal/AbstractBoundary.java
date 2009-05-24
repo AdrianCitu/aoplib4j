@@ -126,7 +126,13 @@ abstract class AbstractBoundary {
       * the first position contains the call to this method, and the 
       * second one to the
       * {@link 
-      * #callOfStaticClassBoundaryAdvice(org.aspectj.lang.JoinPoint.StaticPart)}
+      * ClassBoundaryAspect#callOfStaticClassBoundaryAdvice(
+      * org.aspectj.lang.JoinPoint.StaticPart)}
+      * 
+      *or
+      *{@link
+      *PackageBoundaryAspect#callOfStaticPackageBoundaryAdvice(
+      * org.aspectj.lang.JoinPoint.StaticPart)}
       * 
       * This method will return faulty results when a child class calls an
       * inherited non overridden parent method. In this case the stack trace

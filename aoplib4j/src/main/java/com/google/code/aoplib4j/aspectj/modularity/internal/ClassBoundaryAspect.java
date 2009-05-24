@@ -141,12 +141,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * {@link Throwable} object and calling {@link Throwable#getStackTrace()}.
      * (see {@link #getCallerInformation(String, String)}).
      * After the caller and called classes are computed a violation check is 
-     * made See
-     * {@link #classBoundaryViolated(
-     * com.google.code.aoplib4j.aspectj.modularity.PackageBoundary, String)} 
-     * for more 
-     * information about the boundary violation check.
-     * 
+     * made.
      * 
      * In the case of a violation, the framework creates an instance of 
      * {@link 
@@ -154,16 +149,20 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * (using
      * as implementation class taken from 
      * {@link 
-     * com.google.code.aoplib4j.aspectj.modularity.PackageBoundary#
-     * callbackClass()}) and call the callback method 
-     * {@link 
+     * com.google.code.aoplib4j.aspectj.modularity.ClassBoundary#callbackClass(
+     * )}) 
+     * and call the callback method
+     * {@link
      * com.google.code.aoplib4j.aspectj.modularity.BoundaryViolationCallback
      * #boundaryViolation(
      * com.google.code.aoplib4j.aspectj.modularity.ViolationInformation)}
      *
      * @param jpsp AspectJ join point static part.
      * 
-     * @see {@link #classBoundaryViolated(String, Class[])} 
+     * @see 
+     *   ClassBoundaryAspect#classBoundaryViolated(String, ClassBoundary)
+     * @see  
+     * com.google.code.aoplib4j.aspectj.modularity.BoundaryViolationCallback
      */
     @Before("callOfStaticClassBoundaryPointcut()")
     public void callOfStaticClassBoundaryAdvice(
