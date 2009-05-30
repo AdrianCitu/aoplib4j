@@ -127,7 +127,10 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
         //should never happen unless the aspectj weaver is buggy
         if (pkgBoundary == null) {
             LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
-                    + " annotation from package " + calledObjPackage);
+                    + " annotation from package " + calledObjPackage
+                    + "; The package is not annotated with the "
+                    + PackageBoundary.class);
+            
             return;
         }
         
@@ -206,7 +209,9 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
         //should never happen unless the aspectj weaver is buggy
         if (pkgBoundary == null) {
             LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
-                    + " annotation from package " + calledPackage);
+                    + " annotation from package " + calledPackage
+                    + "; The package is not annotated with the "
+                    + PackageBoundary.class);
             return;
         }
 
