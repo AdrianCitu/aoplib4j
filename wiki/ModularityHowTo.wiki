@@ -1,0 +1,46 @@
+#summary How to use modularity aspects.
+
+=== Introduction ===
+Modular programming is a software design technique that increases the extent to which software is composed from separate parts, called modules. Conceptually, modules represent a separation of concerns, and improve maintainability by enforcing logical boundaries between components(see [http://en.wikipedia.org/wiki/Modularity_(programming) this] for a complete definition of the modular programming). {{{aoplib4j}}} offers the possibility to implement the modularity at the class level and at the package level.
+
+
+=== Modularity at the class level ===
+In the case of the class level modularity, the class became a module and the goal is to create logical boundaries between classes(modules). In this case the logical boundaries are represented by method calls from other classes (modules).
+ 
+==== How to implement the class modularity ====
+ 
+For implementing the class modularity you must :
+  # Annotate your class(es) with the {{{com.google.code.aoplib4j.aspectj.modularity.ClassBoundary}}} annotation
+  # Define the logical boundary by filling the annotation parameters ({{{ClassBoundary#classesList}}}, {{{ClassBoundary#classesListType}}} and {{{ClassBoundary#callbackClass}}}).
+Here is an example of {{{ClassBoundary}}} utilization (taken from the jUnit tests):
+{{{
+package com.google.code.aoplib4j.aspectj.modularity.clas;
+
+import com.google.code.aoplib4j.aspectj.modularity.ClassBoundary;
+import com.google.code.aoplib4j.aspectj.modularity.ListType;
+import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
+
+@ClassBoundary(
+        classesList={ForbiddenCallerClass.class}, 
+        callbackClass=ThrowErrorBoundaryCallback.class,
+        classesListType = ListType.BLACKLIST)
+public class ClasCalledClass {
+.....
+}}}
+
+The {{{ClassBoundary#classesList}}} parameter is a list of {{{java.lang.Class}}} objects representing the logical boundary. 
+
+The {{{ClassBoundary#classesListType}}} parameter is a Java enum representing the type {{{ClassBoundary#classesList}}} (a [http://en.wikipedia.org/wiki/Blacklist_(computing) blacklist] or a [http://en.wikipedia.org/wiki/Whitelist whitelist]). If the {{{ClassBoundary#classesListType}}} have the {{{ListType.WHITELIST}}} value then the {{{ClassBoundary#classesList}}} is the list of classes from which the annotated class can be called and (of course) if the {{{ClassBoundary#classesListType}}} have the {{{ListType.BLACKLIST}}} value then the {{{ClassBoundary#classesList}}} is the list of classes from which the annotated class cannot be called.
+
+
+The {{{ClassBoundary#callbackClass}}} parameter represents the callback class that will be executed when a boundary violation is detected.
+
+So, in our example the {{{ClasCalledClass}}} forbids any call from the {{{ForbiddenCallerClass}}} class and in the case of a violation an instance of {{{ThrowErrorBoundaryCallback}}} is created
+
+==== Class modularity under the hood ====
+
+=== Modularity at the package level  ===
+In the case of the package level modularity, the goal is to create logical boundaries between packages.
+==== How to implement the package modularity ====
+
+==== Package modularity under the hood ====
