@@ -304,7 +304,13 @@
     -->
     <target name="createDistribution" 
         description="created the distribution">
-
+        
+    	<!-- create the coverage reports -->
+    	<antcall target="createCoverageReports"/>
+        <copydir forceoverwrite="true"
+                dest="${toAddToWebSite.coverage.dir}" 
+             src="${coverage.html.dir}"/>
+    	
         <antcall target="executeJUnitTestsWithAspectsWovenByAjc"/>
         	
         <antcall target="executeJUnitTestsWithAspectsWovenByJavaagent"/>
@@ -314,6 +320,11 @@
     	<antcall target="createAopLib4Jjar"/>
         
         <antcall target="docs"/>
+    	
+    	<!-- write the javadoc -->
+    	<copydir forceoverwrite="true"
+    		   dest="${toAddToWebSite.javadoc.dir}" 
+    		src="${javadoc.dir}"/>
     	
     	<zip destfile="${dist.dir}/${dist.jar.name}-all.zip">
     		   
@@ -374,6 +385,9 @@
 		<mkdir dir="${junit.reports.dir}/xml" />
 		<mkdir dir="${junit.reports.dir}/html" />
 
+		<mkdir dir="${toAddToWebSite.javadoc.dir}"/>
+		<mkdir dir="${toAddToWebSite.coverage.dir}"/>
+		
 		<!-- cobertura stuff -->
 		<mkdir dir="${instrumented.dir}" />
 	    <mkdir dir="${coverage.xml.dir}" />
