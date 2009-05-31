@@ -1,4 +1,5 @@
 #summary How to use modularity aspects.
+#labels Featured
 
 === Introduction ===
 Modular programming is a software design technique that increases the extent to which software is composed from separate parts, called modules. Conceptually, modules represent a separation of concerns, and improve maintainability by enforcing logical boundaries between components(see [http://en.wikipedia.org/wiki/Modularity_(programming) this] for a complete definition of the modular programming). {{{aoplib4j}}} offers the possibility to implement the modularity at the class level and at the package level.
@@ -186,7 +187,7 @@ package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
 
 import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
 }}}
-So, in our example all the calls from the package {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage}}} are forbidden in all the classes from the {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist}}} package. In the case of a violation an instance of ThrowErrorBoundaryCallback is created.
+So, in our example all the calls from the package {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage}}} are forbidden in all the classes from the {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist}}} package. In the case of a violation an instance of {{{ThrowErrorBoundaryCallback}}} is created.
 
 As you can see in the previous example, for annotate a package it must create a {{{package-info.java}}} file which ill contains the package annotations and the javadoc for the package (the {{{package-info.java}}} file replaces the {{{package.html}}} file).
 
@@ -194,10 +195,10 @@ The {{{PackageBoundary#packagesList}}} parameter is a list of {{{java.lang.Strin
 
 The {{{PackageBoundary#packagesListType}}} and {{{PackageBoundary#callbackClass}}} have exactly the same behavior as in the case of {{{ClassBoundary}}} annotation.
 
-The last step is to annotate all the classes of the annotated package with the {{{InjectedPkgBoundary}}} annotation. This step is due to fact that AspectJ cannot handle pointcuts based on package annotations (something like: "calls of all the methods from all the classes from the package annotated with @PackageBoundary" is not a valid pointcut definition). 
+The last step is to annotate all the classes of the annotated package with the {{{InjectedPkgBoundary}}} annotation. This step is due to fact that AspectJ cannot handle pointcuts based on package annotations (something like: "calls of all the methods from all the classes from the package annotated with {{{@PackageBoundary}}}" is not a valid pointcut definition). 
 I must admit that it is not a very clever solution to annotate by hand all the classes but in case you use {{{ajc}}} for compile your project you can write your own aspect that will automatically inject the annotation on all the desired classes.
 
-Here is the aspect use by the JUnit tests (I didn't want to add the {{{InjectedPkgBoundary}}} by hand):
+Here is the aspect used by the JUnit tests (I didn't want to add the {{{InjectedPkgBoundary}}} by hand):
 {{{
 package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
 
@@ -225,6 +226,83 @@ public aspect PackageAnnotationIntroduction {
 
 
 ==== Package modularity under the hood ====
+For boundary checking at the package level the workflow is the following:
+ * Intercept the call to all non private methods from a class annotated with the {{{InjectedPkgBoundary}}} annotation. The AspectJ pointcuts are:  
+   * non static methods 
+{{{
+   @Pointcut("call(!private !static * "
+   + "(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."
+   + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
+    public static boolean callOfPackageBoundaryPointcut(final Object calledObj,
+            final Object callerObj) {
+
+        //caller and called are the same instance
+        if (calledObj == callerObj) {
+            return false;
+        }
+        
+        Package calledObjPackage = calledObj.getClass().getPackage();
+        
+        Package callerObjPackage = callerObj.getClass().getPackage();
+        
+        //the caller and called are in the same package.
+        if (calledObjPackage.equals(callerObjPackage)) {
+            return false;
+        }
+        
+        PackageBoundary pkgBoundary = 
+            calledObjPackage.getAnnotation(PackageBoundary.class);
+        
+        //should never happen unless the aspectj weaver is buggy
+        if (pkgBoundary == null) {
+            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
+                    + " annotation from package " + calledObjPackage
+                    + "; The package is not annotated with the "
+                    + PackageBoundary.class);
+            
+            return false;
+        }
+        
+        return true;
+    }
+}}}
+   * static methods
+{{{
+   @Pointcut("call(!private static * "
+       + "(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."
+       + "*(..)) && if()")
+    public static boolean callOfStaticPackageBoundaryPointcut(
+            final JoinPoint.StaticPart jpsp) {
+
+        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
+        Package calledPackage = calledClass.getPackage();
+                
+        PackageBoundary pkgBoundary = 
+            calledPackage.getAnnotation(PackageBoundary.class);
+        
+        //should never happen unless the aspectj weaver is buggy
+        if (pkgBoundary == null) {
+            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
+                    + " annotation from package " + calledPackage
+                    + "; The package is not annotated with the "
+                    + PackageBoundary.class);
+            return false;
+        }
+        
+        return true;
+    }
+}}}
+
+As in case of the class boundary the pointcuts use the {{{if()}}} pointcut for compile-time checking.
+
+ * The @Before advice is used to check the boundary violation by using the information retrieved from the {{{PackageBoundary}}} annotation and the information given by the AspectJ framework. The {{{PackageBoundary}}} annotation is retrieved by introspection from the called class.
+
+  * If a boundary validation is detected then: 
+        * The framework creates an instance of {{{ViolationInformation}}} interface.
+        * The framework creates an instance of the callback class (a class extending {{{BoundaryViolationCallback}}}) by introspection. The type of the class is retrieved from the {{{ClassBoundary#callbackClass}}} field.
+        * The callback method {{{BoundaryViolationCallback#boundaryViolation(final ViolationInformation info)}}} is call to handle to boundary violation. *Note that the {{{ClassBoundary}}} have a default callback class, {{{com.google.code.aoplib4j.aspectj.modularity.LogViolationCallback}}} *
+
+  Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/internal/PackageBoundaryAspect.java PackageBoundaryAspect].
 
 === Critics, enhancements and ... what i don't like about this solution ===
 
