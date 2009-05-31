@@ -194,7 +194,8 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
     
     /**
      * Advice executed before of the 
-     * {@link #callOfStaticPackageBoundaryPointcut()} pointcut.
+     * {@link #callOfStaticPackageBoundaryPointcut(
+     * org.aspectj.lang.JoinPoint.StaticPart)} pointcut.
      * 
      * The advice retrieve the called informations using the
      * {@link org.aspectj.lang.JoinPoint.StaticPart}
