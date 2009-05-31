@@ -10,7 +10,7 @@ In the case of the class level modularity, the class became a module and the goa
 ==== How to implement the class modularity ====
  
 For implementing the class modularity you must :
-  # Annotate your class(es) with the {{{com.google.code.aoplib4j.aspectj.modularity.ClassBoundary}}} annotation
+  # Annotate your class(es) with the {{{[http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/ClassBoundary.java com.google.code.aoplib4j.aspectj.modularity.ClassBoundary]}}} annotation
   # Define the logical boundary by filling the annotation parameters ({{{ClassBoundary#classesList}}}, {{{ClassBoundary#classesListType}}} and {{{ClassBoundary#callbackClass}}}).
 Here is an example of {{{ClassBoundary}}} utilization (taken from the jUnit tests):
 {{{
