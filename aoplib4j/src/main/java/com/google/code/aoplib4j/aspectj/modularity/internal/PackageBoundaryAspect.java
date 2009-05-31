@@ -61,18 +61,48 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      *   call(!private !static * 
      *   (@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)
      *      .*(..)) 
-     *   && target(calledObj) && this(callerObj)
+     *   && target(calledObj) && this(callerObj) && if()
      * </pre>
      * 
      * @param calledObj instance of the called object.
      * @param callerObj instance of the caller object.
+     * @return false if the callerObj and calledObj have are on the same package
+     * or if the callerObj and calledObj are the same instance, true otherwise.
      */
     @Pointcut("call(!private !static * "
    + "(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."
-   + "*(..)) " + "&& target(calledObj) && this(callerObj)")
-    public void callOfPackageBoundaryPointcut(final Object calledObj,
+   + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
+    public static boolean callOfPackageBoundaryPointcut(final Object calledObj,
             final Object callerObj) {
 
+        //caller and called are the same instance
+        if (calledObj == callerObj) {
+            return false;
+        }
+        
+        Package calledObjPackage = calledObj.getClass().getPackage();
+        
+        Package callerObjPackage = callerObj.getClass().getPackage();
+        
+        //the caller and called are in the same package.
+        if (calledObjPackage.equals(callerObjPackage)) {
+            return false;
+        }
+        
+        PackageBoundary pkgBoundary = 
+            calledObjPackage.getAnnotation(PackageBoundary.class);
+        
+        //should never happen unless the aspectj weaver is buggy
+        if (pkgBoundary == null) {
+            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
+                    + " annotation from package " + calledObjPackage
+                    + "; The package is not annotated with the "
+                    + PackageBoundary.class);
+            
+            return false;
+        }
+        
+        return true;
     }
 
     /**
@@ -107,32 +137,13 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
     public void callOfPackageBoundaryAdvice(final Object calledObj,
             final Object callerObj, final JoinPoint jp) {
         
-        //caller and called are the same instance
-        if (calledObj == callerObj) {
-            return;
-        }
         
         Package calledObjPackage = calledObj.getClass().getPackage();
         
         Package callerObjPackage = callerObj.getClass().getPackage();
         
-        //the caller and called are in the same package.
-        if (calledObjPackage.equals(callerObjPackage)) {
-            return;
-        }
-        
         PackageBoundary pkgBoundary = 
             calledObjPackage.getAnnotation(PackageBoundary.class);
-        
-        //should never happen unless the aspectj weaver is buggy
-        if (pkgBoundary == null) {
-            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
-                    + " annotation from package " + calledObjPackage
-                    + "; The package is not annotated with the "
-                    + PackageBoundary.class);
-            
-            return;
-        }
         
         if (packageBoundaryViolated(pkgBoundary, callerObjPackage.getName())) {
             createAndExecuteCallback(
@@ -152,12 +163,33 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      *    (@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)
      *      .*(..)) 
      * </pre>
+     * 
+     * @param jpsp AspectJ join point static part.
+     * @return false if the {@link PackageBoundary} annotation retrieved from
+     * the called class package is null, true otherwise.
      */
     @Pointcut("call(!private static * "
        + "(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."
-       + "*(..)) ")
-    public void callOfStaticPackageBoundaryPointcut() {
+       + "*(..)) && if()")
+    public static boolean callOfStaticPackageBoundaryPointcut(
+            final JoinPoint.StaticPart jpsp) {
 
+        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
+        Package calledPackage = calledClass.getPackage();
+                
+        PackageBoundary pkgBoundary = 
+            calledPackage.getAnnotation(PackageBoundary.class);
+        
+        //should never happen unless the aspectj weaver is buggy
+        if (pkgBoundary == null) {
+            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
+                    + " annotation from package " + calledPackage
+                    + "; The package is not annotated with the "
+                    + PackageBoundary.class);
+            return false;
+        }
+        
+        return true;
     }
     
     /**
@@ -195,7 +227,7 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * @see 
      * PackageBoundaryAspect#packageBoundaryViolated(PackageBoundary, String)
      */
-    @Before("callOfStaticPackageBoundaryPointcut()")
+    @Before("callOfStaticPackageBoundaryPointcut(jpsp)")
     public void callOfStaticPackageBoundaryAdvice(
             final JoinPoint.StaticPart jpsp) {
         
@@ -205,15 +237,6 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
                 
         PackageBoundary pkgBoundary = 
             calledPackage.getAnnotation(PackageBoundary.class);
-        
-        //should never happen unless the aspectj weaver is buggy
-        if (pkgBoundary == null) {
-            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
-                    + " annotation from package " + calledPackage
-                    + "; The package is not annotated with the "
-                    + PackageBoundary.class);
-            return;
-        }
 
         Method calledMethod = 
             ((MethodSignature) jpsp.getSignature()).getMethod();

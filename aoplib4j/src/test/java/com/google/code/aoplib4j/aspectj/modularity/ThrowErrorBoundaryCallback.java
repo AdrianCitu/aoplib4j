@@ -22,14 +22,15 @@ import com.google.code.aoplib4j.aspectj.modularity.LogViolationCallback;
  * @author Adrian Citu
  *
  */
-public class ThrowErrorBoundaryCallback extends LogViolationCallback {
+public class ThrowErrorBoundaryCallback extends BoundaryViolationCallback {
 
+    private LogViolationCallback lvc = new LogViolationCallback();
     /**
      * {@inheritDoc}
      */
     @Override
     public void boundaryViolation(ViolationInformation info) {    
-        super.boundaryViolation(info);
+        lvc.boundaryViolation(info);
         throw new IllegalAccessError("Class or Package Boundary Violation");
     }
 

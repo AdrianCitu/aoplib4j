@@ -45,18 +45,37 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      *  AspectJ pointcut:
      *   call(!private !static * 
      *   (@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *).*(..)) 
-     *   && target(calledObj) && this(callerObj)
+     *   && target(calledObj) && this(callerObj) && if()
      * </pre>
      * 
      * @param calledObj instance of the called object.
      * @param callerObj instance of the caller object.
+     * 
+     * @return false if calledObject == callerObject (the call is made on the 
+     * class instance) or if the retrieved {@link ClassBoundary} annotation
+     * from the called class is null.
      */
     @Pointcut("call(!private !static * "
             + "(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."
-            + "*(..)) " + "&& target(calledObj) && this(callerObj)")
-    public void callOfClassBoundaryPointcut(final Object calledObj,
+            + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
+    public static boolean callOfClassBoundaryPointcut(final Object calledObj,
             final Object callerObj) {
 
+        //the caller and called are the same instance
+        if (calledObj == callerObj) {
+            return false;
+        }
+        
+        ClassBoundary boundary = getClassBoundaryAnnotation(calledObj
+                .getClass());
+
+        //advice is called on a subclass; the annotation is not inherited by
+        //the subclasses.
+        if (boundary == null) {
+            return false;
+        }
+        
+        return true;
     }
 
     /**
@@ -67,14 +86,32 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * <pre>
      *  AspectJ pointcut:
      *    call(!private static * 
-     *    (@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *).*(..)) 
+     *    (@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *).*(..))
+     *    && if() 
      * </pre>
+     * 
+     * @param jpsp AspectJ join point static part.
+     * 
+     * @return false if the {@link ClassBoundary} annotation retrieved from
+     * the calledClass is null true otherwise.
      */
     @Pointcut("call(!private static * "
             + "(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."
-            + "*(..)) ")
-    public void callOfStaticClassBoundaryPointcut() {
+            + "*(..))  && if()")
+    public static boolean callOfStaticClassBoundaryPointcut(
+            final JoinPoint.StaticPart jpsp) {
 
+        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
+
+        ClassBoundary boundary = getClassBoundaryAnnotation(calledClass);
+
+        //advice is called on a subclass; the annotation is not inherited by
+        //the subclasses.
+        if (boundary == null) {
+            return false;
+        }
+        
+        return true;
     }
 
     /**
@@ -106,22 +143,12 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
     @Before("callOfClassBoundaryPointcut(calledObj, callerObj)")
     public void callOfClassBoundaryAdvice(final Object calledObj,
             final Object callerObj, final JoinPoint jp) {
-
-        //the caller and called are the same instance
-        if (calledObj == callerObj) {
-            return;
-        }
         
         ClassBoundary boundary = getClassBoundaryAnnotation(calledObj
                 .getClass());
 
-        //advice is called on a subclass; the annotation is not inherited by
-        //the subclasses.
-        if (boundary == null) {
-            return;
-        }
-
-        if (classBoundaryViolated(
+        if (boundary != null
+                && classBoundaryViolated(
                 callerObj.getClass().getCanonicalName(), boundary)) {
             createAndExecuteCallback(
                     calledObj, callerObj, jp, null, boundary);
@@ -164,19 +191,13 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * @see  
      * com.google.code.aoplib4j.aspectj.modularity.BoundaryViolationCallback
      */
-    @Before("callOfStaticClassBoundaryPointcut()")
+    @Before("callOfStaticClassBoundaryPointcut(jpsp)")
     public void callOfStaticClassBoundaryAdvice(
             final JoinPoint.StaticPart jpsp) {
 
         Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
 
         ClassBoundary boundary = getClassBoundaryAnnotation(calledClass);
-
-        //advice is called on a subclass; the annotation is not inherited by
-        //the subclasses.
-        if (boundary == null) {
-            return;
-        }
 
         Method calledMethod = ((MethodSignature) jpsp.getSignature())
                 .getMethod();
@@ -200,7 +221,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      *            the class from which the annotation should be retrieved.
      * @return attached {@link ClassBoundary} or null.
      */
-    private ClassBoundary getClassBoundaryAnnotation(
+    private static ClassBoundary getClassBoundaryAnnotation(
             final Class< ? > calledClass) {
         
         return calledClass.getAnnotation(ClassBoundary.class);

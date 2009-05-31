@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * @author Adrian Citu
  *
  */
-class LogViolationCallback extends BoundaryViolationCallback {
+public final class LogViolationCallback extends BoundaryViolationCallback {
 
     /**
      * The logger used to log the boundary violations.
