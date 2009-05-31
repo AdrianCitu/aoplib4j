@@ -10,8 +10,10 @@ In the case of the class level modularity, the class became a module and the goa
 ==== How to implement the class modularity ====
  
 For implementing the class modularity you must :
-  # Annotate your class(es) with the {{{[http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/ClassBoundary.java com.google.code.aoplib4j.aspectj.modularity.ClassBoundary]}}} annotation
+  # Annotate your class(es) with the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/ClassBoundary.java com.google.code.aoplib4j.aspectj.modularity.ClassBoundary]annotation
   # Define the logical boundary by filling the annotation parameters ({{{ClassBoundary#classesList}}}, {{{ClassBoundary#classesListType}}} and {{{ClassBoundary#callbackClass}}}).
+  # Create your own callback class extending the {{{BoundaryViolationCallback}}} abstract class for handle the boundary violation and add it to the {{{ClassBoundary#callbackClass}}}.
+
 Here is an example of {{{ClassBoundary}}} utilization (taken from the jUnit tests):
 {{{
 package com.google.code.aoplib4j.aspectj.modularity.clas;
@@ -28,19 +30,252 @@ public class ClasCalledClass {
 .....
 }}}
 
+So, in our example the {{{ClasCalledClass}}} forbids any call from the {{{ForbiddenCallerClass}}} class and in the case of a violation an instance of {{{ThrowErrorBoundaryCallback}}} is created.
+
 The {{{ClassBoundary#classesList}}} parameter is a list of {{{java.lang.Class}}} objects representing the logical boundary. 
 
-The {{{ClassBoundary#classesListType}}} parameter is a Java enum representing the type {{{ClassBoundary#classesList}}} (a [http://en.wikipedia.org/wiki/Blacklist_(computing) blacklist] or a [http://en.wikipedia.org/wiki/Whitelist whitelist]). If the {{{ClassBoundary#classesListType}}} have the {{{ListType.WHITELIST}}} value then the {{{ClassBoundary#classesList}}} is the list of classes from which the annotated class can be called and (of course) if the {{{ClassBoundary#classesListType}}} have the {{{ListType.BLACKLIST}}} value then the {{{ClassBoundary#classesList}}} is the list of classes from which the annotated class cannot be called.
+The {{{ClassBoundary#classesListType}}} parameter is a Java enum representing the type {{{ClassBoundary#classesList}}} (a [http://en.wikipedia.org/wiki/Blacklist_(computing) blacklist] or a [http://en.wikipedia.org/wiki/Whitelist whitelist]). If the {{{ClassBoundary#classesListType}}} have the {{{ListType.WHITELIST}}} value then the {{{ClassBoundary#classesList}}} is the list of classes from which the annotated class can be called and (of course) if the {{{ClassBoundary#classesListType}}} have the {{{ListType.BLACKLIST}}} value the {{{ClassBoundary#classesList}}} is the list of classes from which the annotated class cannot be called.
 
+The {{{ClassBoundary#callbackClass}}} parameter represents the callback class that will be executed when a boundary violation is detected. The {{{ClassBoundary#callbackClass}}} should be a class that extends the {{{BoundaryViolationCallback}}} abstract class. The structure of the {{{BoundaryViolationCallback}}}:
+{{{
+/**
+ * Abstract class that must be extended for coding the behavior when a boundary
+ * is violated.
+ * @see LogViolationCallback
+ * @see ViolationInformation
+ * 
+ * @author Adrian Citu
+ *
+ */
+public abstract class BoundaryViolationCallback {
 
-The {{{ClassBoundary#callbackClass}}} parameter represents the callback class that will be executed when a boundary violation is detected.
+    /**
+     * Default Constructor.
+     */
+    public BoundaryViolationCallback() {
+        
+    }
+    
+    /**
+     * Method that will be executed by the framework when a boundary is
+     * violated. The framework will create also an instance of 
+     * {@link ViolationInformation}.
+     * 
+     * @param info object containing information about the boundary violation.
+     */
+    public abstract void boundaryViolation(final ViolationInformation info);
+}
+}}}
 
-So, in our example the {{{ClasCalledClass}}} forbids any call from the {{{ForbiddenCallerClass}}} class and in the case of a violation an instance of {{{ThrowErrorBoundaryCallback}}} is created
+The {{{ViolationInformation}}} is an interface containing useful informations about the boundary violation: the caller class name, the called class name and the called method name. Here is the structure of the {{{ViolationInformation}}}:
+{{{
+/**
+ * Interface containing the information about the boundary violation; what class
+ * violated the boundary and what class and what method was
+ * called).
+ * 
+ * @see ClassBoundary
+ * 
+ * @author Adrian Citu
+ *
+ */
+public interface ViolationInformation {
+
+    /**
+     * @return the caller canonical name that violated the boundary.
+     */
+    String getCallerClassName();
+    
+    /**
+     * @return the called class canonical name (marked with a 
+     * {@link ClassBoundary}) annotation.
+     */
+    String getCalledClassName();
+    
+    /**
+     * @return the called method name.
+     */
+    String getCalledMethodName();
+    
+}
+}}}
+ 
+
 
 ==== Class modularity under the hood ====
+For boundary checking at the class level the workflow is the following:
+
+  * Intercept the call to all non private methods from a class annotated with the {{{ClassBoundary}}} annotation. The AspectJ pointcuts are:
+     * non static methods
+{{{
+    @Pointcut("call(!private !static * "
+            + "(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."
+            + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
+    public static boolean callOfClassBoundaryPointcut(final Object calledObj,
+            final Object callerObj) {
+
+        //the caller and called are the same instance
+        if (calledObj == callerObj) {
+            return false;
+        }
+        
+        ClassBoundary boundary = getClassBoundaryAnnotation(calledObj
+                .getClass());
+
+        //advice is called on a subclass; the annotation is not inherited by
+        //the subclasses.
+        if (boundary == null) {
+            return false;
+        }
+        
+        return true;
+    }
+}}}
+     * static methods
+{{{
+    @Pointcut("call(!private static * "
+            + "(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."
+            + "*(..))  && if()")
+    public static boolean callOfStaticClassBoundaryPointcut(
+            final JoinPoint.StaticPart jpsp) {
+
+        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
+
+        ClassBoundary boundary = getClassBoundaryAnnotation(calledClass);
+
+        //advice is called on a subclass; the annotation is not inherited by
+        //the subclasses.
+        if (boundary == null) {
+            return false;
+        }
+        
+        return true;
+    }
+}}}
+ As you can see in the two cases the {{{if()}}} pointcut is used in order to perform some compile-time checks and to avoid the advice injecting in some trivial useless cases (when the caller and called class are the same or the retrieved {{{ClassBoundary}}} annotation is null). For more informations about the use of {{{if}}} pointcut please check [http://www.eclipse.org/aspectj/doc/released/adk15notebook/ataspectj-pcadvice.html#pointcuts if() pointcut expressions].
+
+  * The @Before advice is used to check the boundary violation by using the information retrieved from the {{{ClassBoundary}}} annotation and the information given by the AspectJ framework.
+
+  * If a boundary validation is detected then: 
+        * The framework creates an instance of {{{ViolationInformation}}} interface.
+        * The framework creates an instance of the callback class (a class extending {{{BoundaryViolationCallback}}}) by introspection. The type of the class is retrieved from the {{{ClassBoundary#callbackClass}}} field.
+        * The callback method {{{BoundaryViolationCallback#boundaryViolation(final ViolationInformation info)}}} is call to handle to boundary violation. *Note that the {{{ClassBoundary}}} have a default callback class, {{{com.google.code.aoplib4j.aspectj.modularity.LogViolationCallback}}} *
+
+Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/internal/ClassBoundaryAspect.java ClassBoundaryAspect].
+
 
 === Modularity at the package level  ===
-In the case of the package level modularity, the goal is to create logical boundaries between packages.
+In the case of the package level modularity, the package became a module and the goal is to create logical boundaries between packages. In this case the logical boundaries are represented by method calls from other packages.
+
+
 ==== How to implement the package modularity ====
+For implementing the class modularity you must :
+  # Annotate your package(es) with the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/PackageBoundary.java com.google.code.aoplib4j.aspectj.modularity.PackageBoundary] annotation. For annotate a Java package it must create a file called package-info.java into the package (see [http://www.onjava.com/pub/a/onjava/2004/04/21/declarative.html?page=3 Declarative Programming in Java] for more details)
+  # Define the logical boundary by filling the annotation parameters ({{{PackageBoundary#packagesList}}}, {{{PackageBoundary#packagesListType}}} and {{{PackageBoundary#callbackClass}}}).
+  # Create your own callback class extending the {{{BoundaryViolationCallback}}} abstract class for handle the boundary violation and add it to the {{{PackageBoundary#callbackClass}}}.
+  # Annotate all your package classes with the {{{com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary}}} annotation or write an aspect that will do this for you.
+
+Here is an example of {{{PackageBoundary}}} utilization (taken from the JUnit tests):
+{{{
+//package-info.java
+@PackageBoundary(
+        packagesList = {"com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage"}, 
+        packagesListType = ListType.BLACKLIST,
+        callbackClass=ThrowErrorBoundaryCallback.class)
+package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
+
+import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
+}}}
+So, in our example all the calls from the package {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage}}} are forbidden in all the classes from the {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist}}} package. In the case of a violation an instance of ThrowErrorBoundaryCallback is created.
+
+As you can see in the previous example, for annotate a package it must create a {{{package-info.java}}} file which ill contains the package annotations and the javadoc for the package (the {{{package-info.java}}} file replaces the {{{package.html}}} file).
+
+The {{{PackageBoundary#packagesList}}} parameter is a list of {{{java.lang.String}}} objects representing the logical boundary. 
+
+The {{{PackageBoundary#packagesListType}}} and {{{PackageBoundary#callbackClass}}} have exactly the same behavior as in the case of {{{ClassBoundary}}} annotation.
+
+The last step is to annotate all the classes of the annotated package with the {{{InjectedPkgBoundary}}} annotation. This step is due to fact that AspectJ cannot handle pointcuts based on package annotations (something like: "calls of all the methods from all the classes from the package annotated with @PackageBoundary" is not a valid pointcut definition). 
+I must admit that it is not a very clever solution to annotate by hand all the classes but in case you use {{{ajc}}} for compile your project you can write your own aspect that will automatically inject the annotation on all the desired classes.
+
+Here is the aspect use by the JUnit tests (I didn't want to add the {{{InjectedPkgBoundary}}} by hand):
+{{{
+package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
+
+import com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary;
+
+/**
+ * Aspect used in tests of package boundary violation.
+ * The aspect injects the {@link InjectedPkgBoundary} into all the classes from the 
+ * package "com.google.code.aoplib4j.aspectj.modularity.pack.blacklist" excepting
+ * the aspect himself, {@link BlackListPackageBoundaryViolationTest} class and 
+ * package-info class.
+ * 
+ * @author Adrian Citu
+ *
+ */
+public aspect PackageAnnotationIntroduction {
+    
+    declare @type:
+        com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.* 
+        && !com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.package*info
+        && !com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.PackageAnnotationIntroduction
+        && !com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.BlackListPackageBoundaryViolationTest:
+        @InjectedPkgBoundary;
+}}}
+
 
 ==== Package modularity under the hood ====
+
+=== Critics, enhancements and ... what i don't like about this solution ===
+
+    * The user validation class must inherit from {{{BoundaryViolationCallback}}} class. It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the validation class using the non-arguments constructor by introspection.
+    * For every advised method the {{{ClassBoundary}}} or {{{PackageBoundary}}} annotations are retrieved. A better idea would be  to have some kind of cache on which the annotations should be stored (but for instance it is just KISS).
+    * Since static pointcuts cannot retrieve the caller object using {{{this}}} pointcut the caller information is computed using the stack trace of the current execution thread by creating a new {{{Throwable}}} object and calling {{{Throwable#getStackTrace()}}}. I know that this solution is not good at all but I didn't find another alternative.
+
+     Here is the code of the method that computes the caller information based on the stack trace :
+{{{
+     /**
+      * Method that computes the information about the caller class. The
+      * information is stored into a {@link StackTraceElement} object.
+      * 
+      * The caller information is on the third position on the stack trace;
+      * the first position contains the call to this method, and the 
+      * second one to the
+      * {@link 
+      * ClassBoundaryAspect#callOfStaticClassBoundaryAdvice(
+      * org.aspectj.lang.JoinPoint.StaticPart)}
+      * 
+      *or
+      *{@link
+      *PackageBoundaryAspect#callOfStaticPackageBoundaryAdvice(
+      * org.aspectj.lang.JoinPoint.StaticPart)}
+      * 
+      * This method will return faulty results when a child class calls an
+      * inherited non overridden parent method. In this case the stack trace
+      * contains a call to the parent method directly.
+      * 
+      * <pre>
+      *  Example:
+      *  P - parent class 
+      *  P#method - a method of the parent
+      *  C - child class; it does not override the &quot;method&quot; method
+      *  
+      *  On the stack trace a call to C#method is in fact written as a call to
+      *  P#method.
+      * 
+      * </pre>
+      * 
+      * @param calledClassName
+      *            the canonical name of the called class name
+      * @param calledMethodName
+      *            the name of the called method.
+      * @return {@link StackTraceElement} represented the caller method.
+      */
+      StackTraceElement getCallerInformation(
+             final String calledClassName, final String calledMethodName) {
+
+         StackTraceElement[] stes = new Throwable().getStackTrace();
+
+         return stes[2];
+     }
+}}}
