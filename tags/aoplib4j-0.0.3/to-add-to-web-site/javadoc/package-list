@@ -1,0 +1,10 @@
+com.google.code.aoplib4j.aspectj.failurehandling
+com.google.code.aoplib4j.aspectj.failurehandling.internal
+com.google.code.aoplib4j.aspectj.fieldvalidation
+com.google.code.aoplib4j.aspectj.fieldvalidation.internal
+com.google.code.aoplib4j.aspectj.gof.observer
+com.google.code.aoplib4j.aspectj.gof.observer.internal
+com.google.code.aoplib4j.aspectj.modularity
+com.google.code.aoplib4j.aspectj.modularity.internal
+com.google.code.aoplib4j.aspectj.policy.compiletime
+com.google.code.aoplib4j.aspectj.policy.runtime
