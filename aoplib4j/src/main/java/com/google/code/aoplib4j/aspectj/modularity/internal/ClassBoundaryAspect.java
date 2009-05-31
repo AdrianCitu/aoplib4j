@@ -161,7 +161,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * annotated class.
      * The advice retrieve the called informations using the
      * {@link org.aspectj.lang.JoinPoint.StaticPart}
-     * object. Sincestatic pointcuts cannot retrieve the caller object
+     * object. Since static pointcuts cannot retrieve the caller object
      * using <code>this</code> pointcut the caller information is computed 
      * using the 
      * stack trace of the current execution thread by creating a new
