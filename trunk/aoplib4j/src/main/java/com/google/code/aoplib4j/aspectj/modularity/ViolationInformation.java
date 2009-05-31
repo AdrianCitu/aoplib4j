@@ -18,7 +18,7 @@ package com.google.code.aoplib4j.aspectj.modularity;
 
 /**
  * Interface containing the information about the boundary violation; what class
- * and what method violated the boundary and what class and what method was
+ * violated the boundary and what class and what method was
  * called).
  * 
  * @see ClassBoundary
