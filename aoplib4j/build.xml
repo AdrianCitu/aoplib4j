@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="aoplib4j" basedir="." default="compile">
+<project name="aoplib4j" basedir="." default="createDistribution">
 
 	<description>
 	    Ant script file for the aoplib4j.
@@ -14,10 +14,6 @@
 			<include name="*.jar" />
 		</fileset>
 
-		<fileset dir="${junit.lib.dir}">
-			<include name="*.jar" />
-		</fileset>
-
 		<fileset dir="${aspectj.lib.dir}">
 			<include name="*.jar" />
 		</fileset>
@@ -29,10 +25,6 @@
 	    </fileset>
 
         <fileset dir="${extlib.dir}">
-            <include name="*.jar" />
-        </fileset>
-
-        <fileset dir="${junit.lib.dir}">
             <include name="*.jar" />
         </fileset>
 
@@ -188,7 +180,7 @@
     
             <classpath>
                 <pathelement location="${classes.dir}" />
-                <pathelement location="${junit.lib.dir}/junit.jar" />
+                <pathelement location="${extlib.dir}/junit.jar" />
                 <pathelement location="${dist.dir}/${dist.jar.name}.jar" />
             </classpath>
     
@@ -236,7 +228,7 @@
 	        <javac srcDir="${tests.dir}" destdir="${classes.dir}">
 	              <classpath refid="classpath" />
 	              <classpath location="${classes.dir}" />
-	              <classpath location="${junit.lib.dir}/junit.jar" />
+	              <classpath location="${extlib.dir}/junit.jar" />
 	              <classpath location="${dist.dir}/${dist.jar.name}.jar" />
 	        </javac>
 	        
@@ -531,7 +523,7 @@
 	            	<pathelement location="${instrumented.dir}" />
 	                <pathelement location="${classes.dir}" />
 	            	<pathelement location="${test.classes.dir}" />
-	                <pathelement location="${junit.lib.dir}/junit.jar" />
+	                <pathelement location="${extlib.dir}/junit.jar" />
 	                <pathelement location="${dist.dir}/${dist.jar.name}.jar" />
 	            </classpath>
 	    
