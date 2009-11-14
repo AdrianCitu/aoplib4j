@@ -34,8 +34,8 @@ import org.aspectj.lang.annotation.Pointcut;
  * @author Adrian Citu
  *
  */
-//@Aspect("percflow(executionOfJUnit3TestMethodsPointcut()" +
-//		" || executionOfJUnit4TestMethodsPointcut())" )
+//@Aspect("percflow(executionOfJUnit3TestMethodsPointcut()" 
+//        + " || executionOfJUnit4TestMethodsPointcut())")
 @Aspect
 public final class VerifyAspect {
     
@@ -73,7 +73,8 @@ public final class VerifyAspect {
     
     
     /**
-     *  Pointcut representing the call of all the JUnit3 assert* methods.
+     *  Pointcut representing the call of all the JUnit (3 or 4) assert* 
+     *  methods.
      *  <pre>
      *  AspectJ pointcut:
      *  call(static public void junit.framework.Assert+.assert*(..))
@@ -165,7 +166,7 @@ public final class VerifyAspect {
                     .append(verificationErrorString);
                 
                 // inhibit the failure of the test; this is used only by
-                //the tests.
+                //our unit tests.
                 if (!AOPLIB4J_FAIL_INHIBIT_VALUE.equals(
                         System.getProperty(AOPLIB4J_FAIL_INHIBIT))) {
                    
