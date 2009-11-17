@@ -14,74 +14,67 @@
  */
 package org.aoplib4j.testing.internal;
 
-import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.testng.Assert;
 
 /**
- * Aspect implementation for the JUnit(3 and 4) framework.
+ * Aspect implementation for the TestNG V5.* framework.
  *  
- * For every executed test, the aspect will intercept any JUnit assertion 
- * violation and will throw them at the end of the test execution 
- * (before tearDown).
+ * The aspect that will intercept any assertion violation and will
+ * throw them at the end of the test.
  * 
  * @author Adrian Citu
  *
  */
-//@Aspect("percflow(executionOfJUnit3TestMethodsPointcut()" 
-//        + " || executionOfJUnit4TestMethodsPointcut())")
 @Aspect
-public final class JUnitAspect extends AbstractTestingAspect {    
+public final class TestNGAspect extends AbstractTestingAspect {
+    
+    
     
     /**
-     * {@inheritDoc}
-     * Pointcut representing the call of all the JUnit (3 or 4) assert* 
+     *  {@inheritDoc}
+     *  
+     *  Pointcut representing the call of all the TestNG assert* 
      *  methods.
-     * <pre>
+     *  <pre>
      *  AspectJ pointcut:
-     *  call(static public void junit.framework.Assert+.assert*(..))
-     * </pre>
+     *  call(static public void org.testng.Assert+.assert*(..))"
+     *  </pre>
      */
-    @Pointcut("call(static public void junit.framework.Assert+.assert*(..))"
-    		+ " || call(static public void org.junit.Assert+.assert*(..))")
-    @Override		
+    @Pointcut("call(static public void org.testng.Assert+.assert*(..))")
+    @Override
     public void assertCallPointcut() {
         
     }
-    
+
+
     /**
      * {@inheritDoc}
      * 
-     * Pointcut representing the execution of any JUni4 or JUnit3 test method.
+     * Pointcut representing the execution of any TestNG test method.
      * 
      * <pre>
      * AspectJ pointcut:
-     *  execution(public void junit.framework.TestCase+.test*())
-     *   || execution(@org.junit.Test * * ())
+     *  execution(@org.testng.annotations.Test * * ())
      * </pre>
      * 
      * @see org.aoplib4j.testing.internal.AbstractTestingAspect#
      *  executionOfTestMethodPointcut()
      */
-    @Pointcut("execution(public void junit.framework.TestCase+.test*())"
-            + " || execution(@org.junit.Test * * ())")
-    @Override        
-    public void executionOfTestMethodPointcut() {
-        
+    @Pointcut("execution(@org.testng.annotations.Test * * ())")
+    @Override
+    public void executionOfTestMethodPointcut() {  
     }
     
     /**
      * {@inheritDoc}
      * 
      * Advice that executed around the call of assert methods.
-     * The advice executes the assertion and catch the 
-     * {@link AssertionFailedError}(for JUnit3) or {@link AssertionError}
-     * (for JUnit4) if any and computes and keep the error stack trace for later
-     *  use.
+     * The advice executes the assertion and catch the {@link AssertionError}
+     *  (if any) and computes and keep the error stack trace for later use.
      * 
      * @param pjp object created by the AspectJ framework.
      * @throws Throwable the exception that can be thrown by the 
@@ -95,30 +88,26 @@ public final class JUnitAspect extends AbstractTestingAspect {
         
         try {
             pjp.proceed();
-        } catch (AssertionFailedError junit3Error) {            
-            storeErrorInformation(junit3Error);
-            
-            LOGGER.info("AssertionFailedError " 
-                    + pjp.getSignature().toLongString());
-        } catch (AssertionError junit4Error) {
-            storeErrorInformation(junit4Error);
+        } catch (AssertionError testNGError) {
+            storeErrorInformation(testNGError);
             
             LOGGER.info("AssertionFailedError " 
                     + pjp.getSignature().toLongString());
         }
-
     }
+
 
     /**
      * {@inheritDoc}
-     * Implementation using the JUnit {@link Assert#fail(String)}.
+     * Implementation using the TestNG {@link Assert#fail()}.
      * 
-     * @see org.aoplib4j.testing.internal.AbstractTestingAspect#assertFail(
-     * java.lang.String)
+     * @see org.aoplib4j.testing.internal.AbstractTestingAspect#
+     *  assertFail(java.lang.String)
      */
     @Override
     public void assertFail(final String message) {
         Assert.fail(message);
+        
     }
     
 }

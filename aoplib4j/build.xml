@@ -488,8 +488,9 @@
                 -->
                 <include name="**/*.class" />
             	<!-- don't instrument the runtime policy aspects since are used at compilation time-->
-            	<exclude name="com/google/code/aoplib4j/aspectj/policy/compiletime/*.class" />
+            	<exclude name="org/aoplib4j/policy/compiletime/*.class" />
                 <exclude name="**/*Test.class" />
+            	<exclude name="org/aoplib4j/testing/internal/TestNGAspect.class" />
             </fileset>
         </cobertura-instrument>
     </target>
