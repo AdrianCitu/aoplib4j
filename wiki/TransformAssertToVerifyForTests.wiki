@@ -1,4 +1,5 @@
 #summary How to use the test assert modification aspect.
+#labels Featured,Phase-Implementation
 
 === Introduction ===
 The main idea of the aspect is to modify the way a unit test behaves or to be more specific, how a test assertion violation behaves.
