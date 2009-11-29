@@ -19,7 +19,7 @@ import java.io.StringWriter;
 import java.util.logging.Logger;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
@@ -111,15 +111,53 @@ public abstract class AbstractTestingAspect {
      }
      
      /**
-      * Advice executed after (<code>AfterReturning</code>) the 
-      * {@link #executionOfTestMethodPointcut()} pointcut. 
-      * If the executed test had at least one failed assert then the method
-      * {@link #assertFail(String)} is executed having as message the failed
-      * assertions stack traces. 
+      * 
+      * Advice executed around (<code>Around</code>) the 
+      * {@link #executionOfTestMethodPointcut()} pointcut. The test is 
+      * executed (using <code>pjp.proceed()</code>) and if there is no exception
+      * thrown  then a verification of any assertion violation is done.
+      * 
+      * If the test throws an exception (other than {@link AssertionError} which
+      * will be catch by {@link #assertCallAdvice(ProceedingJoinPoint)}), 
+      * the advice will catch it, will do a 
+      * verification of any assertion violation and if none is violated then
+      * will thrown the initial exception.
+      * 
+      * @param pjp aspectJ ProceedingJoinPoint
+      * @return the result of the join point execution (the test method).
+      * @throws Throwable necessary by the {@link ProceedingJoinPoint#proceed()}
       */
-     @AfterReturning("executionOfTestMethodPointcut()")
-     public final void executionOfTestMethodAdvice() {       
-         if (numberOfFailedAssertions != 0) {
+    @Around("executionOfTestMethodPointcut()")
+     public final Object executionOfTestMethodAdvice(
+             final ProceedingJoinPoint pjp) throws Throwable {
+         
+         //the return value of the test method; normally should be null;
+         Object returnValue = null;
+         
+         try {
+             returnValue = pjp.proceed();
+             checkTheAssertionViolation();
+         } catch (Exception ex) {
+             LOGGER.info("Test " 
+              + pjp.getStaticPart().getSignature().getDeclaringType() .getName()
+              + " thrown the following exception "
+              + ex.toString());
+             
+             checkTheAssertionViolation();
+             
+             throw ex;
+         }
+             
+         return returnValue;
+     }
+
+    /** 
+     * If the executed test had at least one failed assert then the method
+     * {@link #assertFail(String)} is executed having as message all the 
+     * previous failed assertions stack traces.  
+     */
+    private void checkTheAssertionViolation() {
+        if (numberOfFailedAssertions != 0) {
              try {
                  String verificationErrorString = 
                      failedAssestionsStackTrace.toString();
@@ -135,7 +173,6 @@ public abstract class AbstractTestingAspect {
                  if (!AOPLIB4J_FAIL_INHIBIT_VALUE.equals(
                          System.getProperty(AOPLIB4J_FAIL_INHIBIT))) {
                     
-                     //Assert.fail(failMessage.toString());
                      assertFail(failMessage.toString());
                  }
                  
@@ -145,7 +182,8 @@ public abstract class AbstractTestingAspect {
                  numberOfFailedAssertions = 0;
              }
          }
-     }
+    }
+
      
      /**
      * Abstract method representing the advice for the 
