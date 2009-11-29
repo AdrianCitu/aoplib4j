@@ -28,7 +28,7 @@ Under the hood the @AspectJ framework it is used. The pointcut for intercepting 
 
 {{{
     @Pointcut("execution("
-            + "@com.google.code.aoplib4j.aspectj.failurehandling"
+            + "@org.aoplib4j.failurehandling"
             + ".RetryExecution * * (..)) && @annotation(retryAnnotation)")
 }}}
 The {{{@Around}}} advice it is used.
