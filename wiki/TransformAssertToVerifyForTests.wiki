@@ -57,259 +57,112 @@ java.lang.AssertionError: String str should have the lenght of 1 expected:<0> bu
 As you can see the test execution of the tests continued after the first assertion violation and at the end of the test execution all the assertion violations are printed.
 In fact the assertion was transformed into a verify.
 
-==== 
+=== Transform Assert to Verify under the hood ===
+Under the hood the code is structured in an abstract aspect ({{{org.aoplib4j.testing.internal.AbstractTestingAspect}}}) containing the flow backbone and 2 aspect (one for the JUnit testing framework and another for the TestNG testing framework) containing the specific implementation details for the JUnit and TestNG.
 
-==== Class modularity under the hood ====
-For boundary checking at the class level the workflow is the following:
+The aspect workflow is the following:
+  * Intercept the execution of all the {{{assert*}}} methods. If the assertion is violated then keep the violation stack trace and continue the execution.
+  * Intercept the execution of all testing methods. If at the end of the test execution there are any assertion violations then throw a single assert violation containing all the assert violations of the test. 
 
-  * Intercept the call to all non private methods from a class annotated with the {{{ClassBoundary}}} annotation. The AspectJ pointcuts are:
-     * non static methods
+==== Intercepting {{{assert*}}} methods execution ====
+
+As I already said, the {{{org.aoplib4j.testing.internal.AbstractTestingAspect}}} contains the backbone workflow. For the {{{assert*}}} method interception it contains an abstract pointcut and an abstract advice:
+
 {{{
-    @Pointcut("call(!private !static * "
-            + "(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."
-            + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
-    public static boolean callOfClassBoundaryPointcut(final Object calledObj,
-            final Object callerObj) {
+@Aspect
+public abstract class AbstractTestingAspect {
+...
+    /**
+     * Abstract pointcut representing the call of a assert method. 
+     */
+    @Pointcut
+    public abstract void assertCallPointcut();
 
-        //the caller and called are the same instance
-        if (calledObj == callerObj) {
-            return false;
-        }
-        
-        ClassBoundary boundary = getClassBoundaryAnnotation(calledObj
-                .getClass());
+        /**
+     * Abstract method representing the advice for the 
+     * {@link #assertCallPointcut()}. Normally the child aspects should use
+     * the <code>Around</code> advice to implement the behavior arround the 
+     * call of the assert methods.
+     *  
+     * @param pjp object created by the AspectJ framework.
+     * @throws Throwable the exception that can be thrown.
+     * 
+     */
+    public abstract void assertCallAdvice(final ProceedingJoinPoint pjp) 
+        throws Throwable; 
+...
+}
+}}}
 
-        //advice is called on a subclass; the annotation is not inherited by
-        //the subclasses.
-        if (boundary == null) {
-            return false;
-        }
+The implementation of the abstract pointcut and advice for the JUnit is the following:
+{{{
+@Aspect
+public final class JUnitAspect extends AbstractTestingAspect { 
+...
+    @Pointcut("call(static public void junit.framework.Assert+.assert*(..))"
+    		+ " || call(static public void org.junit.Assert+.assert*(..))")
+    @Override		
+    public void assertCallPointcut() {
         
-        return true;
     }
-}}}
-     * static methods
-{{{
-    @Pointcut("call(!private static * "
-            + "(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."
-            + "*(..))  && if()")
-    public static boolean callOfStaticClassBoundaryPointcut(
-            final JoinPoint.StaticPart jpsp) {
 
-        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
 
-        ClassBoundary boundary = getClassBoundaryAnnotation(calledClass);
-
-        //advice is called on a subclass; the annotation is not inherited by
-        //the subclasses.
-        if (boundary == null) {
-            return false;
-        }
+    @Around("assertCallPointcut()")
+    @Override
+    public void assertCallAdvice(final ProceedingJoinPoint pjp) 
+        throws Throwable {
         
-        return true;
-    }
-}}}
- As you can see in the two cases the {{{if()}}} pointcut is used in order to perform some compile-time checks and to avoid the advice injecting in some trivial useless cases (when the caller and called class are the same or the retrieved {{{ClassBoundary}}} annotation is null). For more informations about the use of {{{if}}} pointcut please check [http://www.eclipse.org/aspectj/doc/released/adk15notebook/ataspectj-pcadvice.html#pointcuts if() pointcut expressions].
-
-  * The @Before advice is used to check the boundary violation by using the information retrieved from the {{{ClassBoundary}}} annotation and the information given by the AspectJ framework.
-
-  * If a boundary validation is detected then: 
-        * The framework creates an instance of {{{ViolationInformation}}} interface.
-        * The framework creates an instance of the callback class (a class extending {{{BoundaryViolationCallback}}}) by introspection. The type of the class is retrieved from the {{{ClassBoundary#callbackClass}}} field.
-        * The callback method {{{BoundaryViolationCallback#boundaryViolation(final ViolationInformation info)}}} is call to handle to boundary violation. *Note that the {{{ClassBoundary}}} have a default callback class, {{{com.google.code.aoplib4j.aspectj.modularity.LogViolationCallback}}} *
-
-Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/internal/ClassBoundaryAspect.java ClassBoundaryAspect].
-
-
-=== Modularity at the package level  ===
-In the case of the package level modularity, the package became a module and the goal is to create logical boundaries between packages. In this case the logical boundaries are represented by method calls from other packages.
-
-
-==== How to implement the package modularity ====
-For implementing the class modularity you must :
-  # Annotate your package(es) with the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/PackageBoundary.java com.google.code.aoplib4j.aspectj.modularity.PackageBoundary] annotation. For annotate a Java package it must create a file called package-info.java into the package (see [http://www.onjava.com/pub/a/onjava/2004/04/21/declarative.html?page=3 Declarative Programming in Java] for more details)
-  # Define the logical boundary by filling the annotation parameters ({{{PackageBoundary#packagesList}}}, {{{PackageBoundary#packagesListType}}} and {{{PackageBoundary#callbackClass}}}).
-  # Create your own callback class extending the {{{BoundaryViolationCallback}}} abstract class for handle the boundary violation and add it to the {{{PackageBoundary#callbackClass}}}.
-  # Annotate all your package classes with the {{{com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary}}} annotation or write an aspect that will do this for you.
-
-Here is an example of {{{PackageBoundary}}} utilization (taken from the JUnit tests):
-{{{
-//package-info.java
-@PackageBoundary(
-        packagesList = {"com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage"}, 
-        packagesListType = ListType.BLACKLIST,
-        callbackClass=ThrowErrorBoundaryCallback.class)
-package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
-
-import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
-}}}
-So, in our example all the calls from the package {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage}}} are forbidden in all the classes from the {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist}}} package. In the case of a violation an instance of {{{ThrowErrorBoundaryCallback}}} is created.
-
-As you can see in the previous example, for annotate a package it must create a {{{package-info.java}}} file which ill contains the package annotations and the javadoc for the package (the {{{package-info.java}}} file replaces the {{{package.html}}} file).
-
-The {{{PackageBoundary#packagesList}}} parameter is a list of {{{java.lang.String}}} objects representing the logical boundary. 
-
-The {{{PackageBoundary#packagesListType}}} and {{{PackageBoundary#callbackClass}}} have exactly the same behavior as in the case of {{{ClassBoundary}}} annotation.
-
-The last step is to annotate all the classes of the annotated package with the {{{InjectedPkgBoundary}}} annotation. This step is due to fact that AspectJ cannot handle pointcuts based on package annotations (something like: "calls of all the methods from all the classes from the package annotated with {{{@PackageBoundary}}}" is not a valid pointcut definition). 
-I must admit that it is not a very clever solution to annotate by hand all the classes but in case you use {{{ajc}}} for compile your project you can write your own aspect that will automatically inject the annotation on all the desired classes.
-
-Here is the aspect used by the JUnit tests (I didn't want to add the {{{InjectedPkgBoundary}}} by hand):
-{{{
-package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
-
-import com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary;
-
-/**
- * Aspect used in tests of package boundary violation.
- * The aspect injects the {@link InjectedPkgBoundary} into all the classes from the 
- * package "com.google.code.aoplib4j.aspectj.modularity.pack.blacklist" excepting
- * the aspect himself, {@link BlackListPackageBoundaryViolationTest} class and 
- * package-info class.
- * 
- * @author Adrian Citu
- *
- */
-public aspect PackageAnnotationIntroduction {
-    
-    declare @type:
-        com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.* 
-        && !com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.package*info
-        && !com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.PackageAnnotationIntroduction
-        && !com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.BlackListPackageBoundaryViolationTest:
-        @InjectedPkgBoundary;
-}}}
-
-
-==== Package modularity under the hood ====
-For boundary checking at the package level the workflow is the following:
- * Intercept the call to all non private methods from a class annotated with the {{{InjectedPkgBoundary}}} annotation. The AspectJ pointcuts are:  
-   * non static methods 
-{{{
-   @Pointcut("call(!private !static * "
-   + "(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."
-   + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
-    public static boolean callOfPackageBoundaryPointcut(final Object calledObj,
-            final Object callerObj) {
-
-        //caller and called are the same instance
-        if (calledObj == callerObj) {
-            return false;
-        }
-        
-        Package calledObjPackage = calledObj.getClass().getPackage();
-        
-        Package callerObjPackage = callerObj.getClass().getPackage();
-        
-        //the caller and called are in the same package.
-        if (calledObjPackage.equals(callerObjPackage)) {
-            return false;
-        }
-        
-        PackageBoundary pkgBoundary = 
-            calledObjPackage.getAnnotation(PackageBoundary.class);
-        
-        //should never happen unless the aspectj weaver is buggy
-        if (pkgBoundary == null) {
-            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
-                    + " annotation from package " + calledObjPackage
-                    + "; The package is not annotated with the "
-                    + PackageBoundary.class);
+        try {
+            pjp.proceed();
+        } catch (AssertionFailedError junit3Error) {            
+            storeErrorInformation(junit3Error);
             
-            return false;
+            LOGGER.info("AssertionFailedError " 
+                    + pjp.getSignature().toLongString());
+        } catch (AssertionError junit4Error) {
+            storeErrorInformation(junit4Error);
+            
+            LOGGER.info("AssertionFailedError " 
+                    + pjp.getSignature().toLongString());
         }
-        
-        return true;
-    }
-}}}
-   * static methods
-{{{
-   @Pointcut("call(!private static * "
-       + "(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."
-       + "*(..)) && if()")
-    public static boolean callOfStaticPackageBoundaryPointcut(
-            final JoinPoint.StaticPart jpsp) {
 
-        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
-        Package calledPackage = calledClass.getPackage();
-                
-        PackageBoundary pkgBoundary = 
-            calledPackage.getAnnotation(PackageBoundary.class);
-        
-        //should never happen unless the aspectj weaver is buggy
-        if (pkgBoundary == null) {
-            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
-                    + " annotation from package " + calledPackage
-                    + "; The package is not annotated with the "
-                    + PackageBoundary.class);
-            return false;
-        }
-        
-        return true;
     }
+...
+}
 }}}
 
-As in case of the class boundary the pointcuts use the {{{if()}}} pointcut for compile-time checking.
+For the pointcut the {{{call(static public void junit.framework.Assert+.assert*(..))}}} represents the call of an assertion method under JUnit 3.x version and {{{call(static public void org.junit.Assert+.assert*(..))}}} represents an assertion call for the JUnit 4.
 
- * The @Before advice is used to check the boundary violation by using the information retrieved from the {{{PackageBoundary}}} annotation and the information given by the AspectJ framework. The {{{PackageBoundary}}} annotation is retrieved by introspection from the called class.
+The advice is rather simple and clear; execute the advice containing the assertions and if the advice throws an {{{junit.framework.AssertionFailedError}}} (for JUnit 3.x) or a {{{java.lang.AssertionError}}} (for JUnit 4) store it and continue the execution.
 
-  * If a boundary validation is detected then: 
-        * The framework creates an instance of {{{ViolationInformation}}} interface.
-        * The framework creates an instance of the callback class (a class extending {{{BoundaryViolationCallback}}}) by introspection. The type of the class is retrieved from the {{{ClassBoundary#callbackClass}}} field.
-        * The callback method {{{BoundaryViolationCallback#boundaryViolation(final ViolationInformation info)}}} is call to handle to boundary violation. *Note that the {{{ClassBoundary}}} have a default callback class, {{{com.google.code.aoplib4j.aspectj.modularity.LogViolationCallback}}} *
 
-  Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/internal/PackageBoundaryAspect.java PackageBoundaryAspect].
-
-=== Critics, enhancements and ... what i don't like about this solution ===
-
-    * The user validation class must inherit from {{{BoundaryViolationCallback}}} class. It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the validation class using the non-arguments constructor by introspection.
-    * For every advised method the {{{ClassBoundary}}} or {{{PackageBoundary}}} annotations are retrieved. A better idea would be  to have some kind of cache on which the annotations should be stored (but for instance it is just KISS).
-    * Since static pointcuts cannot retrieve the caller object using {{{this}}} pointcut the caller information is computed using the stack trace of the current execution thread by creating a new {{{Throwable}}} object and calling {{{Throwable#getStackTrace()}}}. I know that this solution is not good at all but I didn't find another alternative.
-
-     Here is the code of the method that computes the caller information based on the stack trace :
+The same elements for the TestNG framework are :
 {{{
-     /**
-      * Method that computes the information about the caller class. The
-      * information is stored into a {@link StackTraceElement} object.
-      * 
-      * The caller information is on the third position on the stack trace;
-      * the first position contains the call to this method, and the 
-      * second one to the
-      * {@link 
-      * ClassBoundaryAspect#callOfStaticClassBoundaryAdvice(
-      * org.aspectj.lang.JoinPoint.StaticPart)}
-      * 
-      *or
-      *{@link
-      *PackageBoundaryAspect#callOfStaticPackageBoundaryAdvice(
-      * org.aspectj.lang.JoinPoint.StaticPart)}
-      * 
-      * This method will return faulty results when a child class calls an
-      * inherited non overridden parent method. In this case the stack trace
-      * contains a call to the parent method directly.
-      * 
-      * <pre>
-      *  Example:
-      *  P - parent class 
-      *  P#method - a method of the parent
-      *  C - child class; it does not override the &quot;method&quot; method
-      *  
-      *  On the stack trace a call to C#method is in fact written as a call to
-      *  P#method.
-      * 
-      * </pre>
-      * 
-      * @param calledClassName
-      *            the canonical name of the called class name
-      * @param calledMethodName
-      *            the name of the called method.
-      * @return {@link StackTraceElement} represented the caller method.
-      */
-      StackTraceElement getCallerInformation(
-             final String calledClassName, final String calledMethodName) {
+@Aspect
+public final class TestNGAspect extends AbstractTestingAspect {
+...
 
-         StackTraceElement[] stes = new Throwable().getStackTrace();
+    @Pointcut("call(static public void org.testng.Assert+.assert*(..))")
+    @Override
+    public void assertCallPointcut() {
+        
+    }
 
-         return stes[2];
-     }
+    @Around("assertCallPointcut()")
+    @Override
+    public void assertCallAdvice(final ProceedingJoinPoint pjp) 
+        throws Throwable {
+        
+        try {
+            pjp.proceed();
+        } catch (AssertionError testNGError) {
+            storeErrorInformation(testNGError);
+            
+            LOGGER.info("AssertionFailedError " 
+                    + pjp.getSignature().toLongString());
+        }
+    }
+...
+}
+
 }}}
