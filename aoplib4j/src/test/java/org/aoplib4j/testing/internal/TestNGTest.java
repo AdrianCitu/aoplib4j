@@ -40,6 +40,8 @@ public class TestNGTest {
         "AssertionError should be thrown";
     
     /**
+     * Inhibit the throws af the assertion failures.
+     * @see AbstractTestingAspect#AOPLIB4J_FAIL_INHIBIT
      * @throws java.lang.Exception
      */
     @BeforeClass
@@ -109,5 +111,27 @@ public class TestNGTest {
         assertNotNull(null, ASSERT_VIOLATION_MESSAGE);
     }
 
+    /**
+     * The test should throw a NullPointerException since the <code>str</code>
+     * string is null.
+     */
+    @Test(expectedExceptions = {NullPointerException.class})
+    public final void testThatThrowsNullPointerException() {
+        String str = null;
+        
+        assertNotNull(str, ASSERT_VIOLATION_MESSAGE);
+        str.length();
+        
+    }
+    
+    /**
+     * The test should throw a NullPointerException since the <code>str</code>
+     * string is null.
+     */
+    @Test(expectedExceptions = {NullPointerException.class})
+    public final void testThatThrowsNullPointerExceptionAndNoAsserts() {
+        String str = null;        
+        str.length();
+    }
 
 }
