@@ -116,7 +116,7 @@ To remove all the Observers attached to a Subject call any method on Subject ann
 Under the hood the AspectJ framework is used.
 
 ==== Which objects are Subjects and which are Observers ? ====
-In the {{{com.google.code.aoplib4j.aspectj.gof.observer.internal}}} package the framework contains an implementation of the Observer pattern. The Subject class is represented by the {{{GofSubject}}} interface and his implementation {{{GofSubjectImpl}}}; the Observer class is represented by the {{{GofObserver}}} interface and his implementation {{{GofObserver}}}. 
+In the {{{org.aoplib4j.gof.observer.internal}}} package the framework contains an implementation of the Observer pattern. The Subject class is represented by the {{{GofSubject}}} interface and his implementation {{{GofSubjectImpl}}}; the Observer class is represented by the {{{GofObserver}}} interface and his implementation {{{GofObserver}}}. 
 
 Here are de definition of the {{{GofObserver}}} interface and {{{GofSubject}}} interface:
 {{{
@@ -162,13 +162,13 @@ final class ObserverAspect {
     
     /**
      * the classes annotated with the 
-     * {@link com.google.code.aoplib4j.aspectj.gof.observer.Subject} annotation 
+     * {@link org.aoplib4j.gof.observer.Subject} annotation 
      * will automatically 
      * implement the {@link GofSubject} interface and the implementation
      * will be {@link GofSubjectImpl}.
      */
     @DeclareParents(
-            value = "@com.google.code.aoplib4j.aspectj.gof.observer.Subject *",
+            value = "@org.aoplib4j.gof.observer.Subject *",
             defaultImpl = GofSubjectImpl.class)
     private GofSubject subject = null;
 
@@ -179,7 +179,7 @@ final class ObserverAspect {
      */
     @DeclareParents(
             value =
-                "@com.google.code.aoplib4j.aspectj.gof.observer.Observer *")
+                "@org.aoplib4j.gof.observer.Observer *")
     private GofObserver observer = null;
 }}} 
 
@@ -187,7 +187,7 @@ final class ObserverAspect {
 For the notification part, the Subject class must annotate methods with the {{{RegisterObserver}}} annotation. Here is the @AspectJ pointcut that intercept the annotated methods.:
 {{{
     @Pointcut("execution("
-            + "@com.google.code.aoplib4j.aspectj.gof.observer"
+            + "@org.aoplib4j.gof.observer"
             + ".RegisterObserver * * (..)) "
             + "&& this(sbj) && args(obs)")
     void addObserverPointcut(final GofSubject sbj, final GofObserver obs) {
@@ -209,7 +209,7 @@ For adding a new {{{GofObserver}}} to the {{{GofObserver}}} the @AfterReturning 
 ==== What the Observer should do when notified ? ====
 The Observers are notified by the call of a Subject method annotated with the {{{NotifyObservers}}} annotation. Here is the @Aspectj pointcut that intercepts the call of a {{{NotifyObservers}}} annotated method:
 {{{
-    @Pointcut("execution(@com.google.code.aoplib4j.aspectj.gof.observer."
+    @Pointcut("execution(@org.aoplib4j.gof.observer."
             + "NotifyObservers * * (..))"
             + " && this(sbj)")
     void notifyObserversPointcut(final GofSubject sbj) {
@@ -263,7 +263,7 @@ I think it's simpler just to show the code:
 For attaching the Observers to Subject a method annotated with {{{@RegisterObserver}}} should be called. Here is the pointcut and the advice:
 {{{
    @Pointcut("execution("
-            + "@com.google.code.aoplib4j.aspectj.gof.observer"
+            + "@org.aoplib4j.gof.observer"
             + ".RegisterObserver * * (..)) "
             + "&& this(sbj) && args(obs)")
     void addObserverPointcut(final GofSubject sbj, final GofObserver obs) {
@@ -282,7 +282,7 @@ For attaching the Observers to Subject a method annotated with {{{@RegisterObser
 For detach the Observers from the Subject a method annotated with {{{@UnregisterObservers}}} should be called. Here is the pointcut and the advice:
 
 {{{
-   @Pointcut("execution(@com.google.code.aoplib4j.aspectj.gof.observer."
+   @Pointcut("execution(@org.aoplib4j.gof.observer."
             + "UnregisterObservers * * (..))"
             + " && this(sbj)")
     void unregisterObserversPointcut(final GofSubject sbj) {
