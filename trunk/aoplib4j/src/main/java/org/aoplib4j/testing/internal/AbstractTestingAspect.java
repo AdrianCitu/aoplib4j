@@ -25,6 +25,10 @@ import org.aspectj.lang.annotation.Pointcut;
 
 /**
  * Abstract aspect representing the base for all the testing aspects.
+ * The assert behavior is changed; if an assert is violated the test
+ * continues his execution and the assertion violation is kept; at the 
+ * end of the test, all the assertion violations are printed.
+ * 
  * The basic idea is to intercept the execution of every tests and in every
  * test to intercept all the assertion failures (if an assertion fail, 
  * the framework will intercept it and the test will continue to execute). 

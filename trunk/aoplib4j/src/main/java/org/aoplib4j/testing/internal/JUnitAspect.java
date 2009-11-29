@@ -44,6 +44,7 @@ public final class JUnitAspect extends AbstractTestingAspect {
      * <pre>
      *  AspectJ pointcut:
      *  call(static public void junit.framework.Assert+.assert*(..))
+     *  || call(static public void org.junit.Assert+.assert*(..))
      * </pre>
      */
     @Pointcut("call(static public void junit.framework.Assert+.assert*(..))"
