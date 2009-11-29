@@ -32,7 +32,7 @@ implementing the class modularity you must : </a></p>
 	<li><a name="How_to_implement_the_class_modularity">Annotate
 	your class(es) with the </a><a
 		href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/ClassBoundary.java"
-		rel="nofollow">com.google.code.aoplib4j.aspectj.modularity.ClassBoundary</a>annotation
+		rel="nofollow">org.aoplib4j.modularity.ClassBoundary</a>annotation
 	</li>
 	<li>Define the logical boundary by filling the annotation
 	parameters (<tt>ClassBoundary#classesList</tt>, <tt>ClassBoundary#classesListType</tt>
@@ -159,7 +159,7 @@ checking at the class level the workflow is the following: </a></p>
 			name="Class_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp; </span><span
 			class="lit">@Pointcut</span><span class="pun">(</span><span
 			class="str">"call(!private !static * "</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."</span><span
+			class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.ClassBoundary *)."</span><span
 			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 			class="pun">+</span><span class="pln"> </span><span class="str">"*(..)) "</span><span
 			class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
@@ -206,7 +206,7 @@ checking at the class level the workflow is the following: </a></p>
 			name="Class_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp; </span><span
 			class="lit">@Pointcut</span><span class="pun">(</span><span
 			class="str">"call(!private static * "</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."</span><span
+			class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.ClassBoundary *)."</span><span
 			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 			class="pun">+</span><span class="pln"> </span><span class="str">"*(..)) &nbsp;&amp;&amp; if()"</span><span
 			class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
@@ -267,7 +267,7 @@ more informations about the use of <tt>if</tt> pointcut please check </a><a
 		field.</li>
 		<li>The callback method <tt>BoundaryViolationCallback#boundaryViolation(final
 		ViolationInformation info)</tt> is call to handle to boundary violation. <strong>Note
-		that the <tt>ClassBoundary</tt> have a default callback class, <tt>com.google.code.aoplib4j.aspectj.modularity.LogViolationCallback</tt>
+		that the <tt>ClassBoundary</tt> have a default callback class, <tt>org.aoplib4j.modularity.LogViolationCallback</tt>
 		</strong></li>
 	</ul>
 </ul>
@@ -288,7 +288,7 @@ implementing the class modularity you must : </a></p>
 	<li><a name="How_to_implement_the_package_modularity">Annotate
 	your package(es) with the </a><a
 		href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/PackageBoundary.java"
-		rel="nofollow">com.google.code.aoplib4j.aspectj.modularity.PackageBoundary</a>
+		rel="nofollow">org.aoplib4j.modularity.PackageBoundary</a>
 	annotation. For annotate a Java package it must create a file called
 	package-info.java into the package (see <a
 		href="http://www.onjava.com/pub/a/onjava/2004/04/21/declarative.html?page=3"
@@ -299,7 +299,7 @@ implementing the class modularity you must : </a></p>
 	<li>Create your own callback class extending the <tt>BoundaryViolationCallback</tt>
 	abstract class for handle the boundary violation and add it to the <tt>PackageBoundary#callbackClass</tt>.
 	</li>
-	<li>Annotate all your package classes with the <tt>com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary</tt>
+	<li>Annotate all your package classes with the <tt>org.aoplib4j.modularity.InjectedPkgBoundary</tt>
 	annotation or write an aspect that will do this for you.</li>
 </ol>
 <p>Here is an example of <tt>PackageBoundary</tt> utilization (taken
@@ -308,7 +308,7 @@ from the JUnit tests):</p>
 	class="pln"><br></span><span class="lit">@PackageBoundary</span><span
 	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; packagesList </span><span
 	class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span
-	class="str">"com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage"</span><span
+	class="str">"org.aoplib4j.modularity.pack.blacklist.forbiddenpackage"</span><span
 	class="pun">},</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; packagesListType </span><span
 	class="pun">=</span><span class="pln"> </span><span class="typ">ListType</span><span
 	class="pun">.</span><span class="pln">BLACKLIST</span><span class="pun">,</span><span
@@ -328,8 +328,8 @@ from the JUnit tests):</p>
 	class="pln">aspectj</span><span class="pun">.</span><span class="pln">modularity</span><span
 	class="pun">.</span><span class="typ">PackageBoundary</span><span
 	class="pun">;</span></pre>
-<p>So, in our example all the calls from the package <tt>com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage</tt>
-are forbidden in all the classes from the <tt>com.google.code.aoplib4j.aspectj.modularity.pack.blacklist</tt>
+<p>So, in our example all the calls from the package <tt>org.aoplib4j.modularity.pack.blacklist.forbiddenpackage</tt>
+are forbidden in all the classes from the <tt>org.aoplib4j.modularity.pack.blacklist</tt>
 package. In the case of a violation an instance of <tt>ThrowErrorBoundaryCallback</tt>
 is created.</p>
 <p>As you can see in the previous example, for annotate a package it
@@ -365,7 +365,7 @@ the <tt>InjectedPkgBoundary</tt> by hand):</p>
 	class="pln">aspectj</span><span class="pun">.</span><span class="pln">modularity</span><span
 	class="pun">.</span><span class="typ">InjectedPkgBoundary</span><span
 	class="pun">;</span><span class="pln"><br><br></span><span
-	class="com">/**<br>&nbsp;* Aspect used in tests of package boundary violation.<br>&nbsp;* The aspect injects the {@link InjectedPkgBoundary} into all the classes from the <br>&nbsp;* package "com.google.code.aoplib4j.aspectj.modularity.pack.blacklist" excepting<br>&nbsp;* the aspect himself, {@link BlackListPackageBoundaryViolationTest} class and <br>&nbsp;* package-info class.<br>&nbsp;* <br>&nbsp;* @author Adrian Citu<br>&nbsp;*<br>&nbsp;*/</span><span
+	class="com">/**<br>&nbsp;* Aspect used in tests of package boundary violation.<br>&nbsp;* The aspect injects the {@link InjectedPkgBoundary} into all the classes from the <br>&nbsp;* package "org.aoplib4j.modularity.pack.blacklist" excepting<br>&nbsp;* the aspect himself, {@link BlackListPackageBoundaryViolationTest} class and <br>&nbsp;* package-info class.<br>&nbsp;* <br>&nbsp;* @author Adrian Citu<br>&nbsp;*<br>&nbsp;*/</span><span
 	class="pln"><br></span><span class="kwd">public</span><span
 	class="pln"> aspect </span><span class="typ">PackageAnnotationIntroduction</span><span
 	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; declare @type</span><span
@@ -416,7 +416,7 @@ checking at the package level the workflow is the following: </a></p>
 			name="Package_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp;</span><span
 			class="lit">@Pointcut</span><span class="pun">(</span><span
 			class="str">"call(!private !static * "</span><span class="pln"><br>&nbsp; &nbsp;</span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."</span><span
+			class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.InjectedPkgBoundary *)."</span><span
 			class="pln"><br>&nbsp; &nbsp;</span><span class="pun">+</span><span
 			class="pln"> </span><span class="str">"*(..)) "</span><span
 			class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
@@ -496,7 +496,7 @@ checking at the package level the workflow is the following: </a></p>
 			name="Package_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp;</span><span
 			class="lit">@Pointcut</span><span class="pun">(</span><span
 			class="str">"call(!private static * "</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp;</span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."</span><span
+			class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.InjectedPkgBoundary *)."</span><span
 			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp;</span><span
 			class="pun">+</span><span class="pln"> </span><span class="str">"*(..)) &amp;&amp; if()"</span><span
 			class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
@@ -574,7 +574,7 @@ compile-time checking. </a></p>
 		<li><a name="Package_modularity_under_the_hood">The callback
 		method <tt>BoundaryViolationCallback#boundaryViolation(final
 		ViolationInformation info)</tt> is call to handle to boundary violation. <strong>Note
-		that the <tt>ClassBoundary</tt> have a default callback class, <tt>com.google.code.aoplib4j.aspectj.modularity.LogViolationCallback</tt>
+		that the <tt>ClassBoundary</tt> have a default callback class, <tt>org.aoplib4j.modularity.LogViolationCallback</tt>
 		</strong> </a></li>
 	</ul>
 </ul>

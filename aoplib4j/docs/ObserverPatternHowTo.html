@@ -178,7 +178,7 @@ the AspectJ framework is used. </a></p>
 <h4><a name="Which_objects_are_Subjects_and_which_are_Observers_?">Which
 objects are Subjects and which are Observers ?</a></h4>
 <p><a name="Which_objects_are_Subjects_and_which_are_Observers_?">In
-the <tt>com.google.code.aoplib4j.aspectj.gof.observer.internal</tt>
+the <tt>org.aoplib4j.gof.observer.internal</tt>
 package the framework contains an implementation of the Observer
 pattern. The Subject class is represented by the <tt>GofSubject</tt>
 interface and his implementation <tt>GofSubjectImpl</tt>; the Observer
@@ -229,10 +229,10 @@ see how to declare the mixins using @AspectJ: </a></p>
 	class="kwd">final</span><span class="pln"> </span><span class="kwd">class</span><span
 	class="pln"> </span><span class="typ">ObserverAspect</span><span
 	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
-	class="com">/**<br>&nbsp; &nbsp; &nbsp;* the classes annotated with the <br>&nbsp; &nbsp; &nbsp;* {@link com.google.code.aoplib4j.aspectj.gof.observer.Subject} annotation <br>&nbsp; &nbsp; &nbsp;* will automatically <br>&nbsp; &nbsp; &nbsp;* implement the {@link GofSubject} interface and the implementation<br>&nbsp; &nbsp; &nbsp;* will be {@link GofSubjectImpl}.<br>&nbsp; &nbsp; &nbsp;*/</span><span
+	class="com">/**<br>&nbsp; &nbsp; &nbsp;* the classes annotated with the <br>&nbsp; &nbsp; &nbsp;* {@link org.aoplib4j.gof.observer.Subject} annotation <br>&nbsp; &nbsp; &nbsp;* will automatically <br>&nbsp; &nbsp; &nbsp;* implement the {@link GofSubject} interface and the implementation<br>&nbsp; &nbsp; &nbsp;* will be {@link GofSubjectImpl}.<br>&nbsp; &nbsp; &nbsp;*/</span><span
 	class="pln"><br>&nbsp; &nbsp; </span><span class="lit">@DeclareParents</span><span
 	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; value </span><span
-	class="pun">=</span><span class="pln"> </span><span class="str">"@com.google.code.aoplib4j.aspectj.gof.observer.Subject *"</span><span
+	class="pun">=</span><span class="pln"> </span><span class="str">"@org.aoplib4j.gof.observer.Subject *"</span><span
 	class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; defaultImpl </span><span
 	class="pun">=</span><span class="pln"> </span><span class="typ">GofSubjectImpl</span><span
 	class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span
@@ -244,7 +244,7 @@ see how to declare the mixins using @AspectJ: </a></p>
 	class="pln"><br>&nbsp; &nbsp; </span><span class="lit">@DeclareParents</span><span
 	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; value </span><span
 	class="pun">=</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="str">"@com.google.code.aoplib4j.aspectj.gof.observer.Observer *"</span><span
+	class="str">"@org.aoplib4j.gof.observer.Observer *"</span><span
 	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
 	class="kwd">private</span><span class="pln"> </span><span class="typ">GofObserver</span><span
 	class="pln"> observer </span><span class="pun">=</span><span
@@ -262,7 +262,7 @@ intercept the annotated methods.: </a></p>
 	class="pln">&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
 	class="pun">(</span><span class="str">"execution("</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="pun">+</span><span class="pln"> </span><span class="str">"@com.google.code.aoplib4j.aspectj.gof.observer"</span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"@org.aoplib4j.gof.observer"</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">".RegisterObserver * * (..)) "</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
@@ -314,7 +314,7 @@ that intercepts the call of a <tt>NotifyObservers</tt> annotated method:
 <pre class="prettyprint"><a
 	name="What_the_Observer_should_do_when_notified_?"><span
 	class="pln">&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
-	class="pun">(</span><span class="str">"execution(@com.google.code.aoplib4j.aspectj.gof.observer."</span><span
+	class="pun">(</span><span class="str">"execution(@org.aoplib4j.gof.observer."</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">"NotifyObservers * * (..))"</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
@@ -420,7 +420,7 @@ should be called. Here is the pointcut and the advice: </a></p>
 	class="pln">&nbsp; &nbsp;</span><span class="lit">@Pointcut</span><span
 	class="pun">(</span><span class="str">"execution("</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="pun">+</span><span class="pln"> </span><span class="str">"@com.google.code.aoplib4j.aspectj.gof.observer"</span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"@org.aoplib4j.gof.observer"</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">".RegisterObserver * * (..)) "</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
@@ -461,7 +461,7 @@ should be called. Here is the pointcut and the advice: </a></p>
 <pre class="prettyprint"><a
 	name="When_should_the_relationship_begin_and_end_?"><span
 	class="pln">&nbsp; &nbsp;</span><span class="lit">@Pointcut</span><span
-	class="pun">(</span><span class="str">"execution(@com.google.code.aoplib4j.aspectj.gof.observer."</span><span
+	class="pun">(</span><span class="str">"execution(@org.aoplib4j.gof.observer."</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">"UnregisterObservers * * (..))"</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
