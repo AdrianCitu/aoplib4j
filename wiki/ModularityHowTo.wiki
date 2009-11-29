@@ -11,17 +11,17 @@ In the case of the class level modularity, the class became a module and the goa
 ==== How to implement the class modularity ====
  
 For implementing the class modularity you must :
-  # Annotate your class(es) with the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/ClassBoundary.java com.google.code.aoplib4j.aspectj.modularity.ClassBoundary]annotation
+  # Annotate your class(es) with the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/ClassBoundary.java org.aoplib4j.modularity.ClassBoundary]annotation
   # Define the logical boundary by filling the annotation parameters ({{{ClassBoundary#classesList}}}, {{{ClassBoundary#classesListType}}} and {{{ClassBoundary#callbackClass}}}).
   # Create your own callback class extending the {{{BoundaryViolationCallback}}} abstract class for handle the boundary violation and add it to the {{{ClassBoundary#callbackClass}}}.
 
 Here is an example of {{{ClassBoundary}}} utilization (taken from the jUnit tests):
 {{{
-package com.google.code.aoplib4j.aspectj.modularity.clas;
+package org.aoplib4j.modularity.clas;
 
-import com.google.code.aoplib4j.aspectj.modularity.ClassBoundary;
-import com.google.code.aoplib4j.aspectj.modularity.ListType;
-import com.google.code.aoplib4j.aspectj.modularity.ThrowErrorBoundaryCallback;
+import org.aoplib4j.modularity.ClassBoundary;
+import org.aoplib4j.modularity.ListType;
+import org.aoplib4j.modularity.ThrowErrorBoundaryCallback;
 
 @ClassBoundary(
         classesList={ForbiddenCallerClass.class}, 
@@ -110,7 +110,7 @@ For boundary checking at the class level the workflow is the following:
      * non static methods
 {{{
     @Pointcut("call(!private !static * "
-            + "(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."
+            + "(@org.aoplib4j.modularity.ClassBoundary *)."
             + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
     public static boolean callOfClassBoundaryPointcut(final Object calledObj,
             final Object callerObj) {
@@ -135,7 +135,7 @@ For boundary checking at the class level the workflow is the following:
      * static methods
 {{{
     @Pointcut("call(!private static * "
-            + "(@com.google.code.aoplib4j.aspectj.modularity.ClassBoundary *)."
+            + "(@org.aoplib4j.modularity.ClassBoundary *)."
             + "*(..))  && if()")
     public static boolean callOfStaticClassBoundaryPointcut(
             final JoinPoint.StaticPart jpsp) {
@@ -160,7 +160,7 @@ For boundary checking at the class level the workflow is the following:
   * If a boundary validation is detected then: 
         * The framework creates an instance of {{{ViolationInformation}}} interface.
         * The framework creates an instance of the callback class (a class extending {{{BoundaryViolationCallback}}}) by introspection. The type of the class is retrieved from the {{{ClassBoundary#callbackClass}}} field.
-        * The callback method {{{BoundaryViolationCallback#boundaryViolation(final ViolationInformation info)}}} is call to handle to boundary violation. *Note that the {{{ClassBoundary}}} have a default callback class, {{{com.google.code.aoplib4j.aspectj.modularity.LogViolationCallback}}} *
+        * The callback method {{{BoundaryViolationCallback#boundaryViolation(final ViolationInformation info)}}} is call to handle to boundary violation. *Note that the {{{ClassBoundary}}} have a default callback class, {{{org.aoplib4j.modularity.LogViolationCallback}}} *
 
 Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/internal/ClassBoundaryAspect.java ClassBoundaryAspect].
 
@@ -171,23 +171,23 @@ In the case of the package level modularity, the package became a module and the
 
 ==== How to implement the package modularity ====
 For implementing the class modularity you must :
-  # Annotate your package(es) with the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/PackageBoundary.java com.google.code.aoplib4j.aspectj.modularity.PackageBoundary] annotation. For annotate a Java package it must create a file called package-info.java into the package (see [http://www.onjava.com/pub/a/onjava/2004/04/21/declarative.html?page=3 Declarative Programming in Java] for more details)
+  # Annotate your package(es) with the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/PackageBoundary.java org.aoplib4j.modularity.PackageBoundary] annotation. For annotate a Java package it must create a file called package-info.java into the package (see [http://www.onjava.com/pub/a/onjava/2004/04/21/declarative.html?page=3 Declarative Programming in Java] for more details)
   # Define the logical boundary by filling the annotation parameters ({{{PackageBoundary#packagesList}}}, {{{PackageBoundary#packagesListType}}} and {{{PackageBoundary#callbackClass}}}).
   # Create your own callback class extending the {{{BoundaryViolationCallback}}} abstract class for handle the boundary violation and add it to the {{{PackageBoundary#callbackClass}}}.
-  # Annotate all your package classes with the {{{com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary}}} annotation or write an aspect that will do this for you.
+  # Annotate all your package classes with the {{{org.aoplib4j.modularity.InjectedPkgBoundary}}} annotation or write an aspect that will do this for you.
 
 Here is an example of {{{PackageBoundary}}} utilization (taken from the JUnit tests):
 {{{
 //package-info.java
 @PackageBoundary(
-        packagesList = {"com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage"}, 
+        packagesList = {"org.aoplib4j.modularity.pack.blacklist.forbiddenpackage"}, 
         packagesListType = ListType.BLACKLIST,
         callbackClass=ThrowErrorBoundaryCallback.class)
-package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
+package org.aoplib4j.modularity.pack.blacklist;
 
-import com.google.code.aoplib4j.aspectj.modularity.PackageBoundary;
+import org.aoplib4j.modularity.PackageBoundary;
 }}}
-So, in our example all the calls from the package {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.forbiddenpackage}}} are forbidden in all the classes from the {{{com.google.code.aoplib4j.aspectj.modularity.pack.blacklist}}} package. In the case of a violation an instance of {{{ThrowErrorBoundaryCallback}}} is created.
+So, in our example all the calls from the package {{{org.aoplib4j.modularity.pack.blacklist.forbiddenpackage}}} are forbidden in all the classes from the {{{org.aoplib4j.modularity.pack.blacklist}}} package. In the case of a violation an instance of {{{ThrowErrorBoundaryCallback}}} is created.
 
 As you can see in the previous example, for annotate a package it must create a {{{package-info.java}}} file which ill contains the package annotations and the javadoc for the package (the {{{package-info.java}}} file replaces the {{{package.html}}} file).
 
@@ -200,14 +200,14 @@ I must admit that it is not a very clever solution to annotate by hand all the c
 
 Here is the aspect used by the JUnit tests (I didn't want to add the {{{InjectedPkgBoundary}}} by hand):
 {{{
-package com.google.code.aoplib4j.aspectj.modularity.pack.blacklist;
+package org.aoplib4j.modularity.pack.blacklist;
 
-import com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary;
+import org.aoplib4j.modularity.InjectedPkgBoundary;
 
 /**
  * Aspect used in tests of package boundary violation.
  * The aspect injects the {@link InjectedPkgBoundary} into all the classes from the 
- * package "com.google.code.aoplib4j.aspectj.modularity.pack.blacklist" excepting
+ * package "org.aoplib4j.modularity.pack.blacklist" excepting
  * the aspect himself, {@link BlackListPackageBoundaryViolationTest} class and 
  * package-info class.
  * 
@@ -217,10 +217,10 @@ import com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary;
 public aspect PackageAnnotationIntroduction {
     
     declare @type:
-        com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.* 
-        && !com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.package*info
-        && !com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.PackageAnnotationIntroduction
-        && !com.google.code.aoplib4j.aspectj.modularity.pack.blacklist.BlackListPackageBoundaryViolationTest:
+        org.aoplib4j.modularity.pack.blacklist.* 
+        && !org.aoplib4j.modularity.pack.blacklist.package*info
+        && !org.aoplib4j.modularity.pack.blacklist.PackageAnnotationIntroduction
+        && !org.aoplib4j.modularity.pack.blacklist.BlackListPackageBoundaryViolationTest:
         @InjectedPkgBoundary;
 }}}
 
@@ -231,7 +231,7 @@ For boundary checking at the package level the workflow is the following:
    * non static methods 
 {{{
    @Pointcut("call(!private !static * "
-   + "(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."
+   + "(@org.aoplib4j.modularity.InjectedPkgBoundary *)."
    + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
     public static boolean callOfPackageBoundaryPointcut(final Object calledObj,
             final Object callerObj) {
@@ -269,7 +269,7 @@ For boundary checking at the package level the workflow is the following:
    * static methods
 {{{
    @Pointcut("call(!private static * "
-       + "(@com.google.code.aoplib4j.aspectj.modularity.InjectedPkgBoundary *)."
+       + "(@org.aoplib4j.modularity.InjectedPkgBoundary *)."
        + "*(..)) && if()")
     public static boolean callOfStaticPackageBoundaryPointcut(
             final JoinPoint.StaticPart jpsp) {
@@ -300,7 +300,7 @@ As in case of the class boundary the pointcuts use the {{{if()}}} pointcut for c
   * If a boundary validation is detected then: 
         * The framework creates an instance of {{{ViolationInformation}}} interface.
         * The framework creates an instance of the callback class (a class extending {{{BoundaryViolationCallback}}}) by introspection. The type of the class is retrieved from the {{{ClassBoundary#callbackClass}}} field.
-        * The callback method {{{BoundaryViolationCallback#boundaryViolation(final ViolationInformation info)}}} is call to handle to boundary violation. *Note that the {{{ClassBoundary}}} have a default callback class, {{{com.google.code.aoplib4j.aspectj.modularity.LogViolationCallback}}} *
+        * The callback method {{{BoundaryViolationCallback#boundaryViolation(final ViolationInformation info)}}} is call to handle to boundary violation. *Note that the {{{ClassBoundary}}} have a default callback class, {{{org.aoplib4j.modularity.LogViolationCallback}}} *
 
   Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/internal/PackageBoundaryAspect.java PackageBoundaryAspect].
 
