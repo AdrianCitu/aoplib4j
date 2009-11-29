@@ -91,7 +91,7 @@ For the validation process the work flow is the following:
      * static fields
 {{{
     @Pointcut(
-            "set(@com.google.code.aoplib4j.aspectj.fieldvalidation.Validate "
+            "set(@org.aoplib4j.fieldvalidation.Validate "
             + "static * *.*)"
             + "&& @annotation(validateAnnot) " 
             + "&& args(newValue)")
@@ -103,7 +103,7 @@ For the validation process the work flow is the following:
      * non-static fields
 {{{
     @Pointcut(
-            "set(@com.google.code.aoplib4j.aspectj.fieldvalidation.Validate "
+            "set(@org.aoplib4j.fieldvalidation.Validate "
             + "* *.*)" 
             + "&& @annotation(validateAnnot) " 
             + "&& args(newValue) && this(instance)")
