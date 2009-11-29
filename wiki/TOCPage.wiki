@@ -5,5 +5,6 @@
     * [ObserverPatternHowTo Implementing the Observer pattern using annotations]
     * [PolicyEnforcementHowTo Applying policy enforcement rules]
     * [ModularityHowTo Implementing modularity at class and package level]
+    * [TransformAssertToVerifyForTests  Transform test assertion into verify]
   * [UserGuide User Guide]
   * [ProjectAnalysys Project analysys]
