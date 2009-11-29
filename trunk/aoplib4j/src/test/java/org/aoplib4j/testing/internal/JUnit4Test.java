@@ -40,6 +40,8 @@ public class JUnit4Test {
         "AssertionError should be thrown";
     
     /**
+     * Inhibit the throws af the assertion failures.
+     * @see AbstractTestingAspect#AOPLIB4J_FAIL_INHIBIT
      * @throws java.lang.Exception
      */
     @BeforeClass
@@ -109,5 +111,28 @@ public class JUnit4Test {
         assertNotNull(ASSERT_VIOLATION_MESSAGE, null);
     }
 
+    /**
+     * The test should throw a NullPointerException since the <code>str</code>
+     * string is null.
+     */
+    @Test(expected= NullPointerException.class)
+    public final void testThatThrowsNullPointerException() {
+        String str = null;
+        
+        assertNotNull(ASSERT_VIOLATION_MESSAGE, str);
+        
+        str.length();
+        
+    }
+    
+    /**
+     * The test should throw a NullPointerException since the <code>str</code>
+     * string is null.
+     */
+    @Test(expected= NullPointerException.class)
+    public final void testThatThrowsNullPointerExceptionAndNoAsserts() {
+        String str = null;        
+        str.length();
+    }
 
 }
