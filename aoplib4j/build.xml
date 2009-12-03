@@ -321,25 +321,25 @@
     	<zip destfile="${dist.dir}/${dist.jar.name}-all.zip">
     		   
     		   <!-- docs -->
-    		   <tarfileset dir="${docs.dir}" prefix="/docs">
+    		   <tarfileset dir="${docs.dir}" prefix="/${dist.jar.name}/docs">
     		      <include name="**/*.*"/>
     		   </tarfileset>
     		
     		   <!-- sources -->
-    		   <tarfileset dir="${src.dir}" prefix="/src">
+    		   <tarfileset dir="${src.dir}" prefix="/${dist.jar.name}/src">
     		      <include name="**/*.java"/>
     		   </tarfileset>
     		   
     		   <!-- external sources-->
-    		   <tarfileset dir="${extlib.dir}" prefix="/lib">
+    		   <tarfileset dir="${extlib.dir}" prefix="/${dist.jar.name}/lib">
                 <include name="*.jar"/>
     		   </tarfileset>
-    		   <tarfileset dir="${aspectj.lib.dir}" prefix="/lib">
+    		   <tarfileset dir="${aspectj.lib.dir}" prefix="/${dist.jar.name}/lib">
                 <include name="aspectjweaver.jar"/>
     		   </tarfileset>
     		
     		   <!-- aoplib4j jar-->
-    		   <tarfileset dir="${dist.dir}">
+    		   <tarfileset dir="${dist.dir}" prefix="/${dist.jar.name}">
     		    <include name="${dist.jar.name}.jar"/>
     		   </tarfileset>
     	</zip>
