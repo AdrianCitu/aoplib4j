@@ -1,0 +1,67 @@
+<span style="font-size: 120%; font-weight: bold;">FailureHandlingHowTo</span>
+&nbsp;
+
+
+<div style="font-style: italic; margin-top: 3px;">How to use the
+@RetryExecution annotation.</div>
+
+</div>
+<h3><a name="Introduction">Introduction</a></h3>
+<p><a name="Introduction">This page is a small tutorial about
+the <tt>@RetryExecution</tt> annotation. </a></p>
+<h3><a
+	name="How_to_use_the_@RetryExecution_annotation_(in_5_minutes)">How
+to use the <tt>@RetryExecution</tt> annotation (in 5 minutes)</a></h3>
+<p><a
+	name="How_to_use_the_@RetryExecution_annotation_(in_5_minutes)">Annotate
+the method for which you want to handle the execution failure. The
+annotation have two mandatory parameters (<tt>maxRetry</tt>), <tt>exceptionToCatch</tt>
+and an optional parameter <tt>waitTime</tt>. </a></p>
+<p><a
+	name="How_to_use_the_@RetryExecution_annotation_(in_5_minutes)">#
+The <tt>maxRetry</tt> parameter must contains the number of times the
+annotated method should be re-executed. # The <tt>exceptionToCatch</tt>
+should contain the exception class that will trigger the re-execution of
+the method. # The <tt>waitTime</tt> represents the time in milliseconds
+to wait before two consecutive executions. </a></p>
+<p><a
+	name="How_to_use_the_@RetryExecution_annotation_(in_5_minutes)">Code
+example: </a></p>
+<pre class="prettyprint"><a
+	name="How_to_use_the_@RetryExecution_annotation_(in_5_minutes)"><span
+	class="pun">...</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="lit">@RetryExecution</span><span class="pun">(</span><span
+	class="pln">exceptionToCatch </span><span class="pun">=</span><span
+	class="pln"> TestingException1</span><span class="pun">.</span><span
+	class="kwd">class</span><span class="pun">,</span><span class="pln"> maxRetry </span><span
+	class="pun">=</span><span class="pln"> </span><span class="lit">2</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span
+	class="pln"> throwException</span><span class="pun">()</span><span
+	class="pln"> </span><span class="kwd">throws</span><span class="pln"> TestingException1</span><span
+	class="pun">,</span><span class="pln"> TestingException2 &nbsp;</span><span
+	class="pun">{</span><span class="pln"><br></span><span class="pun">...</span><span
+	class="pln"><br></span></a></pre>
+<p><a
+	name="How_to_use_the_@RetryExecution_annotation_(in_5_minutes)"> </a></p>
+<h3><a name="The_@RetryExecution_annotation:_under_the_hood">The
+<tt>@RetryExecution</tt> annotation: under the hood</a></h3>
+<p><a name="The_@RetryExecution_annotation:_under_the_hood">Under
+the hood the @AspectJ framework it is used. The pointcut for
+intercepting the methods annotated with the <tt>@RetryExecution</tt> is
+: </a></p>
+<pre class="prettyprint"><a
+	name="The_@RetryExecution_annotation:_under_the_hood"><span
+	class="pln">&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
+	class="pun">(</span><span class="str">"execution("</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"@org.aoplib4j.failurehandling"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">".RetryExecution * * (..)) &amp;&amp; @annotation(retryAnnotation)"</span><span
+	class="pun">)</span></a></pre>
+<p><a name="The_@RetryExecution_annotation:_under_the_hood">The
+<tt>@Around</tt> advice it is used. </a></p>
+<h3><a name="Critics_and_enhancements">Critics and enhancements</a></h3>
+<p><a name="Critics_and_enhancements">An enhancement would be to
+add more than one exception to catch. </a>
+</p>

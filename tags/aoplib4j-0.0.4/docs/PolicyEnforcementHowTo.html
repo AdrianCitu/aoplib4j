@@ -1,0 +1,409 @@
+<span style="font-size: 120%; font-weight: bold;">PolicyEnforcementHowTo</span>
+
+&nbsp;
+
+
+<div style="font-style: italic; margin-top: 3px;">How to use
+policy enforcement aspects.</div>
+
+</div>
+<h3><a name="Introduction">Introduction</a></h3>
+<p><a name="Introduction">Policy enforcement is a mechanism for
+ensuring that system components follow certain programming practices,
+comply with specified rules. The <tt>aoplib4j</tt> contains a few
+aspects dedicated to the policy enforcement. </a></p>
+<h3><a name="The_aop4lib_policy_enforcement_rules">The aop4lib
+policy enforcement rules</a></h3>
+<ul>
+	<li><a name="The_aop4lib_policy_enforcement_rules">Don't use <tt>System.out.print*(...)</tt>.
+	</a></li>
+	<li><a name="The_aop4lib_policy_enforcement_rules">Use only
+	private fields in your classes. </a></li>
+	<li><a name="The_aop4lib_policy_enforcement_rules">Return
+	interfaces of an object from a method, not a implementation class. </a></li>
+	<li><a name="The_aop4lib_policy_enforcement_rules">Return
+	empty arrays or collections from a method, not nulls. </a></li>
+</ul>
+<p><a name="The_aop4lib_policy_enforcement_rules"> </a></p>
+<h3><a name="Don't_use_System.out.print*(...)">Don't use <tt>System.out.print*(...)</tt></a></h3>
+<p><a name="Don't_use_System.out.print*(...)">I think it's not a
+good idea to use <tt>System.out.print*(...)</tt> because it cannot be
+visible into the log files and (eventually) will be visible in
+production to the console. </a></p>
+<p><a name="Don't_use_System.out.print*(...)">This rule is
+applied at compile time so it must compile the code with the <tt>ajc</tt>
+compiler. If in the code a <tt>java.io.PrintStream.print*(...)</tt> is
+found the compiler will raise a warning. Example (taken from the JUnit
+tests) </a></p>
+<pre class="prettyprint"><a
+	name="Don't_use_System.out.print*(...)"><span class="pun">[</span><span
+	class="pln">iajc</span><span class="pun">]</span><span class="pln"> warning at </span><span
+	class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span
+	class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span
+	class="str">"I buy !"</span><span class="pun">);</span><span
+	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
+	class="pun">]</span><span class="pln"> </span><span class="pun">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span><span
+	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
+	class="pun">]</span><span class="pln"> </span><span class="pun">/</span><span
+	class="pln">src</span><span class="pun">/</span><span class="pln">test</span><span
+	class="pun">/</span><span class="pln">java</span><span class="pun">/</span><span
+	class="pln">com</span><span class="pun">/</span><span class="pln">google</span><span
+	class="pun">/</span><span class="pln">code</span><span class="pun">/</span><span
+	class="pln">aoplib4j</span><span class="pun">/</span><span class="pln">aspectj</span><span
+	class="pun">/</span><span class="pln">gof</span><span class="pun">/</span><span
+	class="pln">observer</span><span class="pun">/</span><span class="pln">client</span><span
+	class="pun">/</span><span class="typ">Client</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">38</span><span
+	class="pun">:</span><span class="lit">0</span><span class="pun">::</span><span
+	class="lit">0</span><span class="pln"> </span><span class="str">"Don\'t use System.out.print*(..). Use a logger API."</span><span
+	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
+	class="pun">]</span><span class="pln"> &nbsp;see also</span><span
+	class="pun">:</span><span class="pln"> com</span><span class="pun">/</span><span
+	class="pln">google</span><span class="pun">/</span><span class="pln">code</span><span
+	class="pun">/</span><span class="pln">aoplib4j</span><span class="pun">/</span><span
+	class="pln">aspectj</span><span class="pun">/</span><span class="pln">policy</span><span
+	class="pun">/</span><span class="pln">compiletime</span><span
+	class="pun">/</span><span class="typ">NoSysOutAspect</span><span
+	class="pun">.</span><span class="pln">java</span><span class="pun">::</span><span
+	class="lit">0</span><span class="pln"><br>&nbsp;</span></a></pre>
+<h4><a name="How_it_works_under_the_hood">How it works under
+the hood</a></h4>
+<p><a name="How_it_works_under_the_hood">AspectJ provides a
+static crosscutting mechanism to declare weave-time errors and warnings
+based on certain usage patterns. In our case the <tt>@DeclareWarning</tt>
+construction is used which declares a weave-time warning: </a></p>
+<pre class="prettyprint"><a name="How_it_works_under_the_hood"><span
+	class="pln">&nbsp; &nbsp; </span><span class="lit">@DeclareWarning</span><span
+	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="str">"call(* java.io.PrintStream.print*(..))"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span
+	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+	class="typ">String</span><span class="pln"> NO_SYS_OUT </span><span
+	class="pun">=</span><span class="pln"> &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="str">"Don't use System.out.print*(..). Use a logger API."</span><span
+	class="pun">;</span></a></pre>
+<h3><a name="Use_only_private_fields_in_your_classes">Use only
+private fields in your classes</a></h3>
+<p><a name="Use_only_private_fields_in_your_classes">It's always
+a good practice to not expose directly the non final fields of your
+classes if the class accessible outside his package.Expose this fields
+by providing accessor methods. Joshua Bloch in his "Effective Java
+(2-end edition)" book explains very well why </a><a
+	href="http://books.google.be/books?id=ka2VUBqHiWkC&amp;printsec=frontcover&amp;dq=effective+java+item+43&amp;hl=fr#PPA71,M1"
+	rel="nofollow">it should not use public fields.</a> This rule, as the
+first one is applied at compile time so the output of the compiler
+should be:</p>
+<pre class="prettyprint"><span class="pun">[</span><span
+	class="pln">iajc</span><span class="pun">]</span><span class="pln"> warning at </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span
+	class="pln"> publicString </span><span class="pun">=</span><span
+	class="pln"> </span><span class="kwd">null</span><span class="pun">;</span><span
+	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
+	class="pun">]</span><span class="pln"> </span><span class="pun">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span><span
+	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
+	class="pun">]</span><span class="pln"> </span><span class="pun">/</span><span
+	class="pln">src</span><span class="pun">/</span><span class="pln">test</span><span
+	class="pun">/</span><span class="pln">java</span><span class="pun">/</span><span
+	class="pln">com</span><span class="pun">/</span><span class="pln">google</span><span
+	class="pun">/</span><span class="pln">code</span><span class="pun">/</span><span
+	class="pln">aoplib4j</span><span class="pun">/</span><span class="pln">aspectj</span><span
+	class="pun">/</span><span class="pln">policy</span><span class="pun">/</span><span
+	class="pln">compiletime</span><span class="pun">/</span><span
+	class="typ">CompileTimePolicy</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">43</span><span
+	class="pun">:</span><span class="lit">0</span><span class="pun">::</span><span
+	class="lit">0</span><span class="pln"> </span><span class="str">"Don\'t use non final public, protected or default fields. Make all non final fields private and use set/get methods."</span><span
+	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
+	class="pun">]</span><span class="pln"> &nbsp;see also</span><span
+	class="pun">:</span><span class="pln"> com</span><span class="pun">/</span><span
+	class="pln">google</span><span class="pun">/</span><span class="pln">code</span><span
+	class="pun">/</span><span class="pln">aoplib4j</span><span class="pun">/</span><span
+	class="pln">aspectj</span><span class="pun">/</span><span class="pln">policy</span><span
+	class="pun">/</span><span class="pln">compiletime</span><span
+	class="pun">/</span><span class="typ">OnlyPrivateFieldsAspect</span><span
+	class="pun">.</span><span class="pln">java</span><span class="pun">::</span><span
+	class="lit">0</span></pre>
+<h4><a name="How_it_works_under_the_hood">How it works under
+the hood</a></h4>
+<p><a name="How_it_works_under_the_hood">Under the hood the same
+mechanism of weave-time warning is used. Here is the AspectJ pointcut: </a></p>
+<pre class="prettyprint"><a name="How_it_works_under_the_hood"><span
+	class="pln">&nbsp; &nbsp; </span><span class="lit">@DeclareWarning</span><span
+	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+	class="str">"get(!private !final * *) || set(!private !final * *)"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span
+	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+	class="typ">String</span><span class="pln"> ONLY_PRIVATE_FIELDS </span><span
+	class="pun">=</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="str">"Don't use non final public, protected or default fields."</span><span
+	class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" Make all non final fields private and use set/get methods."</span><span
+	class="pun">;</span><span class="pln"><br></span></a></pre>
+<p><a name="How_it_works_under_the_hood"> </a></p>
+<h3><a
+	name="Return_interfaces_of_an_object_from_a_method,_not_a_implementati">Return
+interfaces of an object from a method, not a implementation class.</a></h3>
+<p><a
+	name="Return_interfaces_of_an_object_from_a_method,_not_a_implementati">This
+is also an "advice" taken from the "Effective Java"(Item 52).If
+appropriate interface type exists, then parameters, return values
+variables and fields should declared using the interface type. Basically
+code like this should be avoid : </a></p>
+<pre class="prettyprint"><a
+	name="Return_interfaces_of_an_object_from_a_method,_not_a_implementati"><span
+	class="pln">&nbsp; </span><span class="com">//don't return a implemenation and don't use as parameter an implementation</span><span
+	class="pln"><br>&nbsp; </span><span class="kwd">public</span><span
+	class="pln"> </span><span class="typ">HashMap</span><span class="pun">&lt;</span><span
+	class="typ">String</span><span class="pun">,</span><span class="typ">String</span><span
+	class="pun">&gt;</span><span class="pln"> &nbsp;someMethod</span><span
+	class="pun">(</span><span class="typ">Vector</span><span class="pun">&lt;</span><span
+	class="typ">String</span><span class="pun">&gt;</span><span class="pln"> param</span><span
+	class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span
+	class="pln"><br>&nbsp; </span><span class="pun">.....</span><span
+	class="pln"><br>&nbsp; </span><span class="pun">}</span></a></pre>
+<p><a
+	name="Return_interfaces_of_an_object_from_a_method,_not_a_implementati">and
+replaced by: </a></p>
+<pre class="prettyprint"><a
+	name="Return_interfaces_of_an_object_from_a_method,_not_a_implementati"><span
+	class="pln">&nbsp; </span><span class="kwd">public</span><span
+	class="pln"> </span><span class="typ">Map</span><span class="pun">&lt;</span><span
+	class="typ">String</span><span class="pun">,</span><span class="typ">String</span><span
+	class="pun">&gt;</span><span class="pln"> &nbsp;someMethod</span><span
+	class="pun">(</span><span class="typ">List</span><span class="pun">&lt;</span><span
+	class="typ">String</span><span class="pun">&gt;</span><span class="pln"> param</span><span
+	class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span
+	class="pln"><br>&nbsp; </span><span class="pun">...</span><span
+	class="pln"><br>&nbsp; </span><span class="pun">}</span></a></pre>
+<p><a
+	name="Return_interfaces_of_an_object_from_a_method,_not_a_implementati">The
+<tt>aoplib4j</tt> offer a limited implementation for this rule. Firstly,
+it verifies only the return values of the methods (the same rule should
+apply of class fields and method parameters) and it can verifies only
+the sub-clases of the <tt>java.util.Collection</tt> and <tt>java.util.Map</tt>;
+the </a><a href="http://code.google.com/p/aoplib4j/issues/detail?id=35"
+	rel="nofollow">issue#35</a> has been created for a more general
+implementation. This rule is also a compile time warning and the <tt>ajc</tt>
+message warning will be:</p>
+<pre class="prettyprint"><span class="pun">[</span><span
+	class="pln">iajc</span><span class="pun">]</span><span class="pln"> warning at </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="typ">Vector</span><span
+	class="pun">&lt;</span><span class="typ">String</span><span class="pun">&gt;</span><span
+	class="pln"> returnVectorNotInterface</span><span class="pun">()</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br></span><span
+	class="pun">[</span><span class="pln">iajc</span><span class="pun">]</span><span
+	class="pln"> </span><span class="pun">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span><span
+	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
+	class="pun">]</span><span class="pln"> </span><span class="pun">/</span><span
+	class="pln">src</span><span class="pun">/</span><span class="pln">test</span><span
+	class="pun">/</span><span class="pln">java</span><span class="pun">/</span><span
+	class="pln">com</span><span class="pun">/</span><span class="pln">google</span><span
+	class="pun">/</span><span class="pln">code</span><span class="pun">/</span><span
+	class="pln">aoplib4j</span><span class="pun">/</span><span class="pln">aspectj</span><span
+	class="pun">/</span><span class="pln">policy</span><span class="pun">/</span><span
+	class="pln">compiletime</span><span class="pun">/</span><span
+	class="typ">CompileTimePolicy</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">67</span><span
+	class="pun">:</span><span class="lit">0</span><span class="pun">::</span><span
+	class="lit">0</span><span class="pln"> </span><span class="str">"Return the Collection interface or another interface not the real implementation"</span><span
+	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
+	class="pun">]</span><span class="pln"> &nbsp;see also</span><span
+	class="pun">:</span><span class="pln"> com</span><span class="pun">/</span><span
+	class="pln">google</span><span class="pun">/</span><span class="pln">code</span><span
+	class="pun">/</span><span class="pln">aoplib4j</span><span class="pun">/</span><span
+	class="pln">aspectj</span><span class="pun">/</span><span class="pln">policy</span><span
+	class="pun">/</span><span class="pln">compiletime</span><span
+	class="pun">/</span><span class="typ">UseInterfacesAspect</span><span
+	class="pun">.</span><span class="pln">java</span><span class="pun">::</span><span
+	class="lit">0</span></pre>
+<h4><a name="How_it_works_under_the_hood">How it works under
+the hood</a></h4>
+<p><a name="How_it_works_under_the_hood">Here are the two
+pointcuts used Pointcut capturing return values of subclasses of <tt>java.util.Collection</tt>:
+</a></p>
+<pre class="prettyprint"><a name="How_it_works_under_the_hood"><span
+	class="pln">&nbsp; &nbsp;</span><span class="lit">@DeclareWarning</span><span
+	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="str">"execution("</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"(java.util.TreeSet+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.Vector+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.concurrent.SynchronousQueue+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.Stack+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || javax.management.relation.RoleUnresolvedList+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || javax.management.relation.RoleList+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.PriorityQueue+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.concurrent.PriorityBlockingQueue+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.LinkedList+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.LinkedHashSet+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.concurrent.LinkedBlockingQueue+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.HashSet+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.concurrent.DelayQueue+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.concurrent.CopyOnWriteArraySet+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.concurrent.CopyOnWriteArrayList+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.concurrent.ConcurrentLinkedQueue+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.beans.beancontext.BeanContextSupport+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.beans.beancontext.BeanContextServicesSupport+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.ArrayList+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.concurrent.ArrayBlockingQueue+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">")"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" *..*.*(..))"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span
+	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+	class="typ">String</span><span class="pln"> NO_IMPL_COLLECTION </span><span
+	class="pun">=</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="str">"Return the Collection interface or another interface not the real "</span><span
+	class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"implementation"</span><span
+	class="pun">;</span></a></pre>
+<p><a name="How_it_works_under_the_hood">Pointcut capturing
+return values of subclasses of <tt>java.util.Map</tt>: </a></p>
+<pre class="prettyprint"><a name="How_it_works_under_the_hood"><span
+	class="pln">&nbsp; &nbsp;</span><span class="lit">@DeclareWarning</span><span
+	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="str">"execution("</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"(java.util.HashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.Hashtable+"</span><span
+	class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.concurrent.ConcurrentHashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.WeakHashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.TreeMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.awt.RenderingHints+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.Properties+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.LinkedHashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.IdentityHashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.EnumMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.IdentityHashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.IdentityHashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.IdentityHashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.IdentityHashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.IdentityHashMap+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">")"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" *..*.*(..))"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span
+	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+	class="typ">String</span><span class="pln"> NO_IMPL_MAPS </span><span
+	class="pun">=</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="str">"Return the Map interface or another interface not the real "</span><span
+	class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"implementation"</span><span
+	class="pun">;</span></a></pre>
+<h3><a
+	name="Return_empty_arrays_or_collections_from_a_method,_not_nulls.">Return
+empty arrays or collections from a method, not nulls.</a></h3>
+<p><a
+	name="Return_empty_arrays_or_collections_from_a_method,_not_nulls.">This
+is also taken from "Effective Java 2-end edition" (Item 43). This rule
+is applied at runtime so, the code should be executed in order to verify
+the return values of the methods. The default behavior if a violation of
+the rule is found will be to log an error with the </a><a
+	href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/logging/Level.html#SEVERE"
+	rel="nofollow">SEVERE level</a> (as you see the <tt>java.util.logging</tt>
+is used). Another possible behavior is to throw an <a
+	href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/UnsupportedOperationException.html"
+	rel="nofollow">java.lang.UnsupportedOperationException</a> by executing
+the code with the system variable <tt>THROW_EXCEPTION_FOR_VIOLATIONS</tt>
+(the value of the constant <tt>org.aoplib4j.policy.runtime.AbstractRuntimePolicyAspect#THROW_EXCEPTION_FOR_VIOLATIONS</tt>)
+set to <tt>true</tt>.</p>
+<h4><a name="How_it_works_under_the_hood">How it works under
+the hood</a></h4>
+<p><a name="How_it_works_under_the_hood">The AspectJ pointcut
+that will intercept all the methods having as return values a collection
+or map or an array is: </a></p>
+<pre class="prettyprint"><a name="How_it_works_under_the_hood"><span
+	class="pln">&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
+	class="pun">(</span><span class="str">"execution("</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"(java.util.Map+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.util.Collection+"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || java.lang.Object[]+)"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" *..*.*(..)) "</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span
+	class="pln"> notNullCollectionOrArrayPointcut</span><span class="pun">()</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="pun">}</span></a></pre>
+<p><a name="How_it_works_under_the_hood">For retrieving the
+returned value of the pointcut the <tt>@AfterReturning</tt> advice is
+used. </a></p>
+<pre class="prettyprint"><a name="How_it_works_under_the_hood"><span
+	class="pln">&nbsp; </span><span class="lit">@AfterReturning</span><span
+	class="pun">(</span><span class="pln">value </span><span class="pun">=</span><span
+	class="pln"> </span><span class="str">"notNullCollectionOrArrayPointcut()"</span><span
+	class="pun">,</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; returning </span><span
+	class="pun">=</span><span class="pln"> </span><span class="str">"ret"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span
+	class="pln"> notNullCollectionOrArrayAdvice</span><span class="pun">(</span><span
+	class="kwd">final</span><span class="pln"> </span><span class="typ">Object</span><span
+	class="pln"> ret</span><span class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="kwd">final</span><span class="pln"> </span><span class="typ">JoinPoint</span><span
+	class="pun">.</span><span class="typ">StaticPart</span><span
+	class="pln"> staticJp</span><span class="pun">)</span><span class="pln"> </span><span
+	class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
+	class="pln">ret </span><span class="pun">==</span><span class="pln"> </span><span
+	class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span
+	class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="typ">String</span><span class="pln"> errorMessage </span><span
+	class="pun">=</span><span class="pln"> </span><span class="str">"Method "</span><span
+	class="pln"> </span><span class="pun">+</span><span class="pln"> staticJp</span><span
+	class="pun">.</span><span class="pln">getSignature</span><span
+	class="pun">()</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" should not return null value, it should return an "</span><span
+	class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"empty Collection/Map/Array.(see Item 43 from \"Effective Java\""</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" second edition book)"</span><span
+	class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throwExceptionOrLogIt</span><span
+	class="pun">(</span><span class="pln">errorMessage</span><span
+	class="pun">,</span><span class="pln"> logger</span><span class="pun">,</span><span
+	class="pln"> </span><span class="typ">Level</span><span class="pun">.</span><span
+	class="pln">SEVERE</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br></span></a></pre>
+<p><a name="How_it_works_under_the_hood">As you can see this
+rule have a major drawback; the faulty code must be executed in order to
+be found. </a>
