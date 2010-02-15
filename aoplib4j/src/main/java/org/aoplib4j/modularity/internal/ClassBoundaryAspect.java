@@ -48,6 +48,10 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      *   && target(calledObj) && this(callerObj) && if()
      * </pre>
      * 
+     * The pointcut is represented by a static boolean method 
+     * because of the use of the <code>if()</code> pointcut (see 7.3.2 from
+     * AspectJ in action 2 ed.)
+     * 
      * @param calledObj instance of the called object.
      * @param callerObj instance of the caller object.
      * 
@@ -89,6 +93,10 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      *    (@org.aoplib4j.modularity.ClassBoundary *).*(..))
      *    && if() 
      * </pre>
+     * 
+     * The pointcut is represented by a static boolean method 
+     * because of the use of the <code>if()</code> pointcut (see 7.3.2 from
+     * AspectJ in action 2 ed.)
      * 
      * @param jpsp AspectJ join point static part.
      * 

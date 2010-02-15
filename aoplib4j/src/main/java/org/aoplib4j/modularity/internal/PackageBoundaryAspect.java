@@ -64,6 +64,10 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      *   && target(calledObj) && this(callerObj) && if()
      * </pre>
      * 
+     * The pointcut is represented by a static boolean method 
+     * because of the use of the <code>if()</code> pointcut (see 7.3.2 from
+     * AspectJ in action 2 ed.)
+     * 
      * @param calledObj instance of the called object.
      * @param callerObj instance of the caller object.
      * @return false if the callerObj and calledObj have are on the same package
@@ -163,6 +167,9 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      *    (@org.aoplib4j.modularity.InjectedPkgBoundary *)
      *      .*(..)) 
      * </pre>
+     * The pointcut is represented by a static boolean method 
+     * because of the use of the <code>if()</code> pointcut (see 7.3.2 from
+     * AspectJ in action 2 ed.)
      * 
      * @param jpsp AspectJ join point static part.
      * @return false if the {@link PackageBoundary} annotation retrieved from
