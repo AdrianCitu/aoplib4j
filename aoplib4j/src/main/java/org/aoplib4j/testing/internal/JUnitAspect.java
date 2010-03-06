@@ -65,8 +65,7 @@ public final class JUnitAspect extends AbstractTestingAspect {
      *   || execution(@org.junit.Test * * ())
      * </pre>
      * 
-     * @see org.aoplib4j.testing.internal.AbstractTestingAspect#
-     *  executionOfTestMethodPointcut()
+     * @see AbstractTestingAspect#executionOfTestMethodPointcut()
      */
     @Pointcut("execution(public void junit.framework.TestCase+.test*())"
             + " || execution(@org.junit.Test * * ())")

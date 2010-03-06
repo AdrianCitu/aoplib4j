@@ -61,8 +61,7 @@ public final class TestNGAspect extends AbstractTestingAspect {
      *  execution(@org.testng.annotations.Test * * ())
      * </pre>
      * 
-     * @see org.aoplib4j.testing.internal.AbstractTestingAspect#
-     *  executionOfTestMethodPointcut()
+     * @see AbstractTestingAspect#executionOfTestMethodPointcut()
      */
     @Pointcut("execution(@org.testng.annotations.Test * * ())")
     @Override
@@ -101,8 +100,7 @@ public final class TestNGAspect extends AbstractTestingAspect {
      * {@inheritDoc}
      * Implementation using the TestNG {@link Assert#fail()}.
      * 
-     * @see org.aoplib4j.testing.internal.AbstractTestingAspect#
-     *  assertFail(java.lang.String)
+     * @see AbstractTestingAspect#assertFail(java.lang.String)
      */
     @Override
     public void assertFail(final String message) {
