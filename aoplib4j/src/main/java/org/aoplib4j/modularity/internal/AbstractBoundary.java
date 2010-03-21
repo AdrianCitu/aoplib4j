@@ -122,8 +122,11 @@ abstract class AbstractBoundary {
       * Method that computes the information about the caller class. The
       * information is stored into a {@link StackTraceElement} object.
       * 
-      * The caller information is on the third position on the stack trace;
-      * the first position contains the call to this method, and the 
+      * Normally the caller information is on the third position on 
+      * the stack trace but a better idea but the method returns the first 
+      * entry that
+      * do not have as package name <code>org.aoplib4j.modularity.internal
+      * </code>.;the first position contains the call to this method, and the 
       * second one to the
       * {@link 
       * ClassBoundaryAspect#callOfStaticClassBoundaryAdvice(
@@ -133,6 +136,7 @@ abstract class AbstractBoundary {
       *{@link
       *PackageBoundaryAspect#callOfStaticPackageBoundaryAdvice(
       * org.aspectj.lang.JoinPoint.StaticPart)}
+      * 
       * 
       * This method will return faulty results when a child class calls an
       * inherited non overridden parent method. In this case the stack trace
@@ -158,8 +162,17 @@ abstract class AbstractBoundary {
       StackTraceElement getCallerInformation(
              final String calledClassName, final String calledMethodName) {
 
+         String packageName = this.getClass().getPackage().getName();
+          
          StackTraceElement[] stes = new Throwable().getStackTrace();
 
+         for (StackTraceElement stackTraceElement : stes) {
+            if (!stackTraceElement.getClassName().startsWith(packageName)) {
+                return stackTraceElement;
+            }
+        }
+         //should never happen;
+         //better that sending a null.
          return stes[2];
      }
 
