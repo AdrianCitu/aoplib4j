@@ -1,0 +1,44 @@
+ActorClass.[static]staticMethod() -> void{
+ActorClass.constructor() -> void;
+ActorClass.actorMethodWithParams(java.lang.String str) -> void{
+Class1.constructor(java.lang.String str) -> void;
+Class1.method1Class1() -> String{
+Class2.constructor() -> void;
+Class2.method1Class2() -> void{
+Class2.method2Class2() -> Integer;
+Class3.constructor() -> void;
+Class3.method1Class3() -> void{
+Class3.method2Class3() -> Integer;
+}
+}
+}
+ActorClass.[static]staticPrivateMethod(java.lang.Integer in) -> void;
+}
+ActorClass.nonAnnotatedMethod() -> void{
+Class1.constructor(java.lang.String str) -> void;
+Class1.method1Class1() -> String{
+Class2.constructor() -> void;
+Class2.method1Class2() -> void{
+Class2.method2Class2() -> Integer;
+Class3.constructor() -> void;
+Class3.method1Class3() -> void{
+Class3.method2Class3() -> Integer;
+}
+}
+}
+}
+ActorClass.actorMethodWithParams(java.lang.String str) -> void{
+Class1.constructor(java.lang.String str) -> void;
+Class1.method1Class1() -> String{
+Class2.constructor() -> void;
+Class2.method1Class2() -> void{
+Class2.method2Class2() -> Integer;
+Class3.constructor() -> void;
+Class3.method1Class3() -> void{
+Class3.method2Class3() -> Integer;
+}
+}
+}
+ActorClass.[static]staticPrivateMethod(java.lang.Integer in) -> void;
+}
+}
