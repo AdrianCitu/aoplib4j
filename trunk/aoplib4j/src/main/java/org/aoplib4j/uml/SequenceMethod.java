@@ -135,9 +135,9 @@ public final class SequenceMethod {
     }
 
     /**
-     * @return the collection of childs.
+     * @return the collection of children.
      */
-    public List<SequenceMethod> getChilds() {
+    public List<SequenceMethod> getChildren() {
         return this.childs;
     }
 
@@ -157,9 +157,9 @@ public final class SequenceMethod {
     } 
     
     /**
-     * @return true if the node have childrens attached, false otherwise.
+     * @return true if the node have children attached, false otherwise.
      */
-    public boolean hasChilds() {
+    public boolean haveChildren() {
         return this.childs.size() != 0;
     }
     
