@@ -15,89 +15,107 @@
 package org.aoplib4j.uml;
 
 import java.io.IOException;
-import java.io.StringWriter;
-
 
 /**
  * Writer for the SEQUENCE project.
- * (http://www.zanthan.com/itymbi/archives/cat_sequence.html). 
+ * (http://www.zanthan.com/itymbi/archives/cat_sequence.html).
+ * 
+ * This class is a concrete class from the Template Method Pattern
+ * (http://en.wikipedia.org/wiki/Template_method_pattern).
  * 
  * @author Adrian Citu
- *
+ * 
  */
-public final class SEQUENCEWriter extends SequenceDiagramWriter {
-    
+public final class SEQUENCEWriter extends DFSDiagramWriter {
 
+    /**
+     * buffer on which the temporary content is written.
+     */
+    private StringBuffer strWrit = new StringBuffer();
 
-
-    /** 
-     * Write the diagram for in the SEQUENCE format.
+    /**
+     * Method called after all the children methods are written.
      * 
-     * @param root the root method of the diagram.
+     * @param meth the method to write.
+     * 
      * @throws IOException if any writing error.
      */
     @Override
-    public void write(final SequenceMethod root) throws IOException {
+    public void writeMethodAfterChilds(final SequenceMethod meth) 
+        throws IOException {
         
-        StringWriter strWrit = new StringWriter();
-        
-        strWrit
-            .append(root.getClassName().substring(
-                root.getClassName().lastIndexOf(".") + 1))
-            .append(".");
-        
-        if (root.isStatic()) {
+        if (meth.haveChildren()) {
+            this.strWrit.append("}");
+            this.writeLine(strWrit.toString());
+            this.strWrit = new StringBuffer();
+        }
+    }
+
+    /**
+     * Method that will write the SEQUENCE diagram part for a method.
+     * Example of result for a method that does have children 
+     * (the methods calls another methods)
+     * <pre>
+     * ActorClass.actorMethod() -> void{ 
+     * </pre>
+     * 
+     * Example of result for a constructor that do not call another methods 
+     * inside.
+     * <pre>
+     * Class1.constructor(java.lang.String str) -> void;
+     * </pre>
+     * 
+     * @param meth the method to write.
+     * 
+     * @throws IOException if any writing error.
+     */
+    @Override
+    public void writeMethodBeforeChilds(final SequenceMethod meth) 
+        throws IOException {
+
+        strWrit.append(
+                meth.getClassName().substring(
+                        meth.getClassName().lastIndexOf(".") + 1)).append(".");
+
+        if (meth.isStatic()) {
             strWrit.append("[static]");
         }
-        
-        strWrit
-            .append(root.getMethodName())
-            .append("(");
-        
-        String[] parametersNames = root.getParameterNames();
-        Class< ? >[] parametersTypes = root.getParameterTypes();
-        
+
+        strWrit.append(meth.getMethodName()).append("(");
+
+        String[] parametersNames = meth.getParameterNames();
+        Class< ? >[] parametersTypes = meth.getParameterTypes();
+
         for (int i = 0; i < parametersNames.length - 1; i++) {
-            strWrit
-                .append(parametersTypes[i].getCanonicalName())
-                .append(" ")
-                .append(parametersNames[i])
-                .append(",");
+            strWrit.append(parametersTypes[i].getCanonicalName()).append(" ")
+                    .append(parametersNames[i]).append(",");
         }
-        
+
         if (parametersNames.length != 0) {
-            strWrit
-            .append(parametersTypes[parametersNames.length - 1]
-                                    .getCanonicalName())
-            .append(" ")
-            .append(parametersNames[parametersNames.length - 1]);   
+            strWrit.append(
+                    parametersTypes[parametersNames.length - 1]
+                            .getCanonicalName()).append(" ").append(
+                    parametersNames[parametersNames.length - 1]);
         }
+        
         strWrit.append(")");
-        
         strWrit.append(" -> ");
-        
-        if (root.getReturnType() != null) {
-            strWrit.append(root.getReturnType().getSimpleName());
+
+        if (meth.getReturnType() != null) {
+            strWrit.append(meth.getReturnType().getSimpleName());
         } else {
             strWrit.append("void");
         }
-            
-        
-        if (root.hasChilds()) {
-           strWrit.append("{");
-           
-           this.writeLine(strWrit.toString());
-           strWrit = new StringWriter();
-           
-           for (SequenceMethod children : root.getChilds()) {
-               this.write(children);
-           }
-           
-           strWrit.append("}");
+
+        if (meth.haveChildren()) {
+            strWrit.append("{");
+
         } else {
             strWrit.append(";");
         }
+
         this.writeLine(strWrit.toString());
+        this.strWrit = new StringBuffer();
         
     }
 }

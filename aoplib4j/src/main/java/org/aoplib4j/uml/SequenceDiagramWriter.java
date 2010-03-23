@@ -31,7 +31,7 @@ public abstract class SequenceDiagramWriter {
     /**
      * the new line separator.
      */
-    private static final String NEW_LINE = System.getProperty("line.separator");
+    static final String NEW_LINE = System.getProperty("line.separator");
     
     /**
      * The writer to use for the diagram writing.
