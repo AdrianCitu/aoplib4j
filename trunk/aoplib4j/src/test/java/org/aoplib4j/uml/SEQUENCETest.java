@@ -27,12 +27,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Class for testthe {@link SEQUENCEWriter} writer.
+ * Class for test the {@link SEQUENCEWriter} writer.
  * 
  * @author Adrian Citu
  *
  */
-public class SEQUENCETest extends UmlTest {
+public class SEQUENCETest extends UmlTestsRoot {
 
     /**
      * Test that create a diagram for the {@link ActorClass#staticMethod()} and

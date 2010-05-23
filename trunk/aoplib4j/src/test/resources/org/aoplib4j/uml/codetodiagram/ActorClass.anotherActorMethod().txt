@@ -1,0 +1,9 @@
+<?xml version="1.0"encoding="UTF-8"?>
+<sequence>
+<actors>
+<actor id="org.aoplib4j.uml.codetodiagram.ActorClass" type="user">ActorClass</actor>
+</actors>
+<messages>
+</messages>
+
+</sequence>

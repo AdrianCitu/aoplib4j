@@ -40,13 +40,55 @@ public abstract class DFSDiagramWriter extends SequenceDiagramWriter {
     @Override
     public final void write(final SequenceMethod meth) throws IOException {
         
-        writeMethodBeforeChilds(meth);
+        this.writeHeader(meth);
+        this.writeMethod(meth);
+        this.writeFooter(meth);
+    }
+    
+
+    /**
+     * Last method called the end for the diagram writing.
+     * @param meth the root method
+     * @throws IOException if any exception when writing.
+     */
+    public abstract void writeFooter(SequenceMethod meth) throws IOException;
+
+    /**
+     * Method called only one time at the beginning of the diagram writing.
+     *  
+     * @param meth the root method.
+     * @throws IOException if any exception when writing.
+     */
+    public abstract void writeHeader(SequenceMethod meth) throws IOException;
+
+    /**
+     *  Write the content for a method. The workflow is :
+     *  <ul>
+     *  <li>
+     *      call {@link #writeMethodBeforeChilds(SequenceMethod)}
+     *  </li>
+     *  <li>
+     *      for every child method method call 
+     *      {@link #writeMethod(SequenceMethod)}
+     *  </li>
+     *  
+     *  <li>
+     *      call {@link #writeMethodAfterChilds(SequenceMethod)}
+     *  </li>
+     *  </ul>
+     *  
+     * @param meth the method to write.
+     * @throws IOException if any exception when writing.
+     */
+    private void writeMethod(final SequenceMethod meth) throws IOException {
+        
+        this.writeMethodBeforeChilds(meth);
         
         for (SequenceMethod children : meth.getChildren()) {
-            this.write(children);
+            this.writeMethod(children);
         }
         
-        writeMethodAfterChilds(meth);
+        this.writeMethodAfterChilds(meth);
     }
     
     /**

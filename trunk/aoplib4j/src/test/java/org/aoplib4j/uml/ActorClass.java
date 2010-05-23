@@ -14,10 +14,10 @@
  */
 package org.aoplib4j.uml;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
+ * Class containing methods annotated with the {@link Aoplib4jSequenceDiagram}
+ * annotation and used for testing the {@link SEQUENCEWriter} writer.
  * @author Adrian Citu
  *
  */
@@ -28,21 +28,21 @@ public class ActorClass {
      * Warning ! the path should be the same as the one from the annotation.
      */
     public static final String STATIC_METHOD_DIAGRAM_PATH = 
-       SequenceDiagramTest.DIAGRAMS_FOLDER + "/staticMethod.seq";
+       SEQUENCETest.DIAGRAMS_FOLDER + "/staticMethod.seq";
 
     /**
      * Path of the diagram for {@link #actorMethodWithParams(String)} method.
      * Warning ! the path should be the same as the one from the annotation.
      */
     public static final String ACTOR_METHOD_DIAGRAM_PATH_1 = 
-        SequenceDiagramTest.DIAGRAMS_FOLDER + "/actorMethodDepth1.seq";
+        SEQUENCETest.DIAGRAMS_FOLDER + "/actorMethodDepth1.seq";
     
     /**
      * Path of the diagram for {@link #actorMethodWithParams(String)} method.
      * Warning ! the path should be the same as the one from the annotation.
      */
     public static final String ANOTHER_METHOD_DIAGRAM_PATH_0 = 
-        SequenceDiagramTest.DIAGRAMS_FOLDER + "/anotherActorMethodDepth0.seq";
+        SEQUENCETest.DIAGRAMS_FOLDER + "/anotherActorMethodDepth0.seq";
 
     /**
      * Path of the diagram for {@link #methodWithNestedAnnotation2(String)}
@@ -50,14 +50,14 @@ public class ActorClass {
      * Warning ! the path should be the same as the one from the annotation.
      */
     public static final String METHOD_DIAGRAM_WITH_NESTED_ANNO2 = 
-       SequenceDiagramTest.DIAGRAMS_FOLDER + "/methodWithNestedAnnotation2.seq";
+       SEQUENCETest.DIAGRAMS_FOLDER + "/methodWithNestedAnnotation2.seq";
     
     /**
      * Path of the diagram for {@link #methodWithNestedAnnotation(String)} method.
      * Warning ! the path should be the same as the one from the annotation.
      */
     public static final String METHOD_DIAGRAM_WITH_NESTED_ANNO = 
-        SequenceDiagramTest.DIAGRAMS_FOLDER + "/methodWithNestedAnnotation.seq";
+        SEQUENCETest.DIAGRAMS_FOLDER + "/methodWithNestedAnnotation.seq";
     
     
     

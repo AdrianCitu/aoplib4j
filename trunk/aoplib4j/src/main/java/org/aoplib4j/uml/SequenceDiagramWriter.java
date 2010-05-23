@@ -15,8 +15,9 @@
 package org.aoplib4j.uml;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 /**
@@ -60,7 +61,9 @@ public abstract class SequenceDiagramWriter {
         try {
             this.diagramFullPath = diagrFullPath;
             diagramWriter = 
-                new BufferedWriter(new FileWriter(diagrFullPath));
+                new BufferedWriter(
+                        new OutputStreamWriter(
+                                new FileOutputStream(diagrFullPath), "UTF8"));
         } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         } 
