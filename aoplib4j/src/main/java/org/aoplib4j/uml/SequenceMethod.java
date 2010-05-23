@@ -64,6 +64,11 @@ public final class SequenceMethod {
     private boolean staticMethod = false;
     
     /**
+     * The method is a constructor or not.
+     */
+    private boolean constructor = false;
+    
+    /**
      * The "childs" of the method; all the methods that the method called.
      */
     private List<SequenceMethod> childs = new ArrayList<SequenceMethod>();
@@ -78,21 +83,24 @@ public final class SequenceMethod {
     /**
      * @param clsName the class name on which the method is attached.
      * @param metdName the method name
-     * @param sts static or not
+     * @param stsOrCons stsOrCons[0] is the method static, stsOrCons[1] is the
+     * method a constructor (made an array and not 2 parameters because of 
+     * Checkstyle rule; not proud of the solution)
      * @param retType return type of the method.
      * @param paramTypes parameter types of the method
      * @param paramNames parameter names of the method
      * @param caller the caller method.
      */
     public SequenceMethod(final String clsName, final String metdName, 
-            final boolean sts, final Class< ? > retType,
+            final boolean[] stsOrCons, final Class< ? > retType,
             final Class< ? >[] paramTypes, final String[] paramNames,
             final SequenceMethod ... caller) {
         super();
         
         this.className = clsName;
         this.methodName = metdName;
-        this.staticMethod = sts;
+        this.staticMethod = stsOrCons[0];
+        this.constructor = stsOrCons[1];
         this.returnType = retType;
         this.parameterTypes = paramTypes;
         this.parameterNames = paramNames;
@@ -104,7 +112,9 @@ public final class SequenceMethod {
     }
     
     /**
-     * @return the class name of which this method is attached to.
+     * @return the (full) class name of which this method is attached to.
+     * 
+     * @see getSimpleClassName();
      */
     public String getClassName() {
         return this.className;
@@ -168,5 +178,26 @@ public final class SequenceMethod {
      */
     public boolean isStatic() {
         return this.staticMethod;
+    }
+    
+    /**
+     * @return true if the method is a constructor, false otherwise
+     */
+    public boolean isConstructor() {
+        return this.constructor;
+    }
+    
+    /**
+     * @return the simple (no packages) class name; returns null if the class
+     * name is null.
+     */
+    public String getSimpleClassName() {
+        String fullClassName = this.getClassName();
+        
+        if (fullClassName != null) {
+            return fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
+        } else {
+            return null;
+        }
     }
 }

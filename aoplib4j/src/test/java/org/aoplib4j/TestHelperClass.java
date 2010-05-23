@@ -57,11 +57,11 @@ public final class TestHelperClass {
     
     /**
      * Method that transform the relative path of  a resource to a complete 
-     * path. (/com/bobj/titi.java to c:/tpm/src-tests/com/bobj/titi.java)
+     * path. (/org/aoplib4j/titi.java to c:/tpm/src/test/org/aoplib4j/titi.java)
      * 
      * @param relativePath String representing the relative path of the 
      * resource 
-     * (ex: /com/boboj/titi/toot.java)
+     * (ex: /org/aoplib4j/titi/toto.java)
      * 
      * @return
      * 

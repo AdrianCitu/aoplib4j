@@ -17,7 +17,7 @@ package org.aoplib4j.uml;
 import java.io.IOException;
 
 /**
- * Writer for the SEQUENCE project.
+ * Writer for the <code>SEQUENCE</code> project.
  * (http://www.zanthan.com/itymbi/archives/cat_sequence.html).
  * 
  * This class is a concrete class from the Template Method Pattern
@@ -117,5 +117,21 @@ public final class SEQUENCEWriter extends DFSDiagramWriter {
         this.writeLine(strWrit.toString());
         this.strWrit = new StringBuffer();
         
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeFooter(final SequenceMethod meth) throws IOException {
+        //nothing to do
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeHeader(final SequenceMethod meth) throws IOException {
+        //nothing to do;
     }
 }

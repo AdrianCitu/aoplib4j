@@ -28,7 +28,7 @@ import org.junit.BeforeClass;
  * @author Adrian Citu
  *
  */
-public abstract class UmlTest {
+public abstract class UmlTestsRoot {
 
     ActorClass ac = new ActorClass();
     

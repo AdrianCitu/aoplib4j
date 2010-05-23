@@ -95,6 +95,11 @@ public final class SequenceDiagramAspect {
         Logger.getLogger(RetryExecutionAspect.class.getName());
 
     /**
+     * the name under which a constructor will appear in the diagrams.
+     */
+    private static final String CONSTRUCTOR_METHOD_NAME = "constructor";
+
+    /**
      * Pointcut representing the execution of the methods annotated with the
      * {@link Aoplib4jSequenceDiagram} annotation. The pointcut represents
      * the starting point of the sequencediagram.
@@ -443,18 +448,18 @@ public final class SequenceDiagramAspect {
             final SequenceMethod ... parent) {
         
         String className = sig.getDeclaringTypeName();
-        String methodName = "constructor";
+        String methodName = CONSTRUCTOR_METHOD_NAME;
         Class< ? > returnType = null;
         Class< ? >[] parameterTypes = {};
         String[] parameterNames = {};
         
-        boolean isStatic = false;
+        boolean[] isStaticAndConstructor = {false, false};
         
         if (sig instanceof MethodSignature) {
             MethodSignature msig = (MethodSignature) sig;
             
             methodName = msig.getMethod().getName();
-            isStatic = Modifier.isStatic(msig.getModifiers());
+            isStaticAndConstructor[0] = Modifier.isStatic(msig.getModifiers());
             
             returnType = msig.getReturnType();
             
@@ -469,6 +474,8 @@ public final class SequenceDiagramAspect {
         } else if (sig instanceof ConstructorSignature) {
             ConstructorSignature msig = (ConstructorSignature) sig;
 
+            isStaticAndConstructor[1] = true;
+            
             if (msig.getParameterTypes() != null) {
                 parameterTypes = msig.getParameterTypes();
             }
@@ -479,10 +486,12 @@ public final class SequenceDiagramAspect {
         }
         
         if (parent != null && parent.length != 0) {
-            return new SequenceMethod(className, methodName, isStatic, 
+            return new SequenceMethod(className, methodName, 
+                    isStaticAndConstructor, 
                     returnType, parameterTypes, parameterNames, parent[0]);   
         } else {
-            return new SequenceMethod(className, methodName, isStatic, 
+            return new SequenceMethod(className, methodName, 
+                    isStaticAndConstructor, 
                     returnType, parameterTypes, parameterNames);
         }
     }
