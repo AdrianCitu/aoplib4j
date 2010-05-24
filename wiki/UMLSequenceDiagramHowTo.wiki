@@ -9,7 +9,7 @@ This page is a small tutorial about the {{{@Aoplib4jSequenceDiagram}}} annotatio
 
   # Annotate the method(s) for which you want to generate the sequence diagram with the {{{@Aoplib4jSequenceDiagram}}} annotation and add as value for the {{{diagramWriter}}} attribute your own writer class name one of the writers offered by AopLib4j.
 
-  #Execute the annotated method and retrieve the sequence diagram from the java.io.tmpdir folder (the diagram name is ClassName.annotateMethodName().txt)
+  # Execute the annotated method and retrieve the sequence diagram from the java.io.tmpdir folder (the diagram name is ClassName.annotateMethodName().txt)
 
 === How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 10 minutes) ===
 
@@ -21,11 +21,16 @@ Code example of {{{Aoplib4jSequenceDiagram}}} use(taken from the JUnit tests):
 {{{
 public class ActorClass ...
 
+    //Write the diagram using the SEQUENCEWriter; the diagram will be written
+    //into the java.io.tmpdir/ActorClass.staticMethod().txt file
     @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class)
     public static void staticMethod() {
     ....
     }
 
+
+    //Write the diagram using the SEQUENCEWriter; the diagram will be written
+    //into the /aoplib4jtests/main.seq file.
     @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class, 
             diagramFullPath = "/aoplib4jtests/main.seq", diagramDepth = 30)
     public void actorMethod() {
@@ -34,57 +39,102 @@ public class ActorClass ...
     
 }}}  
 
-The {{{validationClass}}} parameter should be a class that inherits from the {{{FieldValidator}}} abstract class.
-The structure of the {{{FieldValidator}}} :
+==== Use the AopLib4j writers ====
+The {{{diagramWriter}}} parameter should be a class that inherits from the {{{SequenceDiagramWriter}}} abstract class.
+
+==== Create your own writer ===
+The {{{diagramWriter}}} parameter should be a class that inherits from the {{{SequenceDiagramWriter}}} abstract class.
+The most important parts of the {{{SequenceDiagramWriter}}} (the full code is here [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/uml/SequenceDiagramWriter.java org.aoplib4j.uml.SequenceDiagramWriter]):
 
 {{{
-public abstract class FieldValidator {
+public abstract class SequenceDiagramWriter {
     
     /**
-     * The default constructor.
+     * Default constructor.
+     * 
      */
-    public FieldValidator() {
-        
+    public SequenceDiagramWriter() {
     }
     
     /**
-     * Method to implement the validation of the field.
+     * Write the diagram starting from the root method which is passed
+     * as parameter.
      * 
-     * @param fldInfor object containing the information about the field
-     * validation.
-     * @throws Exception any exception to signal that the new value to be 
-     * assigned to the field is not valid.
+     * @param rootMethod the root method; the first method of the diagram.
+     * 
+     * @throws IOException I/O exception if any error writing.
      */
-    public abstract void validate(FieldInformation fldInfor) 
-        throws Exception;
+    public abstract void write(final SequenceMethod rootMethod) 
+        throws IOException;
 }
 }}}
 
-The {{{FieldInformation}}} is an interface class containing useful informations for the validation process; the field name, the old value of the field, the new value to be assigned to the field.
-The structure of the {{{FieldInformation}}} interface.
+The {{{SequenceMethod}}} is an interface containing informations about the annotated method. A {{{SequenceMethod}}} contains all the necessary informations concerning a sequence method: method name, method class, method is static/nonStatic/constructor, return type of the method, parameters types, parameter names, methods that
+this method calls and the method that called this method.
+
+The structure of the {{{SequenceMethod}}} interface.
 
 {{{
-public interface FieldInformation {
+public interface SequenceMethod {
 
     /**
-     * @return the field actual value.
+     * @return the (full) class name of which this method is attached to.
+     * 
+     * @see #getSimpleClassName()
      */
-    Object getFieldValue();
-    
+    String getClassName();
+
     /**
-     * @return the new value that should be assigned to the field.
+     * @return the method name.
      */
-    Object getNewValueToAssign();
-    
+     String getMethodName();
+
     /**
-     * @return the field name.
+     * @return the method return type.
      */
-    String getFieldName();
-    
+    Class< ? > getReturnType();
+
     /**
-     * @return true if the field is static, false otherwise.
+     * @return method parameters types.
      */
-    boolean isStaticField();
+    Class< ? >[] getParameterTypes();
+
+    /**
+     * @return method parameter names.
+     */
+    String[] getParameterNames();
+
+    /**
+     * @return the collection of children.
+     */
+    List<SequenceMethod> getChildren();
+
+    /**
+     * @return the parent (the caller) of this method.
+     */
+    SequenceMethod getParent();
+
+    /**
+     * @return true if the node have children attached, false otherwise.
+     */
+    boolean haveChildren();
+
+    /**
+     * @return true if the method is static, false otherwise.
+     */
+    boolean isStatic();
+
+    /**
+     * @return true if the method is a constructor, false otherwise
+     */
+    boolean isConstructor();
+
+    /**
+     * @return the simple (no package) class name; returns null if the class
+     * name is null.
+     */
+    String getSimpleClassName();
+
 }
 }}}  
 
