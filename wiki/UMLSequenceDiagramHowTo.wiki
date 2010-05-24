@@ -1,30 +1,37 @@
-#summary How to use the @Validate annotation.
+#summary How to use the @Aoplib4jSequenceDiagram annotation.
 
 === Introduction ===
 This page is a small tutorial about the {{{@Aoplib4jSequenceDiagram}}} annotation.
 
 === How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 2 seconds) ===
 
-  # Create your own diagram writer class extending the {{{SequenceDiagramWriter}}} class  or use one of the writers offered by AopLib4J ({{{SEQUENCEWriter}}} or {{{CodeToDiagramWriter}}}).
-  # Annotate the method(s) for which you want to generate the aequence diagram with the {{{@Aoplib4jSequenceDiagram}}} annotation and pass as value of the {{{diagramWriter}}} your own writer class name.
+  # (*Optional*)Create your own diagram writer class extending the {{{SequenceDiagramWriter}}}.
+
+  # Annotate the method(s) for which you want to generate the sequence diagram with the {{{@Aoplib4jSequenceDiagram}}} annotation and add as value for the {{{diagramWriter}}} attribute your own writer class name one of the writers offered by AopLib4j.
+
   #Execute the annotated method and retrieve the sequence diagram from the java.io.tmpdir folder (the diagram name is ClassName.annotateMethodName().txt)
 
-=== How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 5 minutes) ===
-The {{{@Validate}}} annotation is should be added on fields on which a validation should be done.
-The annotation have a single parameter ({{{validationClass}}}) representing the class that will be instantiated and used for the validation. 
+=== How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 10 minutes) ===
 
-Code example (taken from the JUnit tests):
+Annotate with the {{{@Aoplib4jSequenceDiagram}}} annotation the method for which a sequence diagram should be generated. 
+The annotation have a one mandatory parameter ({{{diagramWriter}}}) representing the class that will be instantiated and used for the writing of the sequence diagram and two optional parameters: {{{diagramDepth}}} representing the maximum number of participants in the diagram and {{{diagramFullPath}}} representing the full path where the diagram will be written. 
+
+Code example of {{{Aoplib4jSequenceDiagram}}} use(taken from the JUnit tests):
 
 {{{
-public class ClassToValidate {
+public class ActorClass ...
 
-    @Validate(validationClass=StringValidator.class)
-    private String str;
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class)
+    public static void staticMethod() {
+    ....
+    }
 
-    @Validate(validationClass=StringValidator.class)
-    private static String staticStr;
-
-    ...
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class, 
+            diagramFullPath = "/aoplib4jtests/main.seq", diagramDepth = 30)
+    public void actorMethod() {
+    ....
+    }
+    
 }}}  
 
 The {{{validationClass}}} parameter should be a class that inherits from the {{{FieldValidator}}} abstract class.
