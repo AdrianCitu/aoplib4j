@@ -14,6 +14,7 @@
  */
 package org.aoplib4j.uml.codetodiagram;
 
+import org.aoplib4j.uml.ActorInterface;
 import org.aoplib4j.uml.Aoplib4jSequenceDiagram;
 import org.aoplib4j.uml.Class1;
 import org.aoplib4j.uml.CodeToDiagramWriter;
@@ -24,15 +25,13 @@ import org.aoplib4j.uml.CodeToDiagramWriter;
  * @author Adrian Citu
  *
  */
-public class ActorClass {  
+public class ActorClass implements ActorInterface {  
     
-    /**
-     * @param args
-     */
+
     @Aoplib4jSequenceDiagram(diagramWriter = CodeToDiagramWriter.class,
             diagramDepth = 30)
     public static void main(String[] args) {        
-        ActorClass ac = new ActorClass();
+        ActorInterface ac = new ActorClass();
         ac.actorMethodWithParams("");
         ac.nonAnnotatedMethod();
         
@@ -45,7 +44,7 @@ public class ActorClass {
 
     @Aoplib4jSequenceDiagram(diagramWriter = CodeToDiagramWriter.class)
     public static void staticMethod() {
-        ActorClass ac = new ActorClass();
+        ActorInterface ac = new ActorClass();
         ac.actorMethodWithParams("");
         ac.nonAnnotatedMethod();
         
@@ -67,6 +66,7 @@ public class ActorClass {
         
     }
 
+
     @Aoplib4jSequenceDiagram(diagramWriter = CodeToDiagramWriter.class,
             diagramDepth = 0)
     public void anotherActorMethod() {
@@ -76,6 +76,7 @@ public class ActorClass {
         
     }
     
+
     @Aoplib4jSequenceDiagram(diagramWriter = CodeToDiagramWriter.class,     
             diagramDepth = 10)
     public void actorMethodWithParams(String str) {
@@ -85,6 +86,7 @@ public class ActorClass {
         
     }
     
+
     public void nonAnnotatedMethod() {
         Class1 cl1 = new Class1("");
         cl1.method1Class1();
@@ -95,6 +97,7 @@ public class ActorClass {
         
     }
     
+
     @Aoplib4jSequenceDiagram(diagramWriter = CodeToDiagramWriter.class,
             diagramDepth = 20)
     public void methodWithNestedAnnotation(String str) {
