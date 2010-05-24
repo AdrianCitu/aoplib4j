@@ -114,7 +114,7 @@ public final class SequenceMethod {
     /**
      * @return the (full) class name of which this method is attached to.
      * 
-     * @see getSimpleClassName();
+     * @see #getSimpleClassName()
      */
     public String getClassName() {
         return this.className;
