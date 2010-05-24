@@ -5,11 +5,9 @@ This page is a small tutorial about the {{{@Aoplib4jSequenceDiagram}}} annotatio
 
 === How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 2 seconds) ===
 
-  # (*Optional*)Create your own diagram writer class extending the {{{SequenceDiagramWriter}}}.
-
-  # Annotate the method(s) for which you want to generate the sequence diagram with the {{{@Aoplib4jSequenceDiagram}}} annotation and add as value for the {{{diagramWriter}}} attribute your own writer class name one of the writers offered by AopLib4j.
-
-  # Execute the annotated method and retrieve the sequence diagram from the java.io.tmpdir folder (the diagram name is ClassName.annotateMethodName().txt)
+  #(*Optional*)Create your own diagram writer class extending the {{{SequenceDiagramWriter}}}.
+  #Annotate the method(s) for which you want to generate the sequence diagram with the {{{@Aoplib4jSequenceDiagram}}} annotation and add as value for the {{{diagramWriter}}} attribute your own writer class name one of the writers offered by AopLib4j.
+  #Execute the annotated method and retrieve the sequence diagram from the java.io.tmpdir folder (the diagram name is ClassName.annotateMethodName().txt)
 
 === How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 10 minutes) ===
 
