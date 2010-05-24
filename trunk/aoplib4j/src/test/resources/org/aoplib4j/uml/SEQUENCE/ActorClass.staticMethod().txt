@@ -8,7 +8,9 @@ Class2.method1Class2() -> void{
 Class2.method2Class2() -> Integer;
 Class3.constructor() -> void;
 Class3.method1Class3() -> void{
-Class3.method2Class3() -> Integer;
+Class3.method2Class3() -> Integer{
+Class3.toString() -> String;
+}
 }
 }
 }
@@ -35,7 +37,9 @@ Class2.method1Class2() -> void{
 Class2.method2Class2() -> Integer;
 Class3.constructor() -> void;
 Class3.method1Class3() -> void{
-Class3.method2Class3() -> Integer;
+Class3.method2Class3() -> Integer{
+Class3.toString() -> String;
+}
 }
 }
 }

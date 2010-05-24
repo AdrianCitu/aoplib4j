@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 
 /**
@@ -102,10 +104,44 @@ public final class TestHelperClass {
      * @return the contents of a text test file as a string.
      * @see TestCaseFileReader
      */
-    public static String getTestFileContents(String fileName) 
+    public static String getFileContentFromTestRessources(String fileName) 
         throws FileNotFoundException, IOException, URISyntaxException {
         
         return inputStreamToString(new FileInputStream(
             getCompletePathFromRelativePath(fileName)));
+    }
+    
+    /**
+     * method that execute any method (private , protected or public) on the
+     * object passed as parameter.
+     *  
+     * @param methodOwner the object the underlying method is invoked from
+     * @param methodName the name of the method to execute
+     * @param methodParameterTypes the types of the arguments of the method
+     * @param methodParameterArguments the arguments of the method
+     * 
+     * @return the result of the execution of the method or null if the return
+     * type of the method is void.
+     * 
+     */
+    public static Object executeMethodByIntrospection(
+        Object methodOwner,
+        String methodName,
+        Class[] methodParameterTypes,
+        Object[] methodParameterArguments) 
+            throws SecurityException,
+               NoSuchMethodException,
+               IllegalArgumentException,
+               IllegalAccessException,
+               InvocationTargetException {
+        
+      Method methodToExecute = null;
+      
+      methodToExecute = methodOwner.getClass().
+          getDeclaredMethod(methodName, methodParameterTypes);
+      methodToExecute.setAccessible(true);
+      
+      return methodToExecute.invoke(
+          methodOwner, methodParameterArguments);
     }
 }

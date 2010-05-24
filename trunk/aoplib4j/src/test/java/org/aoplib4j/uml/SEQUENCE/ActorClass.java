@@ -12,7 +12,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.aoplib4j.uml;
+package org.aoplib4j.uml.SEQUENCE;
+
+import org.aoplib4j.uml.ActorInterface;
+import org.aoplib4j.uml.Aoplib4jSequenceDiagram;
+import org.aoplib4j.uml.Class1;
+import org.aoplib4j.uml.SEQUENCEWriter;
 
 
 /**
@@ -21,51 +26,13 @@ package org.aoplib4j.uml;
  * @author Adrian Citu
  *
  */
-public class ActorClass {
-    
-    /**
-     * Path of the diagram for {@link #staticMethod()} method.
-     * Warning ! the path should be the same as the one from the annotation.
-     */
-    public static final String STATIC_METHOD_DIAGRAM_PATH = 
-       SEQUENCETest.DIAGRAMS_FOLDER + "/staticMethod.seq";
-
-    /**
-     * Path of the diagram for {@link #actorMethodWithParams(String)} method.
-     * Warning ! the path should be the same as the one from the annotation.
-     */
-    public static final String ACTOR_METHOD_DIAGRAM_PATH_1 = 
-        SEQUENCETest.DIAGRAMS_FOLDER + "/actorMethodDepth1.seq";
-    
-    /**
-     * Path of the diagram for {@link #actorMethodWithParams(String)} method.
-     * Warning ! the path should be the same as the one from the annotation.
-     */
-    public static final String ANOTHER_METHOD_DIAGRAM_PATH_0 = 
-        SEQUENCETest.DIAGRAMS_FOLDER + "/anotherActorMethodDepth0.seq";
-
-    /**
-     * Path of the diagram for {@link #methodWithNestedAnnotation2(String)}
-     * method.
-     * Warning ! the path should be the same as the one from the annotation.
-     */
-    public static final String METHOD_DIAGRAM_WITH_NESTED_ANNO2 = 
-       SEQUENCETest.DIAGRAMS_FOLDER + "/methodWithNestedAnnotation2.seq";
-    
-    /**
-     * Path of the diagram for {@link #methodWithNestedAnnotation(String)} method.
-     * Warning ! the path should be the same as the one from the annotation.
-     */
-    public static final String METHOD_DIAGRAM_WITH_NESTED_ANNO = 
-        SEQUENCETest.DIAGRAMS_FOLDER + "/methodWithNestedAnnotation.seq";
-    
-    
+public class ActorClass implements ActorInterface {
     
     /**
      * @param args
      */
-    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class, 
-            diagramFullPath = "/aoplib4jtests/main.seq", diagramDepth = 30)
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class,
+            diagramDepth = 30)
     public static void main(String[] args) {        
         ActorClass ac = new ActorClass();
         ac.actorMethodWithParams("");
@@ -78,8 +45,7 @@ public class ActorClass {
     }
     
 
-    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class, 
-            diagramFullPath = "/aoplib4jtests/staticMethod.seq")
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class)
     public static void staticMethod() {
         ActorClass ac = new ActorClass();
         ac.actorMethodWithParams("");
@@ -94,8 +60,7 @@ public class ActorClass {
     }
     
 
-    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class, 
-            diagramFullPath = "/aoplib4jtests/actorMethodDepth1.seq", 
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class,
             diagramDepth = 1)
     public void actorMethod() {
         Class1 cl1 = new Class1("");
@@ -105,7 +70,6 @@ public class ActorClass {
     }
 
     @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class, 
-            diagramFullPath = "/aoplib4jtests/anotherActorMethodDepth0.seq", 
             diagramDepth = 0)
     public void anotherActorMethod() {
         Class1 cl1 = new Class1("");
@@ -114,6 +78,8 @@ public class ActorClass {
         
     }
     
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class,     
+            diagramDepth = 10)
     public void actorMethodWithParams(String str) {
         Class1 cl1 = new Class1("");
         cl1.method1Class1();
@@ -131,8 +97,7 @@ public class ActorClass {
         
     }
     
-    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class, 
-            diagramFullPath = "/aoplib4jtests/methodWithNestedAnnotation.seq",
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class,
             diagramDepth = 20)
     public void methodWithNestedAnnotation(String str) {
         Class1 cl1 = new Class1("");
@@ -143,8 +108,7 @@ public class ActorClass {
     }
     
     
-    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class, 
-            diagramFullPath = "/aoplib4jtests/methodWithNestedAnnotation2.seq")
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class)
     public void methodWithNestedAnnotation2(String str) {
         Class1 cl1 = new Class1("");
         cl1.method1Class1();
