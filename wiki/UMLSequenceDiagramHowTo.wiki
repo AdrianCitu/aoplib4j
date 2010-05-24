@@ -1,0 +1,126 @@
+#summary How to use the @Validate annotation.
+
+=== Introduction ===
+This page is a small tutorial about the {{{@Aoplib4jSequenceDiagram}}} annotation.
+
+=== How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 2 seconds) ===
+
+  # Create your own diagram writer class extending the {{{SequenceDiagramWriter}}} class  or use one of the writers offered by AopLib4J ({{{SEQUENCEWriter}}} or {{{CodeToDiagramWriter}}}).
+  # Annotate the method(s) for which you want to generate the aequence diagram with the {{{@Aoplib4jSequenceDiagram}}} annotation and pass as value of the {{{diagramWriter}}} your own writer class name.
+  #Execute the annotated method and retrieve the sequence diagram from the java.io.tmpdir folder (the diagram name is ClassName.annotateMethodName().txt)
+
+=== How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 5 minutes) ===
+The {{{@Validate}}} annotation is should be added on fields on which a validation should be done.
+The annotation have a single parameter ({{{validationClass}}}) representing the class that will be instantiated and used for the validation. 
+
+Code example (taken from the JUnit tests):
+
+{{{
+public class ClassToValidate {
+
+    @Validate(validationClass=StringValidator.class)
+    private String str;
+
+    @Validate(validationClass=StringValidator.class)
+    private static String staticStr;
+
+    ...
+}}}  
+
+The {{{validationClass}}} parameter should be a class that inherits from the {{{FieldValidator}}} abstract class.
+The structure of the {{{FieldValidator}}} :
+
+{{{
+public abstract class FieldValidator {
+    
+    /**
+     * The default constructor.
+     */
+    public FieldValidator() {
+        
+    }
+    
+    /**
+     * Method to implement the validation of the field.
+     * 
+     * @param fldInfor object containing the information about the field
+     * validation.
+     * @throws Exception any exception to signal that the new value to be 
+     * assigned to the field is not valid.
+     */
+    public abstract void validate(FieldInformation fldInfor) 
+        throws Exception;
+}
+}}}
+
+The {{{FieldInformation}}} is an interface class containing useful informations for the validation process; the field name, the old value of the field, the new value to be assigned to the field.
+The structure of the {{{FieldInformation}}} interface.
+
+{{{
+public interface FieldInformation {
+
+    /**
+     * @return the field actual value.
+     */
+    Object getFieldValue();
+    
+    /**
+     * @return the new value that should be assigned to the field.
+     */
+    Object getNewValueToAssign();
+    
+    /**
+     * @return the field name.
+     */
+    String getFieldName();
+    
+    /**
+     * @return true if the field is static, false otherwise.
+     */
+    boolean isStaticField();
+}
+}}}  
+
+ 
+=== The {{{@Validate}}} annotation: under the hood ===
+For the validation process the work flow is the following:
+ * Intercept the assignment of a field annotated with {{{Validate}}}
+
+   The @AspectJ pointcuts for intercepting the assignment of a field:
+     * static fields
+{{{
+    @Pointcut(
+            "set(@org.aoplib4j.fieldvalidation.Validate "
+            + "static * *.*)"
+            + "&& @annotation(validateAnnot) " 
+            + "&& args(newValue)")
+    void validateStaticFieldPointcut(
+            final Validate validateAnnot, 
+            final Object newValue) {
+    }
+}}}
+     * non-static fields
+{{{
+    @Pointcut(
+            "set(@org.aoplib4j.fieldvalidation.Validate "
+            + "* *.*)" 
+            + "&& @annotation(validateAnnot) " 
+            + "&& args(newValue) && this(instance)")
+    void validateNonStaticFieldPointcut(
+            final Validate validateAnnot, 
+            final Object newValue, 
+            final Object instance) {
+    }
+}}}
+   For triggering the validation the @Before advice is used.
+
+ * Create an instance of {{{FieldInformation}}} 
+ * Create an instance of {{{FieldValidator}}}
+    # Retrieve the class object from the {{{validationClass}}} parameter of the annotation ( the annotation is retrieved using @AspectJ @annotation pointcut). 
+    # Create a new instance by introspection (using the non argument constructor).
+ * Do the validation by calling {{{FieldValidator#validate(FieldInformation fldInfor) }}} 
+And here is the complete code of [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/fieldvalidation/internal/FieldValidatorAspect.java FieldValidatorAspect] 
+
+=== Critics, enhancements and ... what i don't like about this solution ===
+ * The user validation class must inherit from {{{FieldValidator}}} class. It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the validation class using the non-arguments constructor by introspection (see [http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance() Class.newInstance()]). 
+   
