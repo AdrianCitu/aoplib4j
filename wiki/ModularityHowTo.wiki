@@ -357,4 +357,5 @@ As in case of the class boundary the pointcuts use the {{{if()}}} pointcut for c
          return stes[2];
      }
 }}}
-*UPDATE*(24.05.2010) - The code of the method had been slightly modified (enhanced) due to the [http://code.google.com/p/aoplib4j/issues/detail?id=75 bug#72] or [ http://code.google.com/p/aoplib4j/source/diff?spec=svn151&r=151&format=side&path=/trunk/aoplib4j/src/main/java/org/aoplib4j/modularity/internal/AbstractBoundary.java the diff].
+*UPDATE*(24.05.2010) - The code of the method had been slightly modified (enhanced ?) due to the [http://code.google.com/p/aoplib4j/issues/detail?id=75 bug#72] or 
+[http://code.google.com/p/aoplib4j/source/diff?spec=svn151&r=151&format=side&path=/trunk/aoplib4j/src/main/java/org/aoplib4j/modularity/internal/AbstractBoundary.java the diff].
