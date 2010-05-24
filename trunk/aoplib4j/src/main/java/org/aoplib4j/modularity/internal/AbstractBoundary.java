@@ -123,10 +123,12 @@ abstract class AbstractBoundary {
       * information is stored into a {@link StackTraceElement} object.
       * 
       * Normally the caller information is on the third position on 
-      * the stack trace but a better idea but the method returns the first 
-      * entry that
-      * do not have as package name <code>org.aoplib4j.modularity.internal
-      * </code>.;the first position contains the call to this method, and the 
+      * the stack trace but the stack trace can be modified by the weaving of 
+      * an aspect (see http://code.google.com/p/aoplib4j/issues/detail?id=75).
+      * So the method returns the first entry from the stacktrace that do not 
+      * have as package name 
+      * <code>org.aoplib4j.modularity.internal</code>.
+      * ;the first position contains the call to this method, and the 
       * second one to the
       * {@link 
       * ClassBoundaryAspect#callOfStaticClassBoundaryAdvice(
