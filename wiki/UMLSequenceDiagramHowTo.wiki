@@ -6,8 +6,8 @@ This page is a small tutorial about the {{{@Aoplib4jSequenceDiagram}}} annotatio
 === How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 2 seconds) ===
 
   #(*Optional*)Create your own diagram writer class extending the {{{SequenceDiagramWriter}}}.
-  #Annotate the method(s) for which you want to generate the sequence diagram with the {{{@Aoplib4jSequenceDiagram}}} annotation and add as value for the {{{diagramWriter}}} attribute your own writer class name one of the writers offered by AopLib4j.
-  #Execute the annotated method and retrieve the file representing the sequence diagram from the java.io.tmpdir folder (the diagram name is ClassName#annotateMethodName()#txt)
+  #Annotate the method(s) for which you want to generate the sequence diagram with the {{{@Aoplib4jSequenceDiagram}}} annotation and add as value for the {{{diagramWriter}}} attribute your own writer class name one of the writers offered by {{{AopLib4j}}}.
+  #Execute the annotated method and retrieve the file representing the sequence diagram from the java.io.tmpdir folder (the diagram name is {{{ClassName.annotateMethodName().txt}}})
 
 === How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 10 minutes) ===
 
@@ -38,7 +38,7 @@ public class ActorClass ...
 }}}  
 
 ==== Use the {{{AopLib4j}}} diagram writers ====
-The {{{AopLib4j}}} library offers 2 sequence writers:
+The {{{AopLib4j}}} library offers ~~3~~ 2 sequence writers:
  # {{{org.aoplib4j.uml.SEQUENCEWriter}}} is a writer for the [http://www.zanthan.com/itymbi/archives/cat_sequence.html SEQUENCE] project. Here is an example of a SEQUENCE diagram :
 {{{
 
