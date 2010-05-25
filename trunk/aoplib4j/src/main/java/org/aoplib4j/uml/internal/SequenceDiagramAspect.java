@@ -486,11 +486,11 @@ public final class SequenceDiagramAspect {
         }
         
         if (parent != null && parent.length != 0) {
-            return new SequenceMethod(className, methodName, 
+            return new SequenceMethodImpl(className, methodName, 
                     isStaticAndConstructor, 
                     returnType, parameterTypes, parameterNames, parent[0]);   
         } else {
-            return new SequenceMethod(className, methodName, 
+            return new SequenceMethodImpl(className, methodName, 
                     isStaticAndConstructor, 
                     returnType, parameterTypes, parameterNames);
         }
