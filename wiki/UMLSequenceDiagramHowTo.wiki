@@ -7,7 +7,7 @@ This page is a small tutorial about the {{{@Aoplib4jSequenceDiagram}}} annotatio
 
   #(*Optional*)Create your own diagram writer class extending the {{{SequenceDiagramWriter}}}.
   #Annotate the method(s) for which you want to generate the sequence diagram with the {{{@Aoplib4jSequenceDiagram}}} annotation and add as value for the {{{diagramWriter}}} attribute your own writer class name one of the writers offered by AopLib4j.
-  #Execute the annotated method and retrieve the sequence diagram from the java.io.tmpdir folder (the diagram name is ClassName.annotateMethodName().txt)
+  #Execute the annotated method and retrieve the file representing the sequence diagram from the java.io.tmpdir folder (the diagram name is ClassName.annotateMethodName().txt)
 
 === How to use the {{{@Aoplib4jSequenceDiagram}}} annotation (in 10 minutes) ===
 
@@ -37,8 +37,40 @@ public class ActorClass ...
     
 }}}  
 
-==== Use the AopLib4j writers ====
-The {{{diagramWriter}}} parameter should be a class that inherits from the {{{SequenceDiagramWriter}}} abstract class.
+==== Use the AopLib4j diagram writers ====
+The {{{AopLib4j}}} library offers 2 sequence writers:
+ # {{{org.aoplib4j.uml.SEQUENCEWriter}}} is a writer for the [http://www.zanthan.com/itymbi/archives/cat_sequence.html SEQUENCE] project. Here is an example of a SEQUENCE diagram :
+{{{
+
+ActorClass.actorMethod() -> void{
+Class1.constructor(java.lang.String str) -> void;
+Class1.method1Class1() -> String;
+ActorClass.[static]staticPrivateMethod(java.lang.Integer in) -> void;
+}
+}}}
+ # {{{org.aoplib4j.uml.CodeToDiagramWriter}}} is a writer for the [http://www.assembla.com/wiki/show/codetodiagram CODETODIAGRAM] project. Here is an example of a CODETODIAGRAM diagram:
+{{{
+<?xml version="1.0"encoding="UTF-8"?>
+<sequence>
+<actors>
+<actor id="org.aoplib4j.uml.codetodiagram.ActorClass" type="user">ActorClass</actor>
+<actor id="org.aoplib4j.uml.Class1" type="system">Class1</actor>
+</actors>
+<messages>
+<message type="call" from="org.aoplib4j.uml.codetodiagram.ActorClass" to="org.aoplib4j.uml.Class1" text="constructor(class java.lang.String)"/>
+<message type="return" from="org.aoplib4j.uml.Class1" to="org.aoplib4j.uml.codetodiagram.ActorClass" text="constructor(class java.lang.String)"/>
+<message type="call" from="org.aoplib4j.uml.codetodiagram.ActorClass" to="org.aoplib4j.uml.Class1" text="method1Class1()"/>
+<message type="return" from="org.aoplib4j.uml.Class1" to="org.aoplib4j.uml.codetodiagram.ActorClass" text="method1Class1()"/>
+<message type="call" from="org.aoplib4j.uml.codetodiagram.ActorClass" to="org.aoplib4j.uml.codetodiagram.ActorClass" text="staticPrivateMethod(class java.lang.Integer)"/>
+<message type="return" from="org.aoplib4j.uml.codetodiagram.ActorClass" to="org.aoplib4j.uml.codetodiagram.ActorClass" text="staticPrivateMethod(class java.lang.Integer)"/>
+</messages>
+
+</sequence>
+
+}}}
+
+ # ~~org.aoplib4j.uml.Pic2PlotWriter~~ is a writer for the [http://www.gnu.org/software/plotutils/manual/html_chapter/plotutils_4.html GNU plotutils pic2plot]. The implementation is not completely finished (due to some complexities of the pic file format). The bug#79 contains the a patch with the partial implementation; feel free to participate/propose a new or enhanced implementation.
+
 
 ==== Create your own writer ===
 The {{{diagramWriter}}} parameter should be a class that inherits from the {{{SequenceDiagramWriter}}} abstract class.
