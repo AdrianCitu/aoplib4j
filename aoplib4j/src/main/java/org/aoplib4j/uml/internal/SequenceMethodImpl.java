@@ -73,7 +73,7 @@ final class SequenceMethodImpl implements SequenceMethod {
      * The "parent" method; the caller of this method; is null for the
      * first method of the diagram.
      */
-    private SequenceMethodImpl parent = null;
+    private SequenceMethod parent = null;
     
 
     /**
@@ -102,8 +102,9 @@ final class SequenceMethodImpl implements SequenceMethod {
         this.parameterNames = paramNames;
         
         if (caller != null && caller.length != 0) {
-            this.parent = (SequenceMethodImpl) caller[0]; 
-            this.parent.setChild(this);
+            this.parent = caller[0]; 
+            //not very smart:(
+            ((SequenceMethodImpl) this.parent).setChild(this);
         }
     }
     
