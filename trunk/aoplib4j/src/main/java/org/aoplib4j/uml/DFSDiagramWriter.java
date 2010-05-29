@@ -17,14 +17,14 @@ package org.aoplib4j.uml;
 import java.io.IOException;
 
 /**
- * This class represents the AbstractClass from the Template Method Pattern
- * (http://en.wikipedia.org/wiki/Template_method_pattern). The algorithm
- * implemented by this class is Depth-first search (DFS)
- * (http://en.wikipedia.org/wiki/Depth-first_search) on the sequence methods.
+ * Class implementing the Depth-first search (DFS)
+ * (http://en.wikipedia.org/wiki/Depth-first_search) on the sequence method.
  * (since a {@link SequenceMethod} is a tree structure).
  * 
- * Every subclass must implement the way of writing the diagrams which can vary
- * for every diagram writer used.
+ * This class represents the AbstractClass from the Template Method Pattern
+ * (http://en.wikipedia.org/wiki/Template_method_pattern).
+ * 
+ * Every subclass must implement the way of writing the diagrams.
  * 
  * @author Adrian Citu
  *

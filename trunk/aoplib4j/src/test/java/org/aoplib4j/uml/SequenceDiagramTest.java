@@ -61,6 +61,8 @@ public final class SequenceDiagramTest {
                     {new org.aoplib4j.uml.codetodiagram.ActorClass(), 
                         "/org/aoplib4j/uml/codetodiagram/" },
                     {new org.aoplib4j.uml.SEQUENCE.ActorClass(), 
+                        "/org/aoplib4j/uml/SEQUENCE/" },
+                    {new org.aoplib4j.uml.png.ActorClass(), 
                         "/org/aoplib4j/uml/SEQUENCE/" }
            }
         );
@@ -233,7 +235,6 @@ public final class SequenceDiagramTest {
         this.genericTest(expectedDiagram, actualDiagram); 
     }
     
-
     /**
      * @param expectedDiagram the expected diagram
      * @param actualDiagram the actual diagram
@@ -246,8 +247,9 @@ public final class SequenceDiagramTest {
         try {
             
             boolean diagramExist = (new File(actualDiagram)).exists();
-            
             assertTrue(diagramExist);
+            
+            pngDiagramExist(actualDiagram);
             
             String expectedContent =
               TestHelperClass.getFileContentFromTestRessources(expectedDiagram);
@@ -261,5 +263,26 @@ public final class SequenceDiagramTest {
             } finally {
                 new File(actualDiagram).delete(); 
             }
+    }
+    
+    /**
+     * Verify if for the <code>actualDiagram</code> the png diagram exist.
+     * @param actualDiagram the actual diagram
+     */
+    private final void pngDiagramExist (final String actualDiagram) {
+        
+        if (actor instanceof org.aoplib4j.uml.png.ActorClass) {
+            
+                String pngFileName = actualDiagram.replaceAll(".txt", ".png");
+            
+                boolean pngExist = (new File(pngFileName)).exists();
+                
+                if(pngExist) {
+                    new File(pngFileName).delete(); 
+                }
+                assertTrue(pngExist);
+                
+        }
+        
     }
 }
