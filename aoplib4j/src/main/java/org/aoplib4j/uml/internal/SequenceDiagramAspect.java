@@ -62,7 +62,7 @@ public final class SequenceDiagramAspect {
 
     /**
      *  Objects containing aspect instances; this is useful and used in the 
-     *  case of nested annotations (method annotated containing their flow
+     *  case of nested annotations (method annotated containing inside own flow
      *  another annotated methods).
      *  
      */
@@ -185,23 +185,23 @@ public final class SequenceDiagramAspect {
      *  <pre>
      *   AspectJ pointcut:
      *   validSequenceDiagramPointcut()
-     *      && (execution(* *.*(..)) || execution(*.new(..)))
-     *      && !within (org.aoplib4j.uml.internal.SequenceDiagramAspect.*) 
-     *      && !within (org.aoplib4j.uml.SequenceDiagramWriter+)
-     *      && !within (org.aoplib4j.uml.SequenceDiagram)
-     *      && !within (org.aoplib4j.uml.SequenceMethod)
-     *      && !within (org.aoplib4j.*.internal.*)
+     *  && (execution(* *.*(..)) || execution(*.new(..)))
+     *  && !within (org.aoplib4j.uml.internal.SequenceDiagramAspect.*) 
+     *  && !cflow (execution (* org.aoplib4j.uml.SequenceDiagramWriter+.*(..)))"
+     *  && !within (org.aoplib4j.uml.SequenceDiagram)
+     *  && !within (org.aoplib4j.uml.SequenceMethod+)
+     *  && !within (org.aoplib4j.*.internal.*)
      *  </pre>
      *  
      *  @see #validSequenceDiagramPointcut()
      */
     @Pointcut("validSequenceDiagramPointcut()"
-            + "&& (execution(* *.*(..)) || execution(*.new(..)))" 
-            + "&& !within (org.aoplib4j.uml.internal.SequenceDiagramAspect)"
-            + "&& !within (org.aoplib4j.uml.SequenceDiagramWriter+)"
-            + "&& !within (org.aoplib4j.uml.SequenceDiagram)"
-            + "&& !within (org.aoplib4j.uml.SequenceMethod)"
-            + "&& !within (org.aoplib4j.*.internal.*)"
+     + "&& (execution(* *.*(..)) || execution(*.new(..)))" 
+     + "&& !within (org.aoplib4j.uml.internal.SequenceDiagramAspect)"
+     + "&& !cflow (execution (* org.aoplib4j.uml.SequenceDiagramWriter+.*(..)))"
+     + "&& !within (org.aoplib4j.uml.SequenceDiagram)"
+     + "&& !within (org.aoplib4j.uml.SequenceMethod+)"
+     + "&& !within (org.aoplib4j.*.internal.*)"
             )    
     public void sequenceMethodsPointcut() {
 

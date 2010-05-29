@@ -77,7 +77,7 @@ public final class SequenceDiagram {
         super();
         this.maxDiagramDepth = maxDepth;
         this.diagramWriter = writer;
-        this.diagramWriter.createWriter(diagramPath);
+        this.diagramWriter.setDiagramPath(diagramPath);
         this.rootMethod = rootMetd;
         
         this.setActiveMethod(rootMetd);

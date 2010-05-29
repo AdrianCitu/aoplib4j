@@ -55,16 +55,16 @@ public abstract class SequenceDiagramWriter {
      *  Internal method used to create the diagram writer from the parameters
      *  of the {@link Aoplib4jSequenceDiagram} annotation.
      *  
-     *  @param diagrFullPath the full path of the sequence diagram.
      */
-    final void createWriter(final String diagrFullPath) {
+    private void createWriter() {
         try {
-            this.diagramFullPath = diagrFullPath;
             diagramWriter = 
                 new BufferedWriter(
                         new OutputStreamWriter(
-                                new FileOutputStream(diagrFullPath), "UTF8"));
+                                new FileOutputStream(
+                                        this.getDiagramFullPath()), "UTF8"));
         } catch (IOException e) {
+            //TODO just log a message; don't interfere with the client workflow.
             throw new UnsupportedOperationException(e);
         } 
     }
@@ -82,12 +82,22 @@ public abstract class SequenceDiagramWriter {
      * @param str the string to write
      * @throws IOException if any I/O exception
      */
-    final void writeLine(final String str) throws IOException {
+    protected final void writeLine(final String str) throws IOException {
         this.diagramWriter.write(str);
         this.diagramWriter.write(NEW_LINE);
         this.diagramWriter.flush();
     }
   
+    /**
+     * Set the diagram path and creates the writer used to write the diagram on
+     * disk.
+     * @param diagrPath the diagram path.
+     */
+    protected final void setDiagramPath(final String diagrPath) {
+        this.diagramFullPath = diagrPath;
+        this.createWriter();
+    }
+    
     /** 
      * It closes the writer used for writing the diagram.
      */

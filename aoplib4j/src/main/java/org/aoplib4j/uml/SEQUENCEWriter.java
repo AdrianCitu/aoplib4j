@@ -29,6 +29,22 @@ import java.io.IOException;
 public final class SEQUENCEWriter extends DFSDiagramWriter {
 
     /**
+     * Default constructor.
+     */
+    public SEQUENCEWriter() {
+        super();
+    }
+    
+    /**
+     * Construct the writer having as diagram path the String passed as 
+     * parameter.
+     * @param diagramFullPath the diagram full path.
+     */
+    protected SEQUENCEWriter(final String diagramFullPath) {
+        this.setDiagramPath(diagramFullPath);
+    }
+    
+    /**
      * buffer on which the temporary content is written.
      */
     private StringBuffer strWrit = new StringBuffer();
