@@ -120,7 +120,7 @@ For the validation process the work flow is the following:
     # Retrieve the class object from the {{{validationClass}}} parameter of the annotation ( the annotation is retrieved using @AspectJ @annotation pointcut). 
     # Create a new instance by introspection (using the non argument constructor).
  * Do the validation by calling {{{FieldValidator#validate(FieldInformation fldInfor) }}} 
-And here is the complete code of [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/fieldvalidation/internal/FieldValidatorAspect.java FieldValidatorAspect] 
+And here is the complete code of [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/fieldvalidation/internal/FieldValidatorAspect.java FieldValidatorAspect] 
 
 === Critics, enhancements and ... what i don't like about this solution ===
  * The user validation class must inherit from {{{FieldValidator}}} class. It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the validation class using the non-arguments constructor by introspection (see [http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance() Class.newInstance()]). 
