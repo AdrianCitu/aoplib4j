@@ -32,7 +32,7 @@ Under the hood the @AspectJ framework it is used. The pointcut for intercepting 
             + ".Aoplib4jRetryExecution * * (..)) && @annotation(retryAnnotation)")
 }}}
 The {{{@Around}}} advice it is used.
-Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/failurehandling/internal/RetryExecutionAspect.java RetryExecutionAspect].
+Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/aspectj/failurehandling/internal/RetryExecutionAspect.java RetryExecutionAspect].
 
 === Critics and enhancements ===
 An enhancement would be to add more than one exception to catch.
