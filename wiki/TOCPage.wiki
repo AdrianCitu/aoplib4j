@@ -6,5 +6,6 @@
     * [PolicyEnforcementHowTo Applying policy enforcement rules]
     * [ModularityHowTo Implementing modularity at class and package level]
     * [TransformAssertToVerifyForTests  Transform test assertion into verify]
+    * [UMLSequenceDiagramHowTo  Generate automatically UML sequence diagrams]
   * [UserGuide User Guide]
   * [ProjectAnalysys Project analysys]
