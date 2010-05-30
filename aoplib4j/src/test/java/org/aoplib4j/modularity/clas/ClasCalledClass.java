@@ -14,20 +14,20 @@
  */
 package org.aoplib4j.modularity.clas;
 
-import org.aoplib4j.modularity.ClassBoundary;
+import org.aoplib4j.modularity.Aoplib4jClassBoundary;
 import org.aoplib4j.modularity.ListType;
 import org.aoplib4j.modularity.ThrowErrorBoundaryCallback;
 
 
 
 /**
- * Target class; annotated with the {@link ClassBoundary} annotation.  
+ * Target class; annotated with the {@link Aoplib4jClassBoundary} annotation.  
  * This class forbidden the calls from the {@link ForbiddenCallerClass} class.
  *  
  * @author Adrian Citu
  *
  */
-@ClassBoundary(
+@Aoplib4jClassBoundary(
         classesList={ForbiddenCallerClass.class}, 
         callbackClass=ThrowErrorBoundaryCallback.class,
         classesListType = ListType.BLACKLIST)

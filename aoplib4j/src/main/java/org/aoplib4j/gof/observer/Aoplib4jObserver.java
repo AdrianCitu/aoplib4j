@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008-2009 the original author or authors.
+ *  Copyright 2008 the original author or authors.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -12,24 +12,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.aoplib4j.modularity;
+
+package org.aoplib4j.gof.observer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+
 /**
- * Annotation that should be added to classes of a package annotated with
- * {@link PackageBoundary} in order to check the package boundary violation.
+ * Annotation to be used on classes to mark them as a GOF Observer.
  * 
- * The best way of adding this annotation is to write a custom aspect.
- * that
  * @author Adrian Citu
  *
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface InjectedPkgBoundary {
+public @interface Aoplib4jObserver {
 
+    /**
+     * The class that contains the behavior to execute by an Observer of when 
+     * the subject notify a change.
+     * 
+     */
+    Class < ? extends ObserverCallback > callbackClass();
 }

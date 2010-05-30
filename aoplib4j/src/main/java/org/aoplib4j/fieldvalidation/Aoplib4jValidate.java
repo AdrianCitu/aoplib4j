@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Validate {
+public @interface Aoplib4jValidate {
     
     /**
      * The validator class. The framework will call 

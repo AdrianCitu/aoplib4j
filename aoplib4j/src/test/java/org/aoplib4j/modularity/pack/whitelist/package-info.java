@@ -12,14 +12,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-@PackageBoundary(
+@Aoplib4jPackageBoundary(
         packagesList = {"org.aoplib4j.modularity.pack.whitelist.allowedpackage"}, 
         packagesListType = ListType.WHITELIST,
         callbackClass=ThrowErrorBoundaryCallback.class)
 package org.aoplib4j.modularity.pack.whitelist;
 
 import org.aoplib4j.modularity.ListType;
-import org.aoplib4j.modularity.PackageBoundary;
+import org.aoplib4j.modularity.Aoplib4jPackageBoundary;
 import org.aoplib4j.modularity.ThrowErrorBoundaryCallback;
 
 

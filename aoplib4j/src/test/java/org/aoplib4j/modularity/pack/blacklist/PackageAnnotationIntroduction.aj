@@ -14,11 +14,11 @@
  */
 package org.aoplib4j.modularity.pack.blacklist;
 
-import org.aoplib4j.modularity.InjectedPkgBoundary;
+import org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary;
 
 /**
  * Aspect used in tests of package boundary violation.
- * The aspect injects the {@link InjectedPkgBoundary} into all the classes from the 
+ * The aspect injects the {@link Aoplib4jInjectedPkgBoundary} into all the classes from the 
  * package "org.aoplib4j.modularity.pack.blacklist" excepting
  * the aspect himself, {@link BlackListPackageBoundaryViolationTest} class and 
  * package-info class.
@@ -33,5 +33,5 @@ public aspect PackageAnnotationIntroduction {
         && !org.aoplib4j.modularity.pack.blacklist.package*info
         && !org.aoplib4j.modularity.pack.blacklist.PackageAnnotationIntroduction
         && !org.aoplib4j.modularity.pack.blacklist.BlackListPackageBoundaryViolationTest:
-        @InjectedPkgBoundary;
+        @Aoplib4jInjectedPkgBoundary;
 }

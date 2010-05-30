@@ -19,9 +19,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.aoplib4j.modularity.BoundaryViolationCallback;
-import org.aoplib4j.modularity.ClassBoundary;
+import org.aoplib4j.modularity.Aoplib4jClassBoundary;
 import org.aoplib4j.modularity.ListType;
-import org.aoplib4j.modularity.PackageBoundary;
+import org.aoplib4j.modularity.Aoplib4jPackageBoundary;
 import org.aoplib4j.modularity.ViolationInformation;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -45,7 +45,8 @@ abstract class AbstractBoundary {
     /**
      * 
      * Method that will create  a callback class using information from the
-     * {@link ClassBoundary} or {@link PackageBoundary} and execute the 
+     * {@link Aoplib4jClassBoundary} or {@link Aoplib4jPackageBoundary} and 
+     * execute the 
      * callback by calling 
      * {@link BoundaryViolationCallback#boundaryViolation(ViolationInformation)}
      * .
@@ -57,8 +58,8 @@ abstract class AbstractBoundary {
      * @param callerSte the caller stacke trace.
      */
      void createAndExecuteCallback(final Class< ? > calledClass,
-            final ClassBoundary classBoundary, 
-            final PackageBoundary pkgBoundary,
+            final Aoplib4jClassBoundary classBoundary, 
+            final Aoplib4jPackageBoundary pkgBoundary,
             final Method calledMethod,
             final StackTraceElement callerSte) {
         try {
@@ -80,15 +81,15 @@ abstract class AbstractBoundary {
      
      /**
       * Creates an instance of boundary violation callback using the information
-      * from the {@link ClassBoundary#callbackClass()} or from the
-      * {@link PackageBoundary#callbackClass()}.
+      * from the {@link Aoplib4jClassBoundary#callbackClass()} or from the
+      * {@link Aoplib4jPackageBoundary#callbackClass()}.
       * 
       * 
       * @see BoundaryViolationCallback
       * 
       * @param classBoundary
-      *            the {@link ClassBoundary} annotation.
-      * @param pkgBoundary the {@link PackageBoundary} annotation.
+      *            the {@link Aoplib4jClassBoundary} annotation.
+      * @param pkgBoundary the {@link Aoplib4jPackageBoundary} annotation.
       * 
       * @return instance of a {@link BoundaryViolationCallback}.
       * 
@@ -98,8 +99,8 @@ abstract class AbstractBoundary {
       *             if the instantiation fails (introspection is used)
       */
      private BoundaryViolationCallback createCallBackInstance(
-             final ClassBoundary classBoundary,
-             final PackageBoundary pkgBoundary)
+             final Aoplib4jClassBoundary classBoundary,
+             final Aoplib4jPackageBoundary pkgBoundary)
              throws InstantiationException, IllegalAccessException {
          
          Class< ? extends BoundaryViolationCallback> callBackClass = null;
@@ -180,7 +181,8 @@ abstract class AbstractBoundary {
 
      /**
       * Method that will create  a callback class using information from the
-      * {@link ClassBoundary} or {@link PackageBoundary} and execute the 
+      * {@link Aoplib4jClassBoundary} or {@link Aoplib4jPackageBoundary} 
+      * and execute the
       * callback by calling 
       *{@link BoundaryViolationCallback#boundaryViolation(ViolationInformation)}
       * .
@@ -195,8 +197,8 @@ abstract class AbstractBoundary {
               final Object calledObj,
               final Object callerObj, 
               final JoinPoint jp,
-              final PackageBoundary pkgBoundary, 
-              final ClassBoundary classBoundary) {
+              final Aoplib4jPackageBoundary pkgBoundary, 
+              final Aoplib4jClassBoundary classBoundary) {
           
           try {
               BoundaryViolationCallback cllbck = 

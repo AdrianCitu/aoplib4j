@@ -14,26 +14,26 @@
  */
 package org.aoplib4j.modularity.pack.whitelist;
 
-import org.aoplib4j.modularity.ClassBoundary;
-import org.aoplib4j.modularity.InjectedPkgBoundary;
+import org.aoplib4j.modularity.Aoplib4jClassBoundary;
+import org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary;
 import org.aoplib4j.modularity.ListType;
-import org.aoplib4j.modularity.PackageBoundary;
+import org.aoplib4j.modularity.Aoplib4jPackageBoundary;
 import org.aoplib4j.modularity.ThrowErrorBoundaryCallback;
 import org.aoplib4j.modularity.clas.ForbiddenCallerClass;
 
 
 /**
- * Target class; annotated with the {@link PackageBoundary} annotation.  
+ * Target class; annotated with the {@link Aoplib4jPackageBoundary} annotation.  
  * This class forbidden the calls from the {@link ForbiddenCallerClass} class.
  *  
  * @author Adrian Citu
  *
  */
-@ClassBoundary( 
+@Aoplib4jClassBoundary( 
         callbackClass=ThrowErrorBoundaryCallback.class,
         classesList = {String.class}, 
         classesListType = ListType.BLACKLIST)
-@InjectedPkgBoundary
+@Aoplib4jInjectedPkgBoundary
 public class WhiteListPackageCalledClass {
 
     /**

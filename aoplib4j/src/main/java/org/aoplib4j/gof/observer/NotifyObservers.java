@@ -23,7 +23,8 @@ import java.lang.annotation.Target;
 
 
 /**
- * Annotation to mark the methods of classes annotated with the {@link Subject}
+ * Annotation to mark the methods of classes annotated with the 
+ * {@link Aoplib4jSubject}
  * annotation to notify a change to the class to all the attached observers.
  * 
  * @author Adrian Citu

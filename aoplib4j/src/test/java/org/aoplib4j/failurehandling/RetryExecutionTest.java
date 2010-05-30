@@ -14,7 +14,7 @@
  */
 package org.aoplib4j.failurehandling;
 
-import org.aoplib4j.failurehandling.RetryExecution;
+import org.aoplib4j.failurehandling.Aoplib4jRetryExecution;
 
 import junit.framework.TestCase;
 
@@ -65,7 +65,7 @@ public class RetryExecutionTest extends TestCase {
     }
     
     /**
-     * The executed methods are annotated with {@link RetryExecution} 
+     * The executed methods are annotated with {@link Aoplib4jRetryExecution} 
      * but no error is thrown at the execution.
      * The tests are made on static and not static methods.
      */
@@ -75,7 +75,7 @@ public class RetryExecutionTest extends TestCase {
     }
     
     /**
-     * The executed methods are annotated {@link RetryExecution} and 
+     * The executed methods are annotated {@link Aoplib4jRetryExecution} and 
      * an error is thrown at the execution.
      * The tests are made on static and not static methods.
      */

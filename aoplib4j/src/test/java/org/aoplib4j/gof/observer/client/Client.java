@@ -15,7 +15,7 @@
 
 package org.aoplib4j.gof.observer.client;
 
-import org.aoplib4j.gof.observer.Observer;
+import org.aoplib4j.gof.observer.Aoplib4jObserver;
 
 /**
  * A drug dealer client.
@@ -23,7 +23,7 @@ import org.aoplib4j.gof.observer.Observer;
  * @author Adrian Citu
  *
  */
-@Observer(callbackClass = ClientObserverCallBack.class)
+@Aoplib4jObserver(callbackClass = ClientObserverCallBack.class)
 public class Client {
 
     private String name = null;

@@ -15,7 +15,7 @@
 
 package org.aoplib4j.gof.observer;
 
-import org.aoplib4j.gof.observer.RegisterObserver;
+import org.aoplib4j.gof.observer.Aoplib4jRegisterObserver;
 import org.aoplib4j.gof.observer.client.Client;
 import org.aoplib4j.gof.observer.client.Dealer;
 import org.aoplib4j.gof.observer.client.Informer;
@@ -71,7 +71,7 @@ public class ObserverTest extends TestCase {
      */
     public final void testDealerIsSubject() {
 
-        assertTrue("Dealer instance is not a Subject",
+        assertTrue("Dealer instance is not a Aoplib4jSubject",
                 dealer instanceof GofSubject);
     }
 
@@ -80,7 +80,7 @@ public class ObserverTest extends TestCase {
      */
     public final void testClientIsObserver() {
         assertTrue(
-               "Client class is not an Observer",
+               "Client class is not an Aoplib4jObserver",
                 client1 instanceof GofObserver);
     }
 
@@ -138,7 +138,7 @@ public class ObserverTest extends TestCase {
     }
     
     /**
-     * Dealer contains {@link RegisterObserver} on wrong methods(methods
+     * Dealer contains {@link Aoplib4jRegisterObserver} on wrong methods(methods
      * with multiple parameters, static method). Verifies that the call of this
      * method does not trigger the add of a new observer.
      */

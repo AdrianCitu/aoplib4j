@@ -18,7 +18,7 @@ package org.aoplib4j.gof.observer.internal;
 import java.lang.reflect.Method;
 
 import org.aoplib4j.gof.observer.NotifyInformation;
-import org.aoplib4j.gof.observer.Observer;
+import org.aoplib4j.gof.observer.Aoplib4jObserver;
 import org.aoplib4j.gof.observer.ObserverCallback;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -39,33 +39,33 @@ public final class ObserverAspect {
     
     /**
      * the classes annotated with the 
-     * {@link org.aoplib4j.gof.observer.Subject} annotation 
+     * {@link org.aoplib4j.gof.observer.Aoplib4jSubject} annotation 
      * will automatically 
      * implement the {@link GofSubject} interface and the implementation
      * will be {@link GofSubjectImpl}.
      */
     @SuppressWarnings("unused")
     @DeclareParents(
-            value = "@org.aoplib4j.gof.observer.Subject *",
+            value = "@org.aoplib4j.gof.observer.Aoplib4jSubject *",
             defaultImpl = GofSubjectImpl.class)
     private GofSubject subject = null;
 
     /**
-     * the classes annotated with the {@link Observer} annotation will 
+     * the classes annotated with the {@link Aoplib4jObserver} annotation will 
      * automatically 
      * implement the {@link GofObserver} interface.
      */
     @SuppressWarnings("unused")
     @DeclareParents(
             value =
-                "@org.aoplib4j.gof.observer.Observer *")
+                "@org.aoplib4j.gof.observer.Aoplib4jObserver *")
     private GofObserver observer = null;
 
     /**
      * AspectJ pointcut represented by the call of a method annotated with 
-     * {@link org.aoplib4j.gof.observer.RegisterObserver}
+     * {@link org.aoplib4j.gof.observer.Aoplib4jRegisterObserver}
      * and having as unique parameter a class annotated
-     * with the {@link Observer} annotation.
+     * with the {@link Aoplib4jObserver} annotation.
      * 
      * <pre>
      * AspectJ pointcut:
@@ -82,7 +82,7 @@ public final class ObserverAspect {
      */
     @Pointcut("execution("
             + "@org.aoplib4j.gof.observer"
-            + ".RegisterObserver * * (..)) "
+            + ".Aoplib4jRegisterObserver * * (..)) "
             + "&& this(sbj) && args(obs)")
     public void addObserverPointcut(
             final GofSubject sbj, final GofObserver obs) {
@@ -132,7 +132,7 @@ public final class ObserverAspect {
      * class extending {@link ObserverCallback} and call the method
      * {@link ObserverCallback#notifyObserver(NotifyInformation)}.
      * The class name extending the {@link ObserverCallback} is retrieved by
-     * {@link Observer#callbackClass()}.
+     * {@link Aoplib4jObserver#callbackClass()}.
      * 
      * @param sbj instance of {@link GofSubject}.
      * @param thisJoinPoint AspectJ {@link JoinPoint}.
@@ -151,8 +151,8 @@ public final class ObserverAspect {
         GofObserver[] obs = sbj.getAllObservers();
 
         for (GofObserver ob : obs) {
-            Observer annotation =
-                ob.getClass().getAnnotation(Observer.class);
+            Aoplib4jObserver annotation =
+                ob.getClass().getAnnotation(Aoplib4jObserver.class);
 
             Class < ? extends ObserverCallback > callbackClass =
                 annotation.callbackClass();
@@ -165,13 +165,13 @@ public final class ObserverAspect {
     
     /**
      * Pointcut representing the execution of the method annotated with the
-     * {@link org.aoplib4j.gof.observer.UnregisterObservers}
+     * {@link org.aoplib4j.gof.observer.Aoplib4jUnregisterObservers}
      * annotation.
      * 
      * @param sbj instance of {@link GofSubject}
      */
     @Pointcut("execution(@org.aoplib4j.gof.observer."
-            + "UnregisterObservers * * (..))"
+            + "Aoplib4jUnregisterObservers * * (..))"
             + " && this(sbj)")
     public void unregisterObserversPointcut(final GofSubject sbj) {
     }

@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface RetryExecution {
+public @interface Aoplib4jRetryExecution {
     
     /**
      * The number of times the method should be re-executed if the execution

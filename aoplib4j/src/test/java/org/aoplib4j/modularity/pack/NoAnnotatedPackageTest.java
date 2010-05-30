@@ -14,7 +14,7 @@
  */
 package org.aoplib4j.modularity.pack;
 
-import org.aoplib4j.modularity.PackageBoundary;
+import org.aoplib4j.modularity.Aoplib4jPackageBoundary;
 import org.aoplib4j.modularity.noannon.NoAnotatedPackageClass;
 
 
@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 /**
  * Test case for testing the case of classes from a package not annotated 
- * with the {@link PackageBoundary}.
+ * with the {@link Aoplib4jPackageBoundary}.
  *  
  * 
  * @author Adrian Citu

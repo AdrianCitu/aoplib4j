@@ -14,18 +14,18 @@
  */
 package org.aoplib4j.modularity.noannon;
 
-import org.aoplib4j.modularity.InjectedPkgBoundary;
-import org.aoplib4j.modularity.PackageBoundary;
+import org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary;
+import org.aoplib4j.modularity.Aoplib4jPackageBoundary;
 
 /**
  * Class which is part of a package not annotated with the 
- * {@link PackageBoundary} but the class is annotated with the 
- * {@link InjectedPkgBoundary}.
+ * {@link Aoplib4jPackageBoundary} but the class is annotated with the 
+ * {@link Aoplib4jInjectedPkgBoundary}.
  * 
  * @author Adrian Citu
  *
  */
-@InjectedPkgBoundary
+@Aoplib4jInjectedPkgBoundary
 public class NoAnotatedPackageClass {
 
     public void voidMethod() {

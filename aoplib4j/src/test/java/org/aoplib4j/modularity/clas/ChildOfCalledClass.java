@@ -14,11 +14,11 @@
  */
 package org.aoplib4j.modularity.clas;
 
-import org.aoplib4j.modularity.ClassBoundary;
+import org.aoplib4j.modularity.Aoplib4jClassBoundary;
 
 /**
  * Subclass of the {@link ClasCalledClass}; the parent class is annotated with 
- * {@link ClassBoundary} annotation.This class is used by the JUnit test to 
+ * {@link Aoplib4jClassBoundary} annotation.This class is used by the JUnit test to 
  * verify the behavior of subclasses in the case of boundary violations.
  * 
  * 
