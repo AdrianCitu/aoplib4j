@@ -288,6 +288,8 @@ The {{{sequenceMethodsPointcut}}} intercepts the execution of all the methods in
    * the current depth of the diagram is smaller or equal than the maximum diagram depth.
  The {{{cflow()}}} pointcut is not use because it is not a statically determinable pointcut and so the {{{around}}} and {{{aflter}}} advices cannot be applied. 
  
+Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/uml/internal/SequenceDiagramAspect.java SequenceDiagramAspect].
+
 === Critics, enhancements and ... what i don't like about this solution ===
  * The user validation class must inherit from {{{SequenceDiagramWriter}}} class. It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the writer class using the non-arguments constructor by introspection (see [http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance() Class.newInstance()]).
  * I don't like the way the {{{validSequenceDiagramPointcut}}} is designed; the use of the {{{execution(* *.*(..)) || execution(*.new(..)))}}} pointcut is very expensive for the weaver (compiler or runtime), but it was the only way to intercept the execution of all the methods inside the flow of a annotated method and to use the pointcut with the {{{around}}} advice. 
