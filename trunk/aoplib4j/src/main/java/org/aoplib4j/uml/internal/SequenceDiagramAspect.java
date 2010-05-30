@@ -46,6 +46,7 @@ import org.aspectj.lang.reflect.MethodSignature;
  * 
  * @see #sequenceDiagramMethodStartPointcut(Aoplib4jSequenceDiagram)
  * @see Aoplib4jSequenceDiagram
+ * @see SequenceDiagramWriter
  * 
  * @author Adrian Citu
  **/
