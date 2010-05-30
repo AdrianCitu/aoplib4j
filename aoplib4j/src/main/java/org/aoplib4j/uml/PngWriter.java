@@ -24,8 +24,15 @@ import java.util.logging.Logger;
  * Writer that will generate the UML diagram as a PNG file. The writer use under
  * the hood the {@link SEQUENCEWriter} writer to generate a .seq diagram and 
  * then use SEQUENCE with the <code>--headless</code> option
- *  which is used when you want to generate a .png image from an input file 
- *  without displaying the SEQUENCE screen.   
+ * which is used when you want to generate a .png image from an input file 
+ * without displaying the SEQUENCE screen. 
+ *  
+ * The writer will create 2 files; the first one having as name the value passed
+ * as parameter to the {@link Aoplib4jSequenceDiagram#diagramDepth()} (which is
+ * a seq file) and the second file which is the png file.
+ * 
+ *  @see SEQUENCEWriter
+ *  
  * @author Adrian Citu
  *
  */
