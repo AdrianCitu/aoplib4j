@@ -11,7 +11,7 @@ In the case of the class level modularity, the class became a module and the goa
 ==== How to implement the class modularity ====
  
 For implementing the class modularity you must :
-  # Annotate your class(es) with the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/Aoplib4jClassBoundary.java org.aoplib4j.modularity.Aoplib4jClassBoundary]annotation
+  # Annotate your class(es) with the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/modularity/Aoplib4jClassBoundary.java org.aoplib4j.modularity.Aoplib4jClassBoundary]annotation
   # Define the logical boundary by filling the annotation parameters ({{{Aoplib4jClassBoundary#classesList}}}, {{{Aoplib4jClassBoundary#classesListType}}} and {{{Aoplib4jClassBoundary#callbackClass}}}).
   # Create your own callback class extending the {{{BoundaryViolationCallback}}} abstract class for handle the boundary violation and add it to the {{{Aoplib4jClassBoundary#callbackClass}}}.
 
