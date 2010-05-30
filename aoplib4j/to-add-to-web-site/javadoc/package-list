@@ -9,3 +9,5 @@ org.aoplib4j.modularity.internal
 org.aoplib4j.policy.compiletime
 org.aoplib4j.policy.runtime
 org.aoplib4j.testing.internal
+org.aoplib4j.uml
+org.aoplib4j.uml.internal
