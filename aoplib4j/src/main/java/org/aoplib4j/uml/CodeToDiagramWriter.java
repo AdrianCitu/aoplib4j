@@ -163,7 +163,7 @@ public final class CodeToDiagramWriter extends DFSDiagramWriter {
      * {@inheritDoc}
      */
     @Override   
-    public void writeMethodAfterChilds(final SequenceMethod meth) 
+    public void writeMethodAfterChildren(final SequenceMethod meth) 
         throws IOException {
         
         //fill the messagesBuffer with the messages of type "return"     
@@ -278,7 +278,7 @@ public final class CodeToDiagramWriter extends DFSDiagramWriter {
      * {@inheritDoc}
      */
     @Override
-    public void writeMethodBeforeChilds(final SequenceMethod meth) 
+    public void writeMethodBeforeChildren(final SequenceMethod meth) 
         throws IOException {
         
         this.computeActorAndMessageFromMethod(meth);

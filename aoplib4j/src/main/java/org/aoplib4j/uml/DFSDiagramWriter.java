@@ -65,7 +65,7 @@ public abstract class DFSDiagramWriter extends SequenceDiagramWriter {
      *  Write the content for a method. The workflow is :
      *  <ul>
      *  <li>
-     *      call {@link #writeMethodBeforeChilds(SequenceMethod)}
+     *      call {@link #writeMethodBeforeChildren(SequenceMethod)}
      *  </li>
      *  <li>
      *      for every child method method call 
@@ -73,7 +73,7 @@ public abstract class DFSDiagramWriter extends SequenceDiagramWriter {
      *  </li>
      *  
      *  <li>
-     *      call {@link #writeMethodAfterChilds(SequenceMethod)}
+     *      call {@link #writeMethodAfterChildren(SequenceMethod)}
      *  </li>
      *  </ul>
      *  
@@ -82,13 +82,13 @@ public abstract class DFSDiagramWriter extends SequenceDiagramWriter {
      */
     private void writeMethod(final SequenceMethod meth) throws IOException {
         
-        this.writeMethodBeforeChilds(meth);
+        this.writeMethodBeforeChildren(meth);
         
         for (SequenceMethod children : meth.getChildren()) {
             this.writeMethod(children);
         }
         
-        this.writeMethodAfterChilds(meth);
+        this.writeMethodAfterChildren(meth);
     }
     
     /**
@@ -98,7 +98,7 @@ public abstract class DFSDiagramWriter extends SequenceDiagramWriter {
      * @param meth the method to write
      * @throws IOException if any problem writing.
      */
-    public abstract void writeMethodBeforeChilds(final SequenceMethod meth) 
+    public abstract void writeMethodBeforeChildren(final SequenceMethod meth) 
         throws IOException;
     
     /**
@@ -108,7 +108,7 @@ public abstract class DFSDiagramWriter extends SequenceDiagramWriter {
      * @param meth the method to write
      * @throws IOException if any problem writing.
      */
-    public abstract void writeMethodAfterChilds(final SequenceMethod meth) 
+    public abstract void writeMethodAfterChildren(final SequenceMethod meth) 
         throws IOException;
 
 }
