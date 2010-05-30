@@ -1,17 +1,17 @@
-#summary How to use the @Validate annotation.
+#summary How to use the @Aoplib4jValidate annotation.
 #labels Phase-Implementation,Featured
 
 === Introduction ===
-This page is a small tutorial about the {{{@Validate}}} annotation.
+This page is a small tutorial about the {{{@Aoplib4jValidate}}} annotation.
 
-=== How to use the {{{@Validate}}} annotation (in 2 seconds) ===
+=== How to use the {{{@Aoplib4jValidate}}} annotation (in 2 seconds) ===
 
   # Create your own validation class extending the {{{FieldValidator}}} class.
-  # Annotate the field to validate with the {{{@Validate}}} annotation and pass as value of the {{{validationClass}}} your own validation class name.
+  # Annotate the field to validate with the {{{@Aoplib4jValidate}}} annotation and pass as value of the {{{validationClass}}} your own validation class name.
 
 
-=== How to use the {{{@Validate}}} annotation (in 5 minutes) ===
-The {{{@Validate}}} annotation is should be added on fields on which a validation should be done.
+=== How to use the {{{@Aoplib4jValidate}}} annotation (in 5 minutes) ===
+The {{{@Aoplib4jValidate}}} annotation is should be added on fields on which a validation should be done.
 The annotation have a single parameter ({{{validationClass}}}) representing the class that will be instantiated and used for the validation. 
 
 Code example (taken from the JUnit tests):
@@ -19,10 +19,10 @@ Code example (taken from the JUnit tests):
 {{{
 public class ClassToValidate {
 
-    @Validate(validationClass=StringValidator.class)
+    @Aoplib4jValidate(validationClass=StringValidator.class)
     private String str;
 
-    @Validate(validationClass=StringValidator.class)
+    @Aoplib4jValidate(validationClass=StringValidator.class)
     private static String staticStr;
 
     ...
@@ -83,32 +83,32 @@ public interface FieldInformation {
 }}}  
 
  
-=== The {{{@Validate}}} annotation: under the hood ===
+=== The {{{@Aoplib4jValidate}}} annotation: under the hood ===
 For the validation process the work flow is the following:
- * Intercept the assignment of a field annotated with {{{Validate}}}
+ * Intercept the assignment of a field annotated with {{{Aoplib4jValidate}}}
 
    The @AspectJ pointcuts for intercepting the assignment of a field:
      * static fields
 {{{
     @Pointcut(
-            "set(@org.aoplib4j.fieldvalidation.Validate "
+            "set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate "
             + "static * *.*)"
             + "&& @annotation(validateAnnot) " 
             + "&& args(newValue)")
     void validateStaticFieldPointcut(
-            final Validate validateAnnot, 
+            final Aoplib4jValidate validateAnnot, 
             final Object newValue) {
     }
 }}}
      * non-static fields
 {{{
     @Pointcut(
-            "set(@org.aoplib4j.fieldvalidation.Validate "
+            "set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate "
             + "* *.*)" 
             + "&& @annotation(validateAnnot) " 
             + "&& args(newValue) && this(instance)")
     void validateNonStaticFieldPointcut(
-            final Validate validateAnnot, 
+            final Aoplib4jValidate validateAnnot, 
             final Object newValue, 
             final Object instance) {
     }
