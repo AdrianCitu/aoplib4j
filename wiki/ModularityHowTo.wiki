@@ -302,7 +302,7 @@ As in case of the class boundary the pointcuts use the {{{if()}}} pointcut for c
         * The framework creates an instance of the callback class (a class extending {{{BoundaryViolationCallback}}}) by introspection. The type of the class is retrieved from the {{{Aoplib4jClassBoundary#callbackClass}}} field.
         * The callback method {{{BoundaryViolationCallback#boundaryViolation(final ViolationInformation info)}}} is call to handle to boundary violation. *Note that the {{{Aoplib4jClassBoundary}}} have a default callback class, {{{org.aoplib4j.modularity.LogViolationCallback}}} *
 
-  Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/internal/PackageBoundaryAspect.java PackageBoundaryAspect].
+  Here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/modularity/internal/PackageBoundaryAspect.java PackageBoundaryAspect].
 
 === Critics, enhancements and ... what i don't like about this solution ===
 
