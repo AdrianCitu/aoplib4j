@@ -294,7 +294,7 @@ For detach the Observers from the Subject a method annotated with {{{@Aoplib4jUn
     }
 }}} 
 
-And here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/gof/observer/internal/ObserverAspect.java ObserverAspect].
+And here is the complete code of the [http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/gof/observer/internal/ObserverAspect.java ObserverAspect].
 
 === Enhancements ===
  # It will be a good idea to add a callback also when an Observer is detached from his Subject(if the Observer wants to make some actions just before of being detached).
