@@ -5,16 +5,14 @@
 
 <div style="font-style: italic; margin-top: 3px;">How to use
 modularity aspects.</div>
-
-</div>
 <h3><a name="Introduction">Introduction</a></h3>
 <p><a name="Introduction">Modular programming is a software
 design technique that increases the extent to which software is composed
 from separate parts, called modules. Conceptually, modules represent a
 separation of concerns, and improve maintainability by enforcing logical
 boundaries between components(see </a><a
-	href="http://en.wikipedia.org/wiki/Modularity_%28programming%29"
-	rel="nofollow">this</a> for a complete definition of the modular
+    href="http://en.wikipedia.org/wiki/Modularity_%28programming%29"
+    rel="nofollow">this</a> for a complete definition of the modular
 programming). <tt>aoplib4j</tt> offers the possibility to implement the
 modularity at the class level and at the package level.</p>
 <h3><a name="Modularity_at_the_class_level">Modularity at the
@@ -29,251 +27,247 @@ implement the class modularity</a></h4>
 <p><a name="How_to_implement_the_class_modularity"> For
 implementing the class modularity you must : </a></p>
 <ol>
-	<li><a name="How_to_implement_the_class_modularity">Annotate
-	your class(es) with the </a><a
-		href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/ClassBoundary.java"
-		rel="nofollow">org.aoplib4j.modularity.ClassBoundary</a>annotation
-	</li>
-	<li>Define the logical boundary by filling the annotation
-	parameters (<tt>ClassBoundary#classesList</tt>, <tt>ClassBoundary#classesListType</tt>
-	and <tt>ClassBoundary#callbackClass</tt>).</li>
-	<li>Create your own callback class extending the <tt>BoundaryViolationCallback</tt>
-	abstract class for handle the boundary violation and add it to the <tt>ClassBoundary#callbackClass</tt>.
-	</li>
+    <li><a name="How_to_implement_the_class_modularity">Annotate
+    your class(es) with the </a><a
+        href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/modularity/Aoplib4jClassBoundary.java"
+        rel="nofollow">org.aoplib4j.modularity.Aoplib4jClassBoundary</a>annotation
+    </li>
+    <li>Define the logical boundary by filling the annotation
+    parameters (<tt>Aoplib4jClassBoundary#classesList</tt>, <tt>Aoplib4jClassBoundary#classesListType</tt>
+    and <tt>Aoplib4jClassBoundary#callbackClass</tt>).</li>
+    <li>Create your own callback class extending the <tt>BoundaryViolationCallback</tt>
+    abstract class for handle the boundary violation and add it to the <tt>Aoplib4jClassBoundary#callbackClass</tt>.
+    </li>
 </ol>
-<p>Here is an example of <tt>ClassBoundary</tt> utilization (taken
-from the jUnit tests):</p>
+<p>Here is an example of <tt>Aoplib4jClassBoundary</tt> utilization
+(taken from the jUnit tests):</p>
 <pre class="prettyprint"><span class="kwd">package</span><span
-	class="pln"> com</span><span class="pun">.</span><span class="pln">google</span><span
-	class="pun">.</span><span class="pln">code</span><span class="pun">.</span><span
-	class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">aspectj</span><span
-	class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="pln">clas</span><span class="pun">;</span><span
-	class="pln"><br><br></span><span class="kwd">import</span><span
-	class="pln"> com</span><span class="pun">.</span><span class="pln">google</span><span
-	class="pun">.</span><span class="pln">code</span><span class="pun">.</span><span
-	class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">aspectj</span><span
-	class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="typ">ClassBoundary</span><span
-	class="pun">;</span><span class="pln"><br></span><span class="kwd">import</span><span
-	class="pln"> com</span><span class="pun">.</span><span class="pln">google</span><span
-	class="pun">.</span><span class="pln">code</span><span class="pun">.</span><span
-	class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">aspectj</span><span
-	class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="typ">ListType</span><span class="pun">;</span><span
-	class="pln"><br></span><span class="kwd">import</span><span
-	class="pln"> com</span><span class="pun">.</span><span class="pln">google</span><span
-	class="pun">.</span><span class="pln">code</span><span class="pun">.</span><span
-	class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">aspectj</span><span
-	class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="typ">ThrowErrorBoundaryCallback</span><span
-	class="pun">;</span><span class="pln"><br><br></span><span
-	class="lit">@ClassBoundary</span><span class="pun">(</span><span
-	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; classesList</span><span
-	class="pun">={</span><span class="typ">ForbiddenCallerClass</span><span
-	class="pun">.</span><span class="kwd">class</span><span class="pun">},</span><span
-	class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; callbackClass</span><span
-	class="pun">=</span><span class="typ">ThrowErrorBoundaryCallback</span><span
-	class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span
-	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; classesListType </span><span
-	class="pun">=</span><span class="pln"> </span><span class="typ">ListType</span><span
-	class="pun">.</span><span class="pln">BLACKLIST</span><span class="pun">)</span><span
-	class="pln"><br></span><span class="kwd">public</span><span
-	class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span
-	class="typ">ClasCalledClass</span><span class="pln"> </span><span
-	class="pun">{</span><span class="pln"><br></span><span class="pun">.....</span></pre>
+    class="pln"> org</span><span class="pun">.</span><span class="pln">aoplib4j</span><span
+    class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="pln">clas</span><span class="pun">;</span><span
+    class="pln"><br><br></span><span class="kwd">import</span><span
+    class="pln"> org</span><span class="pun">.</span><span class="pln">aoplib4j</span><span
+    class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="typ">Aoplib4jClassBoundary</span><span
+    class="pun">;</span><span class="pln"><br></span><span class="kwd">import</span><span
+    class="pln"> org</span><span class="pun">.</span><span class="pln">aoplib4j</span><span
+    class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="typ">ListType</span><span class="pun">;</span><span
+    class="pln"><br></span><span class="kwd">import</span><span
+    class="pln"> org</span><span class="pun">.</span><span class="pln">aoplib4j</span><span
+    class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="typ">ThrowErrorBoundaryCallback</span><span
+    class="pun">;</span><span class="pln"><br><br></span><span
+    class="lit">@Aoplib4jClassBoundary</span><span class="pun">(</span><span
+    class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; classesList</span><span
+    class="pun">={</span><span class="typ">ForbiddenCallerClass</span><span
+    class="pun">.</span><span class="kwd">class</span><span class="pun">},</span><span
+    class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; callbackClass</span><span
+    class="pun">=</span><span class="typ">ThrowErrorBoundaryCallback</span><span
+    class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span
+    class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; classesListType </span><span
+    class="pun">=</span><span class="pln"> </span><span class="typ">ListType</span><span
+    class="pun">.</span><span class="pln">BLACKLIST</span><span class="pun">)</span><span
+    class="pln"><br></span><span class="kwd">public</span><span
+    class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span
+    class="typ">ClasCalledClass</span><span class="pln"> </span><span
+    class="pun">{</span><span class="pln"><br></span><span class="pun">.....</span></pre>
 <p>So, in our example the <tt>ClasCalledClass</tt> forbids any call
 from the <tt>ForbiddenCallerClass</tt> class and in the case of a
 violation an instance of <tt>ThrowErrorBoundaryCallback</tt> is created.
 </p>
-<p>The <tt>ClassBoundary#classesList</tt> parameter is a list of <tt>java.lang.Class</tt>
-objects representing the logical boundary.</p>
-<p>The <tt>ClassBoundary#classesListType</tt> parameter is a Java
-enum representing the type <tt>ClassBoundary#classesList</tt> (a <a
-	href="http://en.wikipedia.org/wiki/Blacklist_%28computing%29"
-	rel="nofollow">blacklist</a> or a <a
-	href="http://en.wikipedia.org/wiki/Whitelist" rel="nofollow">whitelist</a>).
-If the <tt>ClassBoundary#classesListType</tt> have the <tt>ListType.WHITELIST</tt>
-value then the <tt>ClassBoundary#classesList</tt> is the list of classes
-from which the annotated class can be called and (of course) if the <tt>ClassBoundary#classesListType</tt>
-have the <tt>ListType.BLACKLIST</tt> value the <tt>ClassBoundary#classesList</tt>
-is the list of classes from which the annotated class cannot be called.
+<p>The <tt>Aoplib4jClassBoundary#classesList</tt> parameter is a
+list of <tt>java.lang.Class</tt> objects representing the logical
+boundary.</p>
+<p>The <tt>Aoplib4jClassBoundary#classesListType</tt> parameter is a
+Java enum representing the type <tt>Aoplib4jClassBoundary#classesList</tt>
+(a <a href="http://en.wikipedia.org/wiki/Blacklist_%28computing%29"
+    rel="nofollow">blacklist</a> or a <a
+    href="http://en.wikipedia.org/wiki/Whitelist" rel="nofollow">whitelist</a>).
+If the <tt>Aoplib4jClassBoundary#classesListType</tt> have the <tt>ListType.WHITELIST</tt>
+value then the <tt>Aoplib4jClassBoundary#classesList</tt> is the list of
+classes from which the annotated class can be called and (of course) if
+the <tt>Aoplib4jClassBoundary#classesListType</tt> have the <tt>ListType.BLACKLIST</tt>
+value the <tt>Aoplib4jClassBoundary#classesList</tt> is the list of
+classes from which the annotated class cannot be called.</p>
+<p>The <tt>Aoplib4jClassBoundary#callbackClass</tt> parameter
+represents the callback class that will be executed when a boundary
+violation is detected. The <tt>Aoplib4jClassBoundary#callbackClass</tt>
+should be a class that extends the <tt>BoundaryViolationCallback</tt>
+abstract class. The structure of the <tt>BoundaryViolationCallback</tt>:
 </p>
-<p>The <tt>ClassBoundary#callbackClass</tt> parameter represents the
-callback class that will be executed when a boundary violation is
-detected. The <tt>ClassBoundary#callbackClass</tt> should be a class
-that extends the <tt>BoundaryViolationCallback</tt> abstract class. The
-structure of the <tt>BoundaryViolationCallback</tt>:</p>
 <pre class="prettyprint"><span class="com">/**<br>&nbsp;* Abstract class that must be extended for coding the behavior when a boundary<br>&nbsp;* is violated.<br>&nbsp;* @see LogViolationCallback<br>&nbsp;* @see ViolationInformation<br>&nbsp;* <br>&nbsp;* @author Adrian Citu<br>&nbsp;*<br>&nbsp;*/</span><span
-	class="pln"><br></span><span class="kwd">public</span><span
-	class="pln"> abstract </span><span class="kwd">class</span><span
-	class="pln"> </span><span class="typ">BoundaryViolationCallback</span><span
-	class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
-	class="com">/**<br>&nbsp; &nbsp; &nbsp;* Default Constructor.<br>&nbsp; &nbsp; &nbsp;*/</span><span
-	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
-	class="pln"> </span><span class="typ">BoundaryViolationCallback</span><span
-	class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span
-	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
-	class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
-	class="com">/**<br>&nbsp; &nbsp; &nbsp;* Method that will be executed by the framework when a boundary is<br>&nbsp; &nbsp; &nbsp;* violated. The framework will create also an instance of <br>&nbsp; &nbsp; &nbsp;* {@link ViolationInformation}.<br>&nbsp; &nbsp; &nbsp;* <br>&nbsp; &nbsp; &nbsp;* @param info object containing information about the boundary violation.<br>&nbsp; &nbsp; &nbsp;*/</span><span
-	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
-	class="pln"> abstract </span><span class="kwd">void</span><span
-	class="pln"> boundaryViolation</span><span class="pun">(</span><span
-	class="kwd">final</span><span class="pln"> </span><span class="typ">ViolationInformation</span><span
-	class="pln"> info</span><span class="pun">);</span><span class="pln"><br></span><span
-	class="pun">}</span></pre>
+    class="pln"><br></span><span class="kwd">public</span><span
+    class="pln"> </span><span class="kwd">abstract</span><span class="pln"> </span><span
+    class="kwd">class</span><span class="pln"> </span><span class="typ">BoundaryViolationCallback</span><span
+    class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
+    class="com">/**<br>&nbsp; &nbsp; &nbsp;* Default Constructor.<br>&nbsp; &nbsp; &nbsp;*/</span><span
+    class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
+    class="pln"> </span><span class="typ">BoundaryViolationCallback</span><span
+    class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span
+    class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+    class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+    class="com">/**<br>&nbsp; &nbsp; &nbsp;* Method that will be executed by the framework when a boundary is<br>&nbsp; &nbsp; &nbsp;* violated. The framework will create also an instance of <br>&nbsp; &nbsp; &nbsp;* {@link ViolationInformation}.<br>&nbsp; &nbsp; &nbsp;* <br>&nbsp; &nbsp; &nbsp;* @param info object containing information about the boundary violation.<br>&nbsp; &nbsp; &nbsp;*/</span><span
+    class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
+    class="pln"> </span><span class="kwd">abstract</span><span class="pln"> </span><span
+    class="kwd">void</span><span class="pln"> boundaryViolation</span><span
+    class="pun">(</span><span class="kwd">final</span><span class="pln"> </span><span
+    class="typ">ViolationInformation</span><span class="pln"> info</span><span
+    class="pun">);</span><span class="pln"><br></span><span
+    class="pun">}</span></pre>
 <p>The <tt>ViolationInformation</tt> is an interface containing
 useful informations about the boundary violation: the caller class name,
 the called class name and the called method name. Here is the structure
 of the <tt>ViolationInformation</tt>:</p>
-<pre class="prettyprint"><span class="com">/**<br>&nbsp;* Interface containing the information about the boundary violation; what class<br>&nbsp;* violated the boundary and what class and what method was<br>&nbsp;* called).<br>&nbsp;* <br>&nbsp;* @see ClassBoundary<br>&nbsp;* <br>&nbsp;* @author Adrian Citu<br>&nbsp;*<br>&nbsp;*/</span><span
-	class="pln"><br></span><span class="kwd">public</span><span
-	class="pln"> </span><span class="kwd">interface</span><span class="pln"> </span><span
-	class="typ">ViolationInformation</span><span class="pln"> </span><span
-	class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
-	class="com">/**<br>&nbsp; &nbsp; &nbsp;* @return the caller canonical name that violated the boundary.<br>&nbsp; &nbsp; &nbsp;*/</span><span
-	class="pln"><br>&nbsp; &nbsp; </span><span class="typ">String</span><span
-	class="pln"> getCallerClassName</span><span class="pun">();</span><span
-	class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
-	class="com">/**<br>&nbsp; &nbsp; &nbsp;* @return the called class canonical name (marked with a <br>&nbsp; &nbsp; &nbsp;* {@link ClassBoundary}) annotation.<br>&nbsp; &nbsp; &nbsp;*/</span><span
-	class="pln"><br>&nbsp; &nbsp; </span><span class="typ">String</span><span
-	class="pln"> getCalledClassName</span><span class="pun">();</span><span
-	class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
-	class="com">/**<br>&nbsp; &nbsp; &nbsp;* @return the called method name.<br>&nbsp; &nbsp; &nbsp;*/</span><span
-	class="pln"><br>&nbsp; &nbsp; </span><span class="typ">String</span><span
-	class="pln"> getCalledMethodName</span><span class="pun">();</span><span
-	class="pln"><br>&nbsp; &nbsp; <br></span><span class="pun">}</span></pre>
+<pre class="prettyprint"><span class="com">/**<br>&nbsp;* Interface containing the information about the boundary violation; what class<br>&nbsp;* violated the boundary and what class and what method was<br>&nbsp;* called).<br>&nbsp;* <br>&nbsp;* @see Aoplib4jClassBoundary<br>&nbsp;* <br>&nbsp;* @author Adrian Citu<br>&nbsp;*<br>&nbsp;*/</span><span
+    class="pln"><br></span><span class="kwd">public</span><span
+    class="pln"> </span><span class="kwd">interface</span><span class="pln"> </span><span
+    class="typ">ViolationInformation</span><span class="pln"> </span><span
+    class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
+    class="com">/**<br>&nbsp; &nbsp; &nbsp;* @return the caller canonical name that violated the boundary.<br>&nbsp; &nbsp; &nbsp;*/</span><span
+    class="pln"><br>&nbsp; &nbsp; </span><span class="typ">String</span><span
+    class="pln"> getCallerClassName</span><span class="pun">();</span><span
+    class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+    class="com">/**<br>&nbsp; &nbsp; &nbsp;* @return the called class canonical name (marked with a <br>&nbsp; &nbsp; &nbsp;* {@link Aoplib4jClassBoundary}) annotation.<br>&nbsp; &nbsp; &nbsp;*/</span><span
+    class="pln"><br>&nbsp; &nbsp; </span><span class="typ">String</span><span
+    class="pln"> getCalledClassName</span><span class="pun">();</span><span
+    class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+    class="com">/**<br>&nbsp; &nbsp; &nbsp;* @return the called method name.<br>&nbsp; &nbsp; &nbsp;*/</span><span
+    class="pln"><br>&nbsp; &nbsp; </span><span class="typ">String</span><span
+    class="pln"> getCalledMethodName</span><span class="pun">();</span><span
+    class="pln"><br>&nbsp; &nbsp; <br></span><span class="pun">}</span></pre>
 <p></p>
 <h4><a name="Class_modularity_under_the_hood">Class modularity
 under the hood</a></h4>
 <p><a name="Class_modularity_under_the_hood">For boundary
 checking at the class level the workflow is the following: </a></p>
 <ul>
-	<li><a name="Class_modularity_under_the_hood">Intercept the
-	call to all non private methods from a class annotated with the <tt>ClassBoundary</tt>
-	annotation. The AspectJ pointcuts are: </a></li>
-	<ul>
-		<li><a name="Class_modularity_under_the_hood">non static
-		methods </a></li>
-		<pre class="prettyprint"><a
-			name="Class_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp; </span><span
-			class="lit">@Pointcut</span><span class="pun">(</span><span
-			class="str">"call(!private !static * "</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.ClassBoundary *)."</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"*(..)) "</span><span
-			class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
-			class="str">"&amp;&amp; target(calledObj) &amp;&amp; this(callerObj) &amp;&amp; if()"</span><span
-			class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
-			class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span
-			class="pln"> </span><span class="kwd">boolean</span><span class="pln"> callOfClassBoundaryPointcut</span><span
-			class="pun">(</span><span class="kwd">final</span><span class="pln"> </span><span
-			class="typ">Object</span><span class="pln"> calledObj</span><span
-			class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">final</span><span class="pln"> </span><span class="typ">Object</span><span
-			class="pln"> callerObj</span><span class="pun">)</span><span
-			class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="com">//the caller and called are the same instance</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
-			class="pln">calledObj </span><span class="pun">==</span><span
-			class="pln"> callerObj</span><span class="pun">)</span><span
-			class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="typ">ClassBoundary</span><span class="pln"> boundary </span><span
-			class="pun">=</span><span class="pln"> getClassBoundaryAnnotation</span><span
-			class="pun">(</span><span class="pln">calledObj<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">.</span><span class="pln">getClass</span><span
-			class="pun">());</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="com">//advice is called on a subclass; the annotation is not inherited by</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="com">//the subclasses.</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
-			class="pln">boundary </span><span class="pun">==</span><span
-			class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span
-			class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span
-			class="pun">}</span></a></pre>
-		<li><a name="Class_modularity_under_the_hood">static methods
-		</a></li>
-		<pre class="prettyprint"><a
-			name="Class_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp; </span><span
-			class="lit">@Pointcut</span><span class="pun">(</span><span
-			class="str">"call(!private static * "</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.ClassBoundary *)."</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"*(..)) &nbsp;&amp;&amp; if()"</span><span
-			class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
-			class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span
-			class="pln"> </span><span class="kwd">boolean</span><span class="pln"> callOfStaticClassBoundaryPointcut</span><span
-			class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">final</span><span class="pln"> </span><span class="typ">JoinPoint</span><span
-			class="pun">.</span><span class="typ">StaticPart</span><span
-			class="pln"> jpsp</span><span class="pun">)</span><span class="pln"> </span><span
-			class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="typ">Class</span><span class="pun">&lt;</span><span
-			class="pln"> </span><span class="pun">?</span><span class="pln"> </span><span
-			class="pun">&gt;</span><span class="pln"> calledClass </span><span
-			class="pun">=</span><span class="pln"> jpsp</span><span class="pun">.</span><span
-			class="pln">getSignature</span><span class="pun">().</span><span
-			class="pln">getDeclaringType</span><span class="pun">();</span><span
-			class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="typ">ClassBoundary</span><span class="pln"> boundary </span><span
-			class="pun">=</span><span class="pln"> getClassBoundaryAnnotation</span><span
-			class="pun">(</span><span class="pln">calledClass</span><span
-			class="pun">);</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="com">//advice is called on a subclass; the annotation is not inherited by</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="com">//the subclasses.</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
-			class="pln">boundary </span><span class="pun">==</span><span
-			class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span
-			class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span
-			class="pun">}</span></a></pre>
-	</ul>
+    <li><a name="Class_modularity_under_the_hood">Intercept the
+    call to all non private methods from a class annotated with the <tt>Aoplib4jClassBoundary</tt>
+    annotation. The AspectJ pointcuts are: </a></li>
+    <ul>
+        <li><a name="Class_modularity_under_the_hood">non static
+        methods </a></li>
+        <pre class="prettyprint"><a
+            name="Class_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp; </span><span
+            class="lit">@Pointcut</span><span class="pun">(</span><span
+            class="str">"call(!private !static * "</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.Aoplib4jClassBoundary *)."</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">"*(..)) "</span><span
+            class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
+            class="str">"&amp;&amp; target(calledObj) &amp;&amp; this(callerObj) &amp;&amp; if()"</span><span
+            class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+            class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span
+            class="pln"> </span><span class="kwd">boolean</span><span class="pln"> callOfClassBoundaryPointcut</span><span
+            class="pun">(</span><span class="kwd">final</span><span class="pln"> </span><span
+            class="typ">Object</span><span class="pln"> calledObj</span><span
+            class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">final</span><span class="pln"> </span><span class="typ">Object</span><span
+            class="pln"> callerObj</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="com">//the caller and called are the same instance</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
+            class="pln">calledObj </span><span class="pun">==</span><span
+            class="pln"> callerObj</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="typ">Aoplib4jClassBoundary</span><span class="pln"> boundary </span><span
+            class="pun">=</span><span class="pln"> getClassBoundaryAnnotation</span><span
+            class="pun">(</span><span class="pln">calledObj<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">.</span><span class="pln">getClass</span><span
+            class="pun">());</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="com">//advice is called on a subclass; the annotation is not inherited by</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="com">//the subclasses.</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
+            class="pln">boundary </span><span class="pun">==</span><span
+            class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+            class="pun">}</span></a></pre>
+        <li><a name="Class_modularity_under_the_hood">static methods
+        </a></li>
+        <pre class="prettyprint"><a
+            name="Class_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp; </span><span
+            class="lit">@Pointcut</span><span class="pun">(</span><span
+            class="str">"call(!private static * "</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.Aoplib4jClassBoundary *)."</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">"*(..)) &nbsp;&amp;&amp; if()"</span><span
+            class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+            class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span
+            class="pln"> </span><span class="kwd">boolean</span><span class="pln"> callOfStaticClassBoundaryPointcut</span><span
+            class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">final</span><span class="pln"> </span><span class="typ">JoinPoint</span><span
+            class="pun">.</span><span class="typ">StaticPart</span><span
+            class="pln"> jpsp</span><span class="pun">)</span><span class="pln"> </span><span
+            class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="typ">Class</span><span class="pun">&lt;</span><span
+            class="pln"> </span><span class="pun">?</span><span class="pln"> </span><span
+            class="pun">&gt;</span><span class="pln"> calledClass </span><span
+            class="pun">=</span><span class="pln"> jpsp</span><span class="pun">.</span><span
+            class="pln">getSignature</span><span class="pun">().</span><span
+            class="pln">getDeclaringType</span><span class="pun">();</span><span
+            class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="typ">Aoplib4jClassBoundary</span><span class="pln"> boundary </span><span
+            class="pun">=</span><span class="pln"> getClassBoundaryAnnotation</span><span
+            class="pun">(</span><span class="pln">calledClass</span><span
+            class="pun">);</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="com">//advice is called on a subclass; the annotation is not inherited by</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="com">//the subclasses.</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
+            class="pln">boundary </span><span class="pun">==</span><span
+            class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+            class="pun">}</span></a></pre>
+    </ul>
 </ul>
 <blockquote><a name="Class_modularity_under_the_hood">As
 you can see in the two cases the <tt>if()</tt> pointcut is used in order
 to perform some compile-time checks and to avoid the advice injecting in
 some trivial useless cases (when the caller and called class are the
-same or the retrieved <tt>ClassBoundary</tt> annotation is null). For
-more informations about the use of <tt>if</tt> pointcut please check </a><a
-	href="http://www.eclipse.org/aspectj/doc/released/adk15notebook/ataspectj-pcadvice.html#pointcuts"
-	rel="nofollow">if() pointcut expressions</a>.</blockquote>
+same or the retrieved <tt>Aoplib4jClassBoundary</tt> annotation is
+null). For more informations about the use of <tt>if</tt> pointcut
+please check </a><a
+    href="http://www.eclipse.org/aspectj/doc/released/adk15notebook/ataspectj-pcadvice.html#pointcuts"
+    rel="nofollow">if() pointcut expressions</a>.</blockquote>
 <ul>
-	<li>The @Before advice is used to check the boundary violation by
-	using the information retrieved from the <tt>ClassBoundary</tt>
-	annotation and the information given by the AspectJ framework.</li>
+    <li>The @Before advice is used to check the boundary violation by
+    using the information retrieved from the <tt>Aoplib4jClassBoundary</tt>
+    annotation and the information given by the AspectJ framework.</li>
 </ul>
 <ul>
-	<li>If a boundary validation is detected then:</li>
-	<ul>
-		<li>The framework creates an instance of <tt>ViolationInformation</tt>
-		interface.</li>
-		<li>The framework creates an instance of the callback class (a
-		class extending <tt>BoundaryViolationCallback</tt>) by introspection.
-		The type of the class is retrieved from the <tt>ClassBoundary#callbackClass</tt>
-		field.</li>
-		<li>The callback method <tt>BoundaryViolationCallback#boundaryViolation(final
-		ViolationInformation info)</tt> is call to handle to boundary violation. <strong>Note
-		that the <tt>ClassBoundary</tt> have a default callback class, <tt>org.aoplib4j.modularity.LogViolationCallback</tt>
-		</strong></li>
-	</ul>
+    <li>If a boundary validation is detected then:</li>
+    <ul>
+        <li>The framework creates an instance of <tt>ViolationInformation</tt>
+        interface.</li>
+        <li>The framework creates an instance of the callback class (a
+        class extending <tt>BoundaryViolationCallback</tt>) by introspection.
+        The type of the class is retrieved from the <tt>Aoplib4jClassBoundary#callbackClass</tt>
+        field.</li>
+        <li>The callback method <tt>BoundaryViolationCallback#boundaryViolation(final
+        ViolationInformation info)</tt> is call to handle to boundary violation. <strong>Note
+        that the <tt>Aoplib4jClassBoundary</tt> have a default callback class,
+        <tt>org.aoplib4j.modularity.LogViolationCallback</tt> </strong></li>
+    </ul>
 </ul>
 <p>Here is the complete code of the <a
-	href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/internal/ClassBoundaryAspect.java"
-	rel="nofollow">ClassBoundaryAspect</a>.</p>
+    href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/modularity/internal/ClassBoundaryAspect.java"
+    rel="nofollow">ClassBoundaryAspect</a>.</p>
 <h3><a name="Modularity_at_the_package_level">Modularity at the
 package level</a></h3>
 <p><a name="Modularity_at_the_package_level">In the case of the
@@ -285,49 +279,45 @@ implement the package modularity</a></h4>
 <p><a name="How_to_implement_the_package_modularity">For
 implementing the class modularity you must : </a></p>
 <ol>
-	<li><a name="How_to_implement_the_package_modularity">Annotate
-	your package(es) with the </a><a
-		href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/PackageBoundary.java"
-		rel="nofollow">org.aoplib4j.modularity.PackageBoundary</a>
-	annotation. For annotate a Java package it must create a file called
-	package-info.java into the package (see <a
-		href="http://www.onjava.com/pub/a/onjava/2004/04/21/declarative.html?page=3"
-		rel="nofollow">Declarative Programming in Java</a> for more details)</li>
-	<li>Define the logical boundary by filling the annotation
-	parameters (<tt>PackageBoundary#packagesList</tt>, <tt>PackageBoundary#packagesListType</tt>
-	and <tt>PackageBoundary#callbackClass</tt>).</li>
-	<li>Create your own callback class extending the <tt>BoundaryViolationCallback</tt>
-	abstract class for handle the boundary violation and add it to the <tt>PackageBoundary#callbackClass</tt>.
-	</li>
-	<li>Annotate all your package classes with the <tt>org.aoplib4j.modularity.InjectedPkgBoundary</tt>
-	annotation or write an aspect that will do this for you.</li>
+    <li><a name="How_to_implement_the_package_modularity">Annotate
+    your package(es) with the </a><a
+        href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/modularity/Aoplib4jPackageBoundary.java"
+        rel="nofollow">org.aoplib4j.modularity.Aoplib4jPackageBoundary</a>
+    annotation. For annotate a Java package it must create a file called
+    package-info.java into the package (see <a
+        href="http://www.onjava.com/pub/a/onjava/2004/04/21/declarative.html?page=3"
+        rel="nofollow">Declarative Programming in Java</a> for more details)</li>
+    <li>Define the logical boundary by filling the annotation
+    parameters (<tt>Aoplib4jPackageBoundary#packagesList</tt>, <tt>Aoplib4jPackageBoundary#packagesListType</tt>
+    and <tt>Aoplib4jPackageBoundary#callbackClass</tt>).</li>
+    <li>Create your own callback class extending the <tt>BoundaryViolationCallback</tt>
+    abstract class for handle the boundary violation and add it to the <tt>Aoplib4jPackageBoundary#callbackClass</tt>.
+    </li>
+    <li>Annotate all your package classes with the <tt>org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary</tt>
+    annotation or write an aspect that will do this for you.</li>
 </ol>
-<p>Here is an example of <tt>PackageBoundary</tt> utilization (taken
-from the JUnit tests):</p>
+<p>Here is an example of <tt>Aoplib4jPackageBoundary</tt>
+utilization (taken from the JUnit tests):</p>
 <pre class="prettyprint"><span class="com">//package-info.java</span><span
-	class="pln"><br></span><span class="lit">@PackageBoundary</span><span
-	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; packagesList </span><span
-	class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span
-	class="str">"org.aoplib4j.modularity.pack.blacklist.forbiddenpackage"</span><span
-	class="pun">},</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; packagesListType </span><span
-	class="pun">=</span><span class="pln"> </span><span class="typ">ListType</span><span
-	class="pun">.</span><span class="pln">BLACKLIST</span><span class="pun">,</span><span
-	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; callbackClass</span><span
-	class="pun">=</span><span class="typ">ThrowErrorBoundaryCallback</span><span
-	class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span
-	class="pln"><br></span><span class="kwd">package</span><span
-	class="pln"> com</span><span class="pun">.</span><span class="pln">google</span><span
-	class="pun">.</span><span class="pln">code</span><span class="pun">.</span><span
-	class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">aspectj</span><span
-	class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
-	class="pln">blacklist</span><span class="pun">;</span><span class="pln"><br><br></span><span
-	class="kwd">import</span><span class="pln"> com</span><span class="pun">.</span><span
-	class="pln">google</span><span class="pun">.</span><span class="pln">code</span><span
-	class="pun">.</span><span class="pln">aoplib4j</span><span class="pun">.</span><span
-	class="pln">aspectj</span><span class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="typ">PackageBoundary</span><span
-	class="pun">;</span></pre>
+    class="pln"><br></span><span class="lit">@Aoplib4jPackageBoundary</span><span
+    class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; packagesList </span><span
+    class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span
+    class="str">"org.aoplib4j.modularity.pack.blacklist.forbiddenpackage"</span><span
+    class="pun">},</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; packagesListType </span><span
+    class="pun">=</span><span class="pln"> </span><span class="typ">ListType</span><span
+    class="pun">.</span><span class="pln">BLACKLIST</span><span class="pun">,</span><span
+    class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; callbackClass</span><span
+    class="pun">=</span><span class="typ">ThrowErrorBoundaryCallback</span><span
+    class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span
+    class="pln"><br></span><span class="kwd">package</span><span
+    class="pln"> org</span><span class="pun">.</span><span class="pln">aoplib4j</span><span
+    class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
+    class="pln">blacklist</span><span class="pun">;</span><span class="pln"><br><br></span><span
+    class="kwd">import</span><span class="pln"> org</span><span class="pun">.</span><span
+    class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="typ">Aoplib4jPackageBoundary</span><span
+    class="pun">;</span></pre>
 <p>So, in our example all the calls from the package <tt>org.aoplib4j.modularity.pack.blacklist.forbiddenpackage</tt>
 are forbidden in all the classes from the <tt>org.aoplib4j.modularity.pack.blacklist</tt>
 package. In the case of a violation an instance of <tt>ThrowErrorBoundaryCallback</tt>
@@ -336,297 +326,293 @@ is created.</p>
 must create a <tt>package-info.java</tt> file which ill contains the
 package annotations and the javadoc for the package (the <tt>package-info.java</tt>
 file replaces the <tt>package.html</tt> file).</p>
-<p>The <tt>PackageBoundary#packagesList</tt> parameter is a list of
-<tt>java.lang.String</tt> objects representing the logical boundary.</p>
-<p>The <tt>PackageBoundary#packagesListType</tt> and <tt>PackageBoundary#callbackClass</tt>
-have exactly the same behavior as in the case of <tt>ClassBoundary</tt>
+<p>The <tt>Aoplib4jPackageBoundary#packagesList</tt> parameter is a
+list of <tt>java.lang.String</tt> objects representing the logical
+boundary.</p>
+<p>The <tt>Aoplib4jPackageBoundary#packagesListType</tt> and <tt>Aoplib4jPackageBoundary#callbackClass</tt>
+have exactly the same behavior as in the case of <tt>Aoplib4jClassBoundary</tt>
 annotation.</p>
 <p>The last step is to annotate all the classes of the annotated
-package with the <tt>InjectedPkgBoundary</tt> annotation. This step is
-due to fact that AspectJ cannot handle pointcuts based on package
-annotations (something like: "calls of all the methods from all the
-classes from the package annotated with <tt>@PackageBoundary</tt>" is
-not a valid pointcut definition). I must admit that it is not a very
+package with the <tt>Aoplib4jInjectedPkgBoundary</tt> annotation. This
+step is due to fact that AspectJ cannot handle pointcuts based on
+package annotations (something like: "calls of all the methods from all
+the classes from the package annotated with <tt>@Aoplib4jPackageBoundary</tt>"
+is not a valid pointcut definition). I must admit that it is not a very
 clever solution to annotate by hand all the classes but in case you use
 <tt>ajc</tt> for compile your project you can write your own aspect that
 will automatically inject the annotation on all the desired classes.</p>
 <p>Here is the aspect used by the JUnit tests (I didn't want to add
-the <tt>InjectedPkgBoundary</tt> by hand):</p>
+the <tt>Aoplib4jInjectedPkgBoundary</tt> by hand):</p>
 <pre class="prettyprint"><span class="kwd">package</span><span
-	class="pln"> com</span><span class="pun">.</span><span class="pln">google</span><span
-	class="pun">.</span><span class="pln">code</span><span class="pun">.</span><span
-	class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">aspectj</span><span
-	class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
-	class="pln">blacklist</span><span class="pun">;</span><span class="pln"><br><br></span><span
-	class="kwd">import</span><span class="pln"> com</span><span class="pun">.</span><span
-	class="pln">google</span><span class="pun">.</span><span class="pln">code</span><span
-	class="pun">.</span><span class="pln">aoplib4j</span><span class="pun">.</span><span
-	class="pln">aspectj</span><span class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="typ">InjectedPkgBoundary</span><span
-	class="pun">;</span><span class="pln"><br><br></span><span
-	class="com">/**<br>&nbsp;* Aspect used in tests of package boundary violation.<br>&nbsp;* The aspect injects the {@link InjectedPkgBoundary} into all the classes from the <br>&nbsp;* package "org.aoplib4j.modularity.pack.blacklist" excepting<br>&nbsp;* the aspect himself, {@link BlackListPackageBoundaryViolationTest} class and <br>&nbsp;* package-info class.<br>&nbsp;* <br>&nbsp;* @author Adrian Citu<br>&nbsp;*<br>&nbsp;*/</span><span
-	class="pln"><br></span><span class="kwd">public</span><span
-	class="pln"> aspect </span><span class="typ">PackageAnnotationIntroduction</span><span
-	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; declare @type</span><span
-	class="pun">:</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; com</span><span
-	class="pun">.</span><span class="pln">google</span><span class="pun">.</span><span
-	class="pln">code</span><span class="pun">.</span><span class="pln">aoplib4j</span><span
-	class="pun">.</span><span class="pln">aspectj</span><span class="pun">.</span><span
-	class="pln">modularity</span><span class="pun">.</span><span
-	class="pln">pack</span><span class="pun">.</span><span class="pln">blacklist</span><span
-	class="pun">.*</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="pun">&amp;&amp;</span><span class="pln"> </span><span
-	class="pun">!</span><span class="pln">com</span><span class="pun">.</span><span
-	class="pln">google</span><span class="pun">.</span><span class="pln">code</span><span
-	class="pun">.</span><span class="pln">aoplib4j</span><span class="pun">.</span><span
-	class="pln">aspectj</span><span class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
-	class="pln">blacklist</span><span class="pun">.</span><span class="kwd">package</span><span
-	class="pun">*</span><span class="pln">info<br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="pun">&amp;&amp;</span><span class="pln"> </span><span
-	class="pun">!</span><span class="pln">com</span><span class="pun">.</span><span
-	class="pln">google</span><span class="pun">.</span><span class="pln">code</span><span
-	class="pun">.</span><span class="pln">aoplib4j</span><span class="pun">.</span><span
-	class="pln">aspectj</span><span class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
-	class="pln">blacklist</span><span class="pun">.</span><span class="typ">PackageAnnotationIntroduction</span><span
-	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="pun">&amp;&amp;</span><span class="pln"> </span><span
-	class="pun">!</span><span class="pln">com</span><span class="pun">.</span><span
-	class="pln">google</span><span class="pun">.</span><span class="pln">code</span><span
-	class="pun">.</span><span class="pln">aoplib4j</span><span class="pun">.</span><span
-	class="pln">aspectj</span><span class="pun">.</span><span class="pln">modularity</span><span
-	class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
-	class="pln">blacklist</span><span class="pun">.</span><span class="typ">BlackListPackageBoundaryViolationTest</span><span
-	class="pun">:</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="lit">@InjectedPkgBoundary</span><span class="pun">;</span></pre>
+    class="pln"> org</span><span class="pun">.</span><span class="pln">aoplib4j</span><span
+    class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
+    class="pln">blacklist</span><span class="pun">;</span><span class="pln"><br><br></span><span
+    class="kwd">import</span><span class="pln"> org</span><span class="pun">.</span><span
+    class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="typ">Aoplib4jInjectedPkgBoundary</span><span
+    class="pun">;</span><span class="pln"><br><br></span><span
+    class="com">/**<br>&nbsp;* Aspect used in tests of package boundary violation.<br>&nbsp;* The aspect injects the {@link Aoplib4jInjectedPkgBoundary} into all the classes from &nbsp; the <br>&nbsp;* package "org.aoplib4j.modularity.pack.blacklist" excepting<br>&nbsp;* the aspect himself, {@link BlackListPackageBoundaryViolationTest} class and <br>&nbsp;* package-info class.<br>&nbsp;* <br>&nbsp;* @author Adrian Citu<br>&nbsp;*<br>&nbsp;*/</span><span
+    class="pln"><br></span><span class="kwd">public</span><span
+    class="pln"> aspect </span><span class="typ">PackageAnnotationIntroduction</span><span
+    class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; declare </span><span
+    class="lit">@type</span><span class="pun">:</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; org</span><span
+    class="pun">.</span><span class="pln">aoplib4j</span><span class="pun">.</span><span
+    class="pln">modularity</span><span class="pun">.</span><span
+    class="pln">pack</span><span class="pun">.</span><span class="pln">blacklist</span><span
+    class="pun">.*</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+    class="pun">&amp;&amp;</span><span class="pln"> </span><span
+    class="pun">!</span><span class="pln">org</span><span class="pun">.</span><span
+    class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
+    class="pln">blacklist</span><span class="pun">.</span><span class="kwd">package</span><span
+    class="pun">*</span><span class="pln">info<br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+    class="pun">&amp;&amp;</span><span class="pln"> </span><span
+    class="pun">!</span><span class="pln">org</span><span class="pun">.</span><span
+    class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
+    class="pln">blacklist</span><span class="pun">.</span><span class="typ">PackageAnnotationIntroduction</span><span
+    class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+    class="pun">&amp;&amp;</span><span class="pln"> </span><span
+    class="pun">!</span><span class="pln">org</span><span class="pun">.</span><span
+    class="pln">aoplib4j</span><span class="pun">.</span><span class="pln">modularity</span><span
+    class="pun">.</span><span class="pln">pack</span><span class="pun">.</span><span
+    class="pln">blacklist</span><span class="pun">.</span><span class="typ">BlackListPackageBoundaryViolationTest</span><span
+    class="pun">:</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+    class="lit">@Aoplib4jInjectedPkgBoundary</span><span class="pun">;</span></pre>
 <h4><a name="Package_modularity_under_the_hood">Package
 modularity under the hood</a></h4>
 <p><a name="Package_modularity_under_the_hood">For boundary
 checking at the package level the workflow is the following: </a></p>
 <ul>
-	<li><a name="Package_modularity_under_the_hood">Intercept the
-	call to all non private methods from a class annotated with the <tt>InjectedPkgBoundary</tt>
-	annotation. The AspectJ pointcuts are: </a></li>
-	<ul>
-		<li><a name="Package_modularity_under_the_hood">non static
-		methods </a></li>
-		<pre class="prettyprint"><a
-			name="Package_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp;</span><span
-			class="lit">@Pointcut</span><span class="pun">(</span><span
-			class="str">"call(!private !static * "</span><span class="pln"><br>&nbsp; &nbsp;</span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.InjectedPkgBoundary *)."</span><span
-			class="pln"><br>&nbsp; &nbsp;</span><span class="pun">+</span><span
-			class="pln"> </span><span class="str">"*(..)) "</span><span
-			class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
-			class="str">"&amp;&amp; target(calledObj) &amp;&amp; this(callerObj) &amp;&amp; if()"</span><span
-			class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
-			class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span
-			class="pln"> </span><span class="kwd">boolean</span><span class="pln"> callOfPackageBoundaryPointcut</span><span
-			class="pun">(</span><span class="kwd">final</span><span class="pln"> </span><span
-			class="typ">Object</span><span class="pln"> calledObj</span><span
-			class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">final</span><span class="pln"> </span><span class="typ">Object</span><span
-			class="pln"> callerObj</span><span class="pun">)</span><span
-			class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="com">//caller and called are the same instance</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
-			class="pln">calledObj </span><span class="pun">==</span><span
-			class="pln"> callerObj</span><span class="pun">)</span><span
-			class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="typ">Package</span><span class="pln"> calledObjPackage </span><span
-			class="pun">=</span><span class="pln"> calledObj</span><span
-			class="pun">.</span><span class="pln">getClass</span><span
-			class="pun">().</span><span class="pln">getPackage</span><span
-			class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="typ">Package</span><span class="pln"> callerObjPackage </span><span
-			class="pun">=</span><span class="pln"> callerObj</span><span
-			class="pun">.</span><span class="pln">getClass</span><span
-			class="pun">().</span><span class="pln">getPackage</span><span
-			class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="com">//the caller and called are in the same package.</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
-			class="pln">calledObjPackage</span><span class="pun">.</span><span
-			class="pln">equals</span><span class="pun">(</span><span class="pln">callerObjPackage</span><span
-			class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="typ">PackageBoundary</span><span class="pln"> pkgBoundary </span><span
-			class="pun">=</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; calledObjPackage</span><span
-			class="pun">.</span><span class="pln">getAnnotation</span><span
-			class="pun">(</span><span class="typ">PackageBoundary</span><span
-			class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="com">//should never happen unless the aspectj weaver is buggy</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
-			class="pln">pkgBoundary </span><span class="pun">==</span><span
-			class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span
-			class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LOGGER</span><span
-			class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span
-			class="typ">Level</span><span class="pun">.</span><span class="pln">WARNING</span><span
-			class="pun">,</span><span class="pln"> </span><span class="str">"Cannot retrieve "</span><span
-			class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
-			class="typ">PackageBoundary</span><span class="pun">.</span><span
-			class="kwd">class</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">" annotation from package "</span><span
-			class="pln"> </span><span class="pun">+</span><span class="pln"> calledObjPackage<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"; The package is not annotated with the "</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="typ">PackageBoundary</span><span
-			class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span
-			class="pun">}</span></a></pre>
-		<li><a name="Package_modularity_under_the_hood">static
-		methods </a></li>
-		<pre class="prettyprint"><a
-			name="Package_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp;</span><span
-			class="lit">@Pointcut</span><span class="pun">(</span><span
-			class="str">"call(!private static * "</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp;</span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.InjectedPkgBoundary *)."</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp;</span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"*(..)) &amp;&amp; if()"</span><span
-			class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
-			class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span
-			class="pln"> </span><span class="kwd">boolean</span><span class="pln"> callOfStaticPackageBoundaryPointcut</span><span
-			class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">final</span><span class="pln"> </span><span class="typ">JoinPoint</span><span
-			class="pun">.</span><span class="typ">StaticPart</span><span
-			class="pln"> jpsp</span><span class="pun">)</span><span class="pln"> </span><span
-			class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="typ">Class</span><span class="pun">&lt;</span><span
-			class="pln"> </span><span class="pun">?</span><span class="pln"> </span><span
-			class="pun">&gt;</span><span class="pln"> calledClass </span><span
-			class="pun">=</span><span class="pln"> jpsp</span><span class="pun">.</span><span
-			class="pln">getSignature</span><span class="pun">().</span><span
-			class="pln">getDeclaringType</span><span class="pun">();</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="typ">Package</span><span class="pln"> calledPackage </span><span
-			class="pun">=</span><span class="pln"> calledClass</span><span
-			class="pun">.</span><span class="pln">getPackage</span><span
-			class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="typ">PackageBoundary</span><span class="pln"> pkgBoundary </span><span
-			class="pun">=</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; calledPackage</span><span
-			class="pun">.</span><span class="pln">getAnnotation</span><span
-			class="pun">(</span><span class="typ">PackageBoundary</span><span
-			class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="com">//should never happen unless the aspectj weaver is buggy</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
-			class="pln">pkgBoundary </span><span class="pun">==</span><span
-			class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span
-			class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LOGGER</span><span
-			class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span
-			class="typ">Level</span><span class="pun">.</span><span class="pln">WARNING</span><span
-			class="pun">,</span><span class="pln"> </span><span class="str">"Cannot retrieve "</span><span
-			class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
-			class="typ">PackageBoundary</span><span class="pun">.</span><span
-			class="kwd">class</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">" annotation from package "</span><span
-			class="pln"> </span><span class="pun">+</span><span class="pln"> calledPackage<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="str">"; The package is not annotated with the "</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">+</span><span class="pln"> </span><span class="typ">PackageBoundary</span><span
-			class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span
-			class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
-			class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span
-			class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span
-			class="pun">}</span></a></pre>
-	</ul>
+    <li><a name="Package_modularity_under_the_hood">Intercept the
+    call to all non private methods from a class annotated with the <tt>Aoplib4jInjectedPkgBoundary</tt>
+    annotation. The AspectJ pointcuts are: </a></li>
+    <ul>
+        <li><a name="Package_modularity_under_the_hood">non static
+        methods </a></li>
+        <pre class="prettyprint"><a
+            name="Package_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp;</span><span
+            class="lit">@Pointcut</span><span class="pun">(</span><span
+            class="str">"call(!private !static * "</span><span class="pln"><br>&nbsp; &nbsp;</span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary *)."</span><span
+            class="pln"><br>&nbsp; &nbsp;</span><span class="pun">+</span><span
+            class="pln"> </span><span class="str">"*(..)) "</span><span
+            class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
+            class="str">"&amp;&amp; target(calledObj) &amp;&amp; this(callerObj) &amp;&amp; if()"</span><span
+            class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+            class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span
+            class="pln"> </span><span class="kwd">boolean</span><span class="pln"> callOfPackageBoundaryPointcut</span><span
+            class="pun">(</span><span class="kwd">final</span><span class="pln"> </span><span
+            class="typ">Object</span><span class="pln"> calledObj</span><span
+            class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">final</span><span class="pln"> </span><span class="typ">Object</span><span
+            class="pln"> callerObj</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="com">//caller and called are the same instance</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
+            class="pln">calledObj </span><span class="pun">==</span><span
+            class="pln"> callerObj</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="typ">Package</span><span class="pln"> calledObjPackage </span><span
+            class="pun">=</span><span class="pln"> calledObj</span><span
+            class="pun">.</span><span class="pln">getClass</span><span
+            class="pun">().</span><span class="pln">getPackage</span><span
+            class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="typ">Package</span><span class="pln"> callerObjPackage </span><span
+            class="pun">=</span><span class="pln"> callerObj</span><span
+            class="pun">.</span><span class="pln">getClass</span><span
+            class="pun">().</span><span class="pln">getPackage</span><span
+            class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="com">//the caller and called are in the same package.</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
+            class="pln">calledObjPackage</span><span class="pun">.</span><span
+            class="pln">equals</span><span class="pun">(</span><span class="pln">callerObjPackage</span><span
+            class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="typ">Aoplib4jPackageBoundary</span><span class="pln"> pkgBoundary </span><span
+            class="pun">=</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; calledObjPackage</span><span
+            class="pun">.</span><span class="pln">getAnnotation</span><span
+            class="pun">(</span><span class="typ">Aoplib4jPackageBoundary</span><span
+            class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="com">//should never happen unless the aspectj weaver is buggy</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
+            class="pln">pkgBoundary </span><span class="pun">==</span><span
+            class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LOGGER</span><span
+            class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span
+            class="typ">Level</span><span class="pun">.</span><span class="pln">WARNING</span><span
+            class="pun">,</span><span class="pln"> </span><span class="str">"Cannot retrieve "</span><span
+            class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
+            class="typ">Aoplib4jPackageBoundary</span><span class="pun">.</span><span
+            class="kwd">class</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">" annotation from package "</span><span
+            class="pln"> </span><span class="pun">+</span><span class="pln"> calledObjPackage<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">"; The package is not annotated with the "</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="typ">Aoplib4jPackageBoundary</span><span
+            class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+            class="pun">}</span></a></pre>
+        <li><a name="Package_modularity_under_the_hood">static
+        methods </a></li>
+        <pre class="prettyprint"><a
+            name="Package_modularity_under_the_hood"><span class="pln">&nbsp; &nbsp;</span><span
+            class="lit">@Pointcut</span><span class="pun">(</span><span
+            class="str">"call(!private static * "</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp;</span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">"(@org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary *)."</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp;</span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">"*(..)) &amp;&amp; if()"</span><span
+            class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+            class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span
+            class="pln"> </span><span class="kwd">boolean</span><span class="pln"> callOfStaticPackageBoundaryPointcut</span><span
+            class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">final</span><span class="pln"> </span><span class="typ">JoinPoint</span><span
+            class="pun">.</span><span class="typ">StaticPart</span><span
+            class="pln"> jpsp</span><span class="pun">)</span><span class="pln"> </span><span
+            class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="typ">Class</span><span class="pun">&lt;</span><span
+            class="pln"> </span><span class="pun">?</span><span class="pln"> </span><span
+            class="pun">&gt;</span><span class="pln"> calledClass </span><span
+            class="pun">=</span><span class="pln"> jpsp</span><span class="pun">.</span><span
+            class="pln">getSignature</span><span class="pun">().</span><span
+            class="pln">getDeclaringType</span><span class="pun">();</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="typ">Package</span><span class="pln"> calledPackage </span><span
+            class="pun">=</span><span class="pln"> calledClass</span><span
+            class="pun">.</span><span class="pln">getPackage</span><span
+            class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="typ">Aoplib4jPackageBoundary</span><span class="pln"> pkgBoundary </span><span
+            class="pun">=</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; calledPackage</span><span
+            class="pun">.</span><span class="pln">getAnnotation</span><span
+            class="pun">(</span><span class="typ">Aoplib4jPackageBoundary</span><span
+            class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="com">//should never happen unless the aspectj weaver is buggy</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span
+            class="pln">pkgBoundary </span><span class="pun">==</span><span
+            class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LOGGER</span><span
+            class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span
+            class="typ">Level</span><span class="pun">.</span><span class="pln">WARNING</span><span
+            class="pun">,</span><span class="pln"> </span><span class="str">"Cannot retrieve "</span><span
+            class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span
+            class="typ">Aoplib4jPackageBoundary</span><span class="pun">.</span><span
+            class="kwd">class</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">" annotation from package "</span><span
+            class="pln"> </span><span class="pun">+</span><span class="pln"> calledPackage<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="str">"; The package is not annotated with the "</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">+</span><span class="pln"> </span><span class="typ">Aoplib4jPackageBoundary</span><span
+            class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span
+            class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+            class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span
+            class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+            class="pun">}</span></a></pre>
+    </ul>
 </ul>
 <p><a name="Package_modularity_under_the_hood">As in case of the
 class boundary the pointcuts use the <tt>if()</tt> pointcut for
 compile-time checking. </a></p>
 <ul>
-	<li><a name="Package_modularity_under_the_hood">The @Before
-	advice is used to check the boundary violation by using the information
-	retrieved from the <tt>PackageBoundary</tt> annotation and the
-	information given by the AspectJ framework. The <tt>PackageBoundary</tt>
-	annotation is retrieved by introspection from the called class. </a></li>
+    <li><a name="Package_modularity_under_the_hood">The @Before
+    advice is used to check the boundary violation by using the information
+    retrieved from the <tt>Aoplib4jPackageBoundary</tt> annotation and the
+    information given by the AspectJ framework. The <tt>Aoplib4jPackageBoundary</tt>
+    annotation is retrieved by introspection from the called class. </a></li>
 </ul>
 <ul>
-	<li><a name="Package_modularity_under_the_hood">If a boundary
-	validation is detected then: </a></li>
-	<ul>
-		<li><a name="Package_modularity_under_the_hood">The framework
-		creates an instance of <tt>ViolationInformation</tt> interface. </a></li>
-		<li><a name="Package_modularity_under_the_hood">The framework
-		creates an instance of the callback class (a class extending <tt>BoundaryViolationCallback</tt>)
-		by introspection. The type of the class is retrieved from the <tt>ClassBoundary#callbackClass</tt>
-		field. </a></li>
-		<li><a name="Package_modularity_under_the_hood">The callback
-		method <tt>BoundaryViolationCallback#boundaryViolation(final
-		ViolationInformation info)</tt> is call to handle to boundary violation. <strong>Note
-		that the <tt>ClassBoundary</tt> have a default callback class, <tt>org.aoplib4j.modularity.LogViolationCallback</tt>
-		</strong> </a></li>
-	</ul>
+    <li><a name="Package_modularity_under_the_hood">If a boundary
+    validation is detected then: </a></li>
+    <ul>
+        <li><a name="Package_modularity_under_the_hood">The framework
+        creates an instance of <tt>ViolationInformation</tt> interface. </a></li>
+        <li><a name="Package_modularity_under_the_hood">The framework
+        creates an instance of the callback class (a class extending <tt>BoundaryViolationCallback</tt>)
+        by introspection. The type of the class is retrieved from the <tt>Aoplib4jClassBoundary#callbackClass</tt>
+        field. </a></li>
+        <li><a name="Package_modularity_under_the_hood">The callback
+        method <tt>BoundaryViolationCallback#boundaryViolation(final
+        ViolationInformation info)</tt> is call to handle to boundary violation. <strong>Note
+        that the <tt>Aoplib4jClassBoundary</tt> have a default callback class,
+        <tt>org.aoplib4j.modularity.LogViolationCallback</tt> </strong> </a></li>
+    </ul>
 </ul>
 <blockquote><a name="Package_modularity_under_the_hood">Here
 is the complete code of the </a><a
-	href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/com/google/code/aoplib4j/aspectj/modularity/internal/PackageBoundaryAspect.java"
-	rel="nofollow">PackageBoundaryAspect</a>.</blockquote>
+    href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/modularity/internal/PackageBoundaryAspect.java"
+    rel="nofollow">PackageBoundaryAspect</a>.</blockquote>
 <h3><a
-	name="Critics,_enhancements_and_..._what_i_don't_like_about_this">Critics,
+    name="Critics,_enhancements_and_..._what_i_don't_like_about_this">Critics,
 enhancements and ... what i don't like about this solution</a></h3>
 <ul>
-	<li><a
-		name="Critics,_enhancements_and_..._what_i_don't_like_about_this">The
-	user validation class must inherit from <tt>BoundaryViolationCallback</tt>
-	class. It would be much better to just implement a Java interface. In
-	the actual implementation the user must inherit from a class because
-	the framework instantiate the validation class using the non-arguments
-	constructor by introspection. </a></li>
-	<li><a
-		name="Critics,_enhancements_and_..._what_i_don't_like_about_this">For
-	every advised method the <tt>ClassBoundary</tt> or <tt>PackageBoundary</tt>
-	annotations are retrieved. A better idea would be to have some kind of
-	cache on which the annotations should be stored (but for instance it is
-	just KISS). </a></li>
-	<li><a
-		name="Critics,_enhancements_and_..._what_i_don't_like_about_this">Since
-	static pointcuts cannot retrieve the caller object using <tt>this</tt>
-	pointcut the caller information is computed using the stack trace of
-	the current execution thread by creating a new <tt>Throwable</tt>
-	object and calling <tt>Throwable#getStackTrace()</tt>. I know that this
-	solution is not good at all but I didn't find another alternative. </a></li>
+    <li><a
+        name="Critics,_enhancements_and_..._what_i_don't_like_about_this">The
+    user validation class must inherit from <tt>BoundaryViolationCallback</tt>
+    class. It would be much better to just implement a Java interface. In
+    the actual implementation the user must inherit from a class because
+    the framework instantiate the validation class using the non-arguments
+    constructor by introspection. </a></li>
+    <li><a
+        name="Critics,_enhancements_and_..._what_i_don't_like_about_this">For
+    every advised method the <tt>Aoplib4jClassBoundary</tt> or <tt>Aoplib4jPackageBoundary</tt>
+    annotations are retrieved. A better idea would be to have some kind of
+    cache on which the annotations should be stored (but for instance it is
+    just KISS). </a></li>
+    <li><a
+        name="Critics,_enhancements_and_..._what_i_don't_like_about_this">Since
+    static pointcuts cannot retrieve the caller object using <tt>this</tt>
+    pointcut the caller information is computed using the stack trace of
+    the current execution thread by creating a new <tt>Throwable</tt>
+    object and calling <tt>Throwable#getStackTrace()</tt>. I know that this
+    solution is not good at all but I didn't find another alternative. </a></li>
 </ul>
 <blockquote><a
-	name="Critics,_enhancements_and_..._what_i_don't_like_about_this">Here
+    name="Critics,_enhancements_and_..._what_i_don't_like_about_this">Here
 is the code of the method that computes the caller information based on
 the stack trace : </a><pre class="prettyprint"><a
-	name="Critics,_enhancements_and_..._what_i_don't_like_about_this"><span
-	class="pln">&nbsp; &nbsp; &nbsp;</span><span class="com">/**<br>&nbsp; &nbsp; &nbsp; * Method that computes the information about the caller class. The<br>&nbsp; &nbsp; &nbsp; * information is stored into a {@link StackTraceElement} object.<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * The caller information is on the third position on the stack trace;<br>&nbsp; &nbsp; &nbsp; * the first position contains the call to this method, and the <br>&nbsp; &nbsp; &nbsp; * second one to the<br>&nbsp; &nbsp; &nbsp; * {@link <br>&nbsp; &nbsp; &nbsp; * ClassBoundaryAspect#callOfStaticClassBoundaryAdvice(<br>&nbsp; &nbsp; &nbsp; * org.aspectj.lang.JoinPoint.StaticPart)}<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; *or<br>&nbsp; &nbsp; &nbsp; *{@link<br>&nbsp; &nbsp; &nbsp; *PackageBoundaryAspect#callOfStaticPackageBoundaryAdvice(<br>&nbsp; &nbsp; &nbsp; * org.aspectj.lang.JoinPoint.StaticPart)}<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * This method will return faulty results when a child class calls an<br>&nbsp; &nbsp; &nbsp; * inherited non overridden parent method. In this case the stack trace<br>&nbsp; &nbsp; &nbsp; * contains a call to the parent method directly.<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * &lt;pre&gt;<br>&nbsp; &nbsp; &nbsp; * &nbsp;Example:<br>&nbsp; &nbsp; &nbsp; * &nbsp;P - parent class <br>&nbsp; &nbsp; &nbsp; * &nbsp;P#method - a method of the parent<br>&nbsp; &nbsp; &nbsp; * &nbsp;C - child class; it does not override the &amp;quot;method&amp;quot; method<br>&nbsp; &nbsp; &nbsp; * &nbsp;<br>&nbsp; &nbsp; &nbsp; * &nbsp;On the stack trace a call to C#method is in fact written as a call to<br>&nbsp; &nbsp; &nbsp; * &nbsp;P#method.<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * &lt;/pre&gt;<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * @param calledClassName<br>&nbsp; &nbsp; &nbsp; * &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;the canonical name of the called class name<br>&nbsp; &nbsp; &nbsp; * @param calledMethodName<br>&nbsp; &nbsp; &nbsp; * &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;the name of the called method.<br>&nbsp; &nbsp; &nbsp; * @return {@link StackTraceElement} represented the caller method.<br>&nbsp; &nbsp; &nbsp; */</span><span
-	class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="typ">StackTraceElement</span><span
-	class="pln"> getCallerInformation</span><span class="pun">(</span><span
-	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
-	class="kwd">final</span><span class="pln"> </span><span class="typ">String</span><span
-	class="pln"> calledClassName</span><span class="pun">,</span><span
-	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
-	class="typ">String</span><span class="pln"> calledMethodName</span><span
-	class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span
-	class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
-	class="typ">StackTraceElement</span><span class="pun">[]</span><span
-	class="pln"> stes </span><span class="pun">=</span><span class="pln"> </span><span
-	class="kwd">new</span><span class="pln"> </span><span class="typ">Throwable</span><span
-	class="pun">().</span><span class="pln">getStackTrace</span><span
-	class="pun">();</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
-	class="kwd">return</span><span class="pln"> stes</span><span
-	class="pun">[</span><span class="lit">2</span><span class="pun">];</span><span
-	class="pln"><br>&nbsp; &nbsp; &nbsp;</span><span class="pun">}</span>
+    name="Critics,_enhancements_and_..._what_i_don't_like_about_this"><span
+    class="pln">&nbsp; &nbsp; &nbsp;</span><span class="com">/**<br>&nbsp; &nbsp; &nbsp; * Method that computes the information about the caller class. The<br>&nbsp; &nbsp; &nbsp; * information is stored into a {@link StackTraceElement} object.<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * The caller information is on the third position on the stack trace;<br>&nbsp; &nbsp; &nbsp; * the first position contains the call to this method, and the <br>&nbsp; &nbsp; &nbsp; * second one to the<br>&nbsp; &nbsp; &nbsp; * {@link <br>&nbsp; &nbsp; &nbsp; * ClassBoundaryAspect#callOfStaticClassBoundaryAdvice(<br>&nbsp; &nbsp; &nbsp; * org.aspectj.lang.JoinPoint.StaticPart)}<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; *or<br>&nbsp; &nbsp; &nbsp; *{@link<br>&nbsp; &nbsp; &nbsp; *PackageBoundaryAspect#callOfStaticPackageBoundaryAdvice(<br>&nbsp; &nbsp; &nbsp; * org.aspectj.lang.JoinPoint.StaticPart)}<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * This method will return faulty results when a child class calls an<br>&nbsp; &nbsp; &nbsp; * inherited non overridden parent method. In this case the stack trace<br>&nbsp; &nbsp; &nbsp; * contains a call to the parent method directly.<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * &lt;pre&gt;<br>&nbsp; &nbsp; &nbsp; * &nbsp;Example:<br>&nbsp; &nbsp; &nbsp; * &nbsp;P - parent class <br>&nbsp; &nbsp; &nbsp; * &nbsp;P#method - a method of the parent<br>&nbsp; &nbsp; &nbsp; * &nbsp;C - child class; it does not override the &amp;quot;method&amp;quot; method<br>&nbsp; &nbsp; &nbsp; * &nbsp;<br>&nbsp; &nbsp; &nbsp; * &nbsp;On the stack trace a call to C#method is in fact written as a call to<br>&nbsp; &nbsp; &nbsp; * &nbsp;P#method.<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * &lt;/pre&gt;<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * @param calledClassName<br>&nbsp; &nbsp; &nbsp; * &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;the canonical name of the called class name<br>&nbsp; &nbsp; &nbsp; * @param calledMethodName<br>&nbsp; &nbsp; &nbsp; * &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;the name of the called method.<br>&nbsp; &nbsp; &nbsp; * @return {@link StackTraceElement} represented the caller method.<br>&nbsp; &nbsp; &nbsp; */</span><span
+    class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="typ">StackTraceElement</span><span
+    class="pln"> getCallerInformation</span><span class="pun">(</span><span
+    class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+    class="kwd">final</span><span class="pln"> </span><span class="typ">String</span><span
+    class="pln"> calledClassName</span><span class="pun">,</span><span
+    class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+    class="typ">String</span><span class="pln"> calledMethodName</span><span
+    class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span
+    class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+    class="typ">StackTraceElement</span><span class="pun">[]</span><span
+    class="pln"> stes </span><span class="pun">=</span><span class="pln"> </span><span
+    class="kwd">new</span><span class="pln"> </span><span class="typ">Throwable</span><span
+    class="pun">().</span><span class="pln">getStackTrace</span><span
+    class="pun">();</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+    class="kwd">return</span><span class="pln"> stes</span><span
+    class="pun">[</span><span class="lit">2</span><span class="pun">];</span><span
+    class="pln"><br>&nbsp; &nbsp; &nbsp;</span><span class="pun">}</span></a></pre></blockquote>
+<p><a
+    name="Critics,_enhancements_and_..._what_i_don't_like_about_this"><strong>UPDATE</strong>(24.05.2010)
+- The code of the method had been slightly modified (enhanced ?) due to
+the </a><a href="http://code.google.com/p/aoplib4j/issues/detail?id=75"
+    rel="nofollow">bug#72</a> or see the <a
+    href="http://code.google.com/p/aoplib4j/source/diff?spec=svn151&amp;r=151&amp;format=side&amp;path=/trunk/aoplib4j/src/main/java/org/aoplib4j/modularity/internal/AbstractBoundary.java"
+    rel="nofollow">the diff</a>.</p>
