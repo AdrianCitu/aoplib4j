@@ -6,11 +6,11 @@ This page is a small tutorial about how to implement the [http://en.wikipedia.or
 
 === How to implement the Observer pattern with annotations (in 10 seconds) ===
 
- * Annotate the Subject classes with the {{{Subject}}} annotation
- * Annotate the Observer classes with the {{{Observer}}} annotation
- * Annotate (some of) the Subject methods with the {{{RegisterObserver}}} annotation to be used for attaching Observers to the Subject.
+ * Annotate the Subject classes with the {{{Aoplib4jSubject}}} annotation
+ * Annotate the Observer classes with the {{{Aoplib4jObserver}}} annotation
+ * Annotate (some of) the Subject methods with the {{{Aoplib4jRegisterObserver}}} annotation to be used for attaching Observers to the Subject.
  * Annotate (some of) the Subject methods with the {{{NotifyObservers}}} annotation to notify the attached Observers.
- * Annotate (some of) the Subject methods with the {{{UnregisterObservers}}} annotation for removing the attached Observers.
+ * Annotate (some of) the Subject methods with the {{{Aoplib4jUnregisterObservers}}} annotation for removing the attached Observers.
  * For every Observer implement the behavior when an Observer is notified by a Subject by creating a class that inherits from the {{{ObserverCallback}}}.
 
 
@@ -23,14 +23,14 @@ For the implementation of the Observer pattern must answer to the following ques
  # When should the relationship begin and end ?
  
 ==== Which objects are Subjects and which are Observers ? ====
- The classes that will have the role of Subject must be annotated with the {{{Subject}}} annotation and the classes that will have the role of Observer must be annotated with the {{{Observer}}} annotation.
+ The classes that will have the role of Subject must be annotated with the {{{Aoplib4jSubject}}} annotation and the classes that will have the role of Observer must be annotated with the {{{Observer}}} annotation.
 Code example (from the JUnit tests):
 {{{
-@Subject
+@Aoplib4jSubject
 public class Dealer {
 ....
 
-@Observer(callbackClass = ClientObserverCallBack.class)
+@Aoplib4jObserver(callbackClass = ClientObserverCallBack.class)
 public class Client {
 ......
 }}} 
@@ -94,22 +94,22 @@ public interface NotifyInformation {
 }}}
 
 ==== When should the relationship begin and end ? ====
-For attaching the Observers to the Subject must annotate a method (or more) with the {{{RegisterObserver}}} annotation. The annotated method must have a single parameter and this single parameter should be a class annotated with the {{{Observer}}} annotation.
-The methods annotated with the {{{RegisterObserver}}} having more that one parameter or having as parameter a class that is not annotated with {{{Observer}}} will be ignored by the framework.
+For attaching the Observers to the Subject must annotate a method (or more) with the {{{Aoplib4jRegisterObserver}}} annotation. The annotated method must have a single parameter and this single parameter should be a class annotated with the {{{Observer}}} annotation.
+The methods annotated with the {{{Aoplib4jRegisterObserver}}} having more that one parameter or having as parameter a class that is not annotated with {{{Observer}}} will be ignored by the framework.
 
 Code example (from the JUnit tests):
 {{{
 
-@Subject
+@Aoplib4jSubject
 public class Dealer {
 ...
 
-    @RegisterObserver
+    @Aoplib4jRegisterObserver
     public final void addClient(final Client o) {
 ..
 }}}
 
-To remove all the Observers attached to a Subject call any method on Subject annotated with the {{{UnregisterObservers}}} annotation.
+To remove all the Observers attached to a Subject call any method on Subject annotated with the {{{Aoplib4jUnregisterObservers}}} annotation.
 
 
 === The implementation:under the hood ===
@@ -150,7 +150,7 @@ public interface GofObserver {
 }
 
 }}}
-So, under the hood (using the AspectJ mixins feature), all the classes annotated with {{{Subject}}} annotation will automatically implement the {{{GofSubject}}} interface and will have injected as implementation the code from the {{{GofSubjectImpl}}}.
+So, under the hood (using the AspectJ mixins feature), all the classes annotated with {{{Aoplib4jSubject}}} annotation will automatically implement the {{{GofSubject}}} interface and will have injected as implementation the code from the {{{GofSubjectImpl}}}.
 
 All the classes annotated with the {{{Observer}}} annotation will automatically implement the {{{GofObserver}}} interface and will have injected as implementation the code from the {{{GofObserverImpl}}}.
 
@@ -162,13 +162,13 @@ final class ObserverAspect {
     
     /**
      * the classes annotated with the 
-     * {@link org.aoplib4j.gof.observer.Subject} annotation 
+     * {@link org.aoplib4j.gof.observer.Aoplib4jSubject} annotation 
      * will automatically 
      * implement the {@link GofSubject} interface and the implementation
      * will be {@link GofSubjectImpl}.
      */
     @DeclareParents(
-            value = "@org.aoplib4j.gof.observer.Subject *",
+            value = "@org.aoplib4j.gof.observer.Aoplib4jSubject *",
             defaultImpl = GofSubjectImpl.class)
     private GofSubject subject = null;
 
@@ -179,16 +179,16 @@ final class ObserverAspect {
      */
     @DeclareParents(
             value =
-                "@org.aoplib4j.gof.observer.Observer *")
+                "@org.aoplib4j.gof.observer.Aoplib4jObserver *")
     private GofObserver observer = null;
 }}} 
 
 ==== When should the Subject send a notification to its Observers ? ====
-For the notification part, the Subject class must annotate methods with the {{{RegisterObserver}}} annotation. Here is the @AspectJ pointcut that intercept the annotated methods.:
+For the notification part, the Subject class must annotate methods with the {{{Aoplib4jRegisterObserver}}} annotation. Here is the @AspectJ pointcut that intercept the annotated methods.:
 {{{
     @Pointcut("execution("
             + "@org.aoplib4j.gof.observer"
-            + ".RegisterObserver * * (..)) "
+            + ".Aoplib4jRegisterObserver * * (..)) "
             + "&& this(sbj) && args(obs)")
     void addObserverPointcut(final GofSubject sbj, final GofObserver obs) {
 
@@ -217,7 +217,7 @@ The Observers are notified by the call of a Subject method annotated with the {{
     }
 }}} 
 
-The used advice is @AfterReturning. So, for every attached Observer retrieve the {{{ObserverCallback}}} class (from the {{{callbackClass}}} attribute of the {{{Observer}}} annotation), and call the {{{ObserverCallback#notifyObserver(NotifyInformation)}}} method.
+The used advice is @AfterReturning. So, for every attached Observer retrieve the {{{ObserverCallback}}} class (from the {{{callbackClass}}} attribute of the {{{Aoplib4jObserver}}} annotation), and call the {{{ObserverCallback#notifyObserver(NotifyInformation)}}} method.
 
 I think it's simpler just to show the code:
 {{{
@@ -260,11 +260,11 @@ I think it's simpler just to show the code:
 }}} 
 
 ==== When should the relationship begin and end ? ====
-For attaching the Observers to Subject a method annotated with {{{@RegisterObserver}}} should be called. Here is the pointcut and the advice:
+For attaching the Observers to Subject a method annotated with {{{@Aoplib4jRegisterObserver}}} should be called. Here is the pointcut and the advice:
 {{{
    @Pointcut("execution("
             + "@org.aoplib4j.gof.observer"
-            + ".RegisterObserver * * (..)) "
+            + ".Aoplib4jRegisterObserver * * (..)) "
             + "&& this(sbj) && args(obs)")
     void addObserverPointcut(final GofSubject sbj, final GofObserver obs) {
 
@@ -279,11 +279,11 @@ For attaching the Observers to Subject a method annotated with {{{@RegisterObser
     }
 }}}
 
-For detach the Observers from the Subject a method annotated with {{{@UnregisterObservers}}} should be called. Here is the pointcut and the advice:
+For detach the Observers from the Subject a method annotated with {{{@Aoplib4jUnregisterObservers}}} should be called. Here is the pointcut and the advice:
 
 {{{
    @Pointcut("execution(@org.aoplib4j.gof.observer."
-            + "UnregisterObservers * * (..))"
+            + "Aoplib4jUnregisterObservers * * (..))"
             + " && this(sbj)")
     void unregisterObserversPointcut(final GofSubject sbj) {
     }
