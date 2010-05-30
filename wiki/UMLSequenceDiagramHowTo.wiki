@@ -1,4 +1,5 @@
 #summary How to use the @Aoplib4jSequenceDiagram annotation.
+#labels Featured,Phase-Implementation
 
 === Introduction ===
 This page is a small tutorial about the {{{@Aoplib4jSequenceDiagram}}} annotation.
@@ -38,7 +39,7 @@ public class ActorClass ...
 }}}  
 
 ==== Use the {{{AopLib4j}}} diagram writers ====
-The {{{AopLib4j}}} library offers ~~4~~ 3 sequence writers:
+The {{{AopLib4j}}} library offers 3 sequence writers:
  # {{{org.aoplib4j.uml.SEQUENCEWriter}}} is a writer for the [http://www.zanthan.com/itymbi/archives/cat_sequence.html SEQUENCE] project. Here is an example of a SEQUENCE diagram :
 {{{
 
@@ -285,10 +286,10 @@ The {{{sequenceMethodsPointcut}}} intercepts the execution of all the methods in
    * the pointcut is inside of the control flow of the {{{sequenceDiagramMethodStartPointcut(Aoplib4jSequenceDiagram)}}} pointcut, so the 
 {{{SequenceDiagramAspect.insideSequenceDiagram}}} field is true.
    * the current depth of the diagram is smaller or equal than the maximum diagram depth.
- I'm not using the {{{cflow()}}} pointcut because it is not a statically determinable pointcut and so the {{{around}}} and {{{aflter}}} advices cannot be applied. 
+ The {{{cflow()}}} pointcut is not use because it is not a statically determinable pointcut and so the {{{around}}} and {{{aflter}}} advices cannot be applied. 
  
 === Critics, enhancements and ... what i don't like about this solution ===
  * The user validation class must inherit from {{{SequenceDiagramWriter}}} class. It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the writer class using the non-arguments constructor by introspection (see [http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance() Class.newInstance()]).
- * I don't like the way the {{{validSequenceDiagramPointcut}}} is designed; the use of the {{{execution(* *.*(..)) || execution(*.new(..)))}}} pointcut is very expensive for the weaver (compiler or runtime), but was the only way that I found to intercept the execution of all the methods inside the flow of a annotated method and to use the pointcut with the {{{around}}} advice. 
+ * I don't like the way the {{{validSequenceDiagramPointcut}}} is designed; the use of the {{{execution(* *.*(..)) || execution(*.new(..)))}}} pointcut is very expensive for the weaver (compiler or runtime), but it was the only way to intercept the execution of all the methods inside the flow of a annotated method and to use the pointcut with the {{{around}}} advice. 
  
    
