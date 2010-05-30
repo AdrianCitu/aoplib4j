@@ -57,7 +57,7 @@ public final class SEQUENCEWriter extends DFSDiagramWriter {
      * @throws IOException if any writing error.
      */
     @Override
-    public void writeMethodAfterChilds(final SequenceMethod meth) 
+    public void writeMethodAfterChildren(final SequenceMethod meth) 
         throws IOException {
         
         if (meth.haveChildren()) {
@@ -86,7 +86,7 @@ public final class SEQUENCEWriter extends DFSDiagramWriter {
      * @throws IOException if any writing error.
      */
     @Override
-    public void writeMethodBeforeChilds(final SequenceMethod meth) 
+    public void writeMethodBeforeChildren(final SequenceMethod meth) 
         throws IOException {
 
         strWrit.append(

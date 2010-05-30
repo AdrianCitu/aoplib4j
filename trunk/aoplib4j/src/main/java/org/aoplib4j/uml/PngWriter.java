@@ -169,9 +169,9 @@ public final class PngWriter extends DFSDiagramWriter {
      * {@inheritDoc}
      */
     @Override
-    public void writeMethodAfterChilds(final SequenceMethod meth) 
+    public void writeMethodAfterChildren(final SequenceMethod meth) 
         throws IOException {
-       this.delegate.writeMethodAfterChilds(meth);
+       this.delegate.writeMethodAfterChildren(meth);
         
     }
 
@@ -180,9 +180,9 @@ public final class PngWriter extends DFSDiagramWriter {
      * {@inheritDoc}
      */
     @Override
-    public void writeMethodBeforeChilds(final SequenceMethod meth) 
+    public void writeMethodBeforeChildren(final SequenceMethod meth) 
         throws IOException {
-        this.delegate.writeMethodBeforeChilds(meth);
+        this.delegate.writeMethodBeforeChildren(meth);
         
     }
 
