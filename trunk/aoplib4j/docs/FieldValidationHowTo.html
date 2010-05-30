@@ -3,61 +3,68 @@
 &nbsp;
 
 
-<div style="font-style: italic; margin-top: 3px;">How to use
-@Validate annotation.</div>
+<div style="font-style: italic; margin-top: 3px;">How to use the
+@Aoplib4jValidate annotation.</div>
 
-</div>
 <h3><a name="Introduction">Introduction</a></h3>
 <p><a name="Introduction">This page is a small tutorial about
-the <tt>@Validate</tt> annotation. </a></p>
-<h3><a name="How_to_use_the_@Validation_annotation_(in_2_seconds)">How
-to use the <tt>@Validate</tt> annotation (in 2 seconds)</a></h3>
+the <tt>@Aoplib4jValidate</tt> annotation. </a></p>
+<h3><a
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_2_seconds)">How
+to use the <tt>@Aoplib4jValidate</tt> annotation (in 2 seconds)</a></h3>
 <ol>
-	<li><a name="How_to_use_the_@Validation_annotation_(in_2_seconds)">Create
+	<li><a
+		name="How_to_use_the_@Aoplib4jValidate_annotation_(in_2_seconds)">Create
 	your own validation class extending the <tt>FieldValidator</tt> class.
 	</a></li>
-	<li><a name="How_to_use_the_@Validation_annotation_(in_2_seconds)">Annotate
-	the field to validate with the <tt>@Validate</tt> annotation and pass
-	as value of the <tt>validationClass</tt> your own validation class
-	name. </a></li>
+	<li><a
+		name="How_to_use_the_@Aoplib4jValidate_annotation_(in_2_seconds)">Annotate
+	the field to validate with the <tt>@Aoplib4jValidate</tt> annotation
+	and pass as value of the <tt>validationClass</tt> your own validation
+	class name. </a></li>
 </ol>
-<h3><a name="How_to_use_the_@Validation_annotation_(in_5_minutes)">How
-to use the <tt>@Validate</tt> annotation (in 5 minutes)</a></h3>
-<p><a name="How_to_use_the_@Validation_annotation_(in_5_minutes)">The
-<tt>@Validate</tt> annotation is should be added on fields on which a
-validation should be done. The annotation have a single parameter (<tt>validationClass</tt>)
-representing the class that will be instantiated and used for the
-validation. </a></p>
-<p><a name="How_to_use_the_@Validation_annotation_(in_5_minutes)">Code
+<h3><a
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_5_minutes)">How
+to use the <tt>@Aoplib4jValidate</tt> annotation (in 5 minutes)</a></h3>
+<p><a
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_5_minutes)">The
+<tt>@Aoplib4jValidate</tt> annotation is should be added on fields on
+which a validation should be done. The annotation have a single
+parameter (<tt>validationClass</tt>) representing the class that will be
+instantiated and used for the validation. </a></p>
+<p><a
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_5_minutes)">Code
 example (taken from the JUnit tests): </a></p>
 <pre class="prettyprint"><a
-	name="How_to_use_the_@Validation_annotation_(in_5_minutes)"><span
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_5_minutes)"><span
 	class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span
 	class="pln"> </span><span class="typ">ClassToValidate</span><span
 	class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
-	class="lit">@Validate</span><span class="pun">(</span><span class="pln">validationClass</span><span
-	class="pun">=</span><span class="typ">StringValidator</span><span
-	class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span
-	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">private</span><span
-	class="pln"> </span><span class="typ">String</span><span class="pln"> str</span><span
-	class="pun">;</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
-	class="lit">@Validate</span><span class="pun">(</span><span class="pln">validationClass</span><span
-	class="pun">=</span><span class="typ">StringValidator</span><span
-	class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span
-	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">private</span><span
-	class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span
-	class="typ">String</span><span class="pln"> staticStr</span><span
+	class="lit">@Aoplib4jValidate</span><span class="pun">(</span><span
+	class="pln">validationClass</span><span class="pun">=</span><span
+	class="typ">StringValidator</span><span class="pun">.</span><span
+	class="kwd">class</span><span class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span
+	class="pln"> str</span><span class="pun">;</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
+	class="lit">@Aoplib4jValidate</span><span class="pun">(</span><span
+	class="pln">validationClass</span><span class="pun">=</span><span
+	class="typ">StringValidator</span><span class="pun">.</span><span
+	class="kwd">class</span><span class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span
+	class="pln"> </span><span class="typ">String</span><span class="pln"> staticStr</span><span
 	class="pun">;</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
 	class="pun">...</span></a></pre>
-<p><a name="How_to_use_the_@Validation_annotation_(in_5_minutes)">The
+<p><a
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_5_minutes)">The
 <tt>validationClass</tt> parameter should be a class that inherits from
 the <tt>FieldValidator</tt> abstract class. The structure of the <tt>FieldValidator</tt>
 : </a></p>
 <pre class="prettyprint"><a
-	name="How_to_use_the_@Validation_annotation_(in_5_minutes)"><span
-	class="kwd">public</span><span class="pln"> abstract </span><span
-	class="kwd">class</span><span class="pln"> </span><span class="typ">FieldValidator</span><span
-	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_5_minutes)"><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">abstract</span><span
+	class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span
+	class="typ">FieldValidator</span><span class="pln"> </span><span
+	class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
 	class="com">/**<br>&nbsp; &nbsp; &nbsp;* The default constructor.<br>&nbsp; &nbsp; &nbsp;*/</span><span
 	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
 	class="pln"> </span><span class="typ">FieldValidator</span><span
@@ -66,18 +73,20 @@ the <tt>FieldValidator</tt> abstract class. The structure of the <tt>FieldValida
 	class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
 	class="com">/**<br>&nbsp; &nbsp; &nbsp;* Method to implement the validation of the field.<br>&nbsp; &nbsp; &nbsp;* <br>&nbsp; &nbsp; &nbsp;* @param fldInfor object containing the information about the field<br>&nbsp; &nbsp; &nbsp;* validation.<br>&nbsp; &nbsp; &nbsp;* @throws Exception any exception to signal that the new value to be <br>&nbsp; &nbsp; &nbsp;* assigned to the field is not valid.<br>&nbsp; &nbsp; &nbsp;*/</span><span
 	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
-	class="pln"> abstract </span><span class="kwd">void</span><span
-	class="pln"> validate</span><span class="pun">(</span><span class="typ">FieldInformation</span><span
+	class="pln"> </span><span class="kwd">abstract</span><span class="pln"> </span><span
+	class="kwd">void</span><span class="pln"> validate</span><span
+	class="pun">(</span><span class="typ">FieldInformation</span><span
 	class="pln"> fldInfor</span><span class="pun">)</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="kwd">throws</span><span class="pln"> </span><span class="typ">Exception</span><span
 	class="pun">;</span><span class="pln"><br></span><span class="pun">}</span></a></pre>
-<p><a name="How_to_use_the_@Validation_annotation_(in_5_minutes)">The
+<p><a
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_5_minutes)">The
 <tt>FieldInformation</tt> is an interface class containing useful
 informations for the validation process; the field name, the old value
 of the field, the new value to be assigned to the field. The structure
 of the <tt>FieldInformation</tt> interface. </a></p>
 <pre class="prettyprint"><a
-	name="How_to_use_the_@Validation_annotation_(in_5_minutes)"><span
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_5_minutes)"><span
 	class="kwd">public</span><span class="pln"> </span><span class="kwd">interface</span><span
 	class="pln"> </span><span class="typ">FieldInformation</span><span
 	class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
@@ -97,27 +106,28 @@ of the <tt>FieldInformation</tt> interface. </a></p>
 	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">boolean</span><span
 	class="pln"> isStaticField</span><span class="pun">();</span><span
 	class="pln"><br></span><span class="pun">}</span></a></pre>
-<p><a name="How_to_use_the_@Validation_annotation_(in_5_minutes)">
+<p><a
+	name="How_to_use_the_@Aoplib4jValidate_annotation_(in_5_minutes)">
 </a></p>
-<h3><a name="The_@Validation_annotation:_under_the_hood">The <tt>@Validate</tt>
-annotation: under the hood</a></h3>
-<p><a name="The_@Validation_annotation:_under_the_hood">For the
-validation process the work flow is the following: </a></p>
+<h3><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">The
+<tt>@Aoplib4jValidate</tt> annotation: under the hood</a></h3>
+<p><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">For
+the validation process the work flow is the following: </a></p>
 <ul>
-	<li><a name="The_@Validation_annotation:_under_the_hood">Intercept
-	the assignment of a field annotated with <tt>Validate</tt> </a></li>
+	<li><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">Intercept
+	the assignment of a field annotated with <tt>Aoplib4jValidate</tt> </a></li>
 </ul>
 <blockquote><a
-	name="The_@Validation_annotation:_under_the_hood">The @AspectJ
-pointcuts for intercepting the assignment of a field: </a>
+	name="The_@Aoplib4jValidate_annotation:_under_the_hood">The
+@AspectJ pointcuts for intercepting the assignment of a field: </a>
 <ul>
-	<li><a name="The_@Validation_annotation:_under_the_hood">static
+	<li><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">static
 	fields </a></li>
 	<pre class="prettyprint"><a
-		name="The_@Validation_annotation:_under_the_hood"><span
+		name="The_@Aoplib4jValidate_annotation:_under_the_hood"><span
 		class="pln">&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
 		class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-		class="str">"set(@org.aoplib4j.fieldvalidation.Validate "</span><span
+		class="str">"set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate "</span><span
 		class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 		class="pun">+</span><span class="pln"> </span><span class="str">"static * *.*)"</span><span
 		class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
@@ -127,20 +137,20 @@ pointcuts for intercepting the assignment of a field: </a>
 		class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
 		class="kwd">void</span><span class="pln"> validateStaticFieldPointcut</span><span
 		class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-		class="kwd">final</span><span class="pln"> </span><span class="typ">Validate</span><span
+		class="kwd">final</span><span class="pln"> </span><span class="typ">Aoplib4jValidate</span><span
 		class="pln"> validateAnnot</span><span class="pun">,</span><span
 		class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 		class="kwd">final</span><span class="pln"> </span><span class="typ">Object</span><span
 		class="pln"> newValue</span><span class="pun">)</span><span
 		class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; </span><span
 		class="pun">}</span></a></pre>
-	<li><a name="The_@Validation_annotation:_under_the_hood">non-static
+	<li><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">non-static
 	fields </a></li>
 	<pre class="prettyprint"><a
-		name="The_@Validation_annotation:_under_the_hood"><span
+		name="The_@Aoplib4jValidate_annotation:_under_the_hood"><span
 		class="pln">&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
 		class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-		class="str">"set(@org.aoplib4j.fieldvalidation.Validate "</span><span
+		class="str">"set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate "</span><span
 		class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 		class="pun">+</span><span class="pln"> </span><span class="str">"* *.*)"</span><span
 		class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
@@ -150,7 +160,7 @@ pointcuts for intercepting the assignment of a field: </a>
 		class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
 		class="kwd">void</span><span class="pln"> validateNonStaticFieldPointcut</span><span
 		class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-		class="kwd">final</span><span class="pln"> </span><span class="typ">Validate</span><span
+		class="kwd">final</span><span class="pln"> </span><span class="typ">Aoplib4jValidate</span><span
 		class="pln"> validateAnnot</span><span class="pun">,</span><span
 		class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 		class="kwd">final</span><span class="pln"> </span><span class="typ">Object</span><span
@@ -161,26 +171,30 @@ pointcuts for intercepting the assignment of a field: </a>
 		class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; </span><span
 		class="pun">}</span></a></pre>
 </ul>
-<a name="The_@Validation_annotation:_under_the_hood">For triggering
-the validation the @Before advice is used. </a></blockquote>
+<a name="The_@Aoplib4jValidate_annotation:_under_the_hood">For
+triggering the validation the @Before advice is used. </a></blockquote>
 <ul>
-	<li><a name="The_@Validation_annotation:_under_the_hood">Create
+	<li><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">Create
 	an instance of <tt>FieldInformation</tt> </a></li>
-	<li><a name="The_@Validation_annotation:_under_the_hood">Create
+	<li><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">Create
 	an instance of <tt>FieldValidator</tt> </a></li>
 	<ol>
-		<li><a name="The_@Validation_annotation:_under_the_hood">Retrieve
+		<li><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">Retrieve
 		the class object from the <tt>validationClass</tt> parameter of the
 		annotation ( the annotation is retrieved using @AspectJ @annotation
 		pointcut). </a></li>
-		<li><a name="The_@Validation_annotation:_under_the_hood">Create
+		<li><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">Create
 		a new instance by introspection (using the non argument constructor).
 		</a></li>
 	</ol>
-	<li><a name="The_@Validation_annotation:_under_the_hood">Do
+	<li><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">Do
 	the validation by calling <tt>FieldValidator#validate(FieldInformation
 	fldInfor) </tt> </a></li>
 </ul>
+<p><a name="The_@Aoplib4jValidate_annotation:_under_the_hood">And
+here is the complete code of </a><a
+	href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/fieldvalidation/internal/FieldValidatorAspect.java"
+	rel="nofollow">FieldValidatorAspect</a></p>
 <h3><a
 	name="Critics,_enhancements_and_..._what_i_don't_like_about_this">Critics,
 enhancements and ... what i don't like about this solution</a></h3>
@@ -193,6 +207,4 @@ enhancements and ... what i don't like about this solution</a></h3>
 	framework instantiate the validation class using the non-arguments
 	constructor by introspection (see </a><a
 		href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance%28%29"
-		rel="nofollow">Class.newInstance()</a>).
-	</li>
-</ul>	
+		rel="nofollow">Class.newInstance()</a>).</li>

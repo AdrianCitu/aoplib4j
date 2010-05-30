@@ -6,7 +6,6 @@
 <div style="font-style: italic; margin-top: 3px;">How to use
 policy enforcement aspects.</div>
 
-</div>
 <h3><a name="Introduction">Introduction</a></h3>
 <p><a name="Introduction">Policy enforcement is a mechanism for
 ensuring that system components follow certain programming practices,
@@ -32,9 +31,8 @@ visible into the log files and (eventually) will be visible in
 production to the console. </a></p>
 <p><a name="Don't_use_System.out.print*(...)">This rule is
 applied at compile time so it must compile the code with the <tt>ajc</tt>
-compiler. If in the code a <tt>java.io.PrintStream.print*(...)</tt> is
-found the compiler will raise a warning. Example (taken from the JUnit
-tests) </a></p>
+compiler. If a <tt>java.io.PrintStream.print*(...)</tt> is found, the
+compiler will raise a warning. Example (taken from the JUnit tests) </a></p>
 <pre class="prettyprint"><a
 	name="Don't_use_System.out.print*(...)"><span class="pun">[</span><span
 	class="pln">iajc</span><span class="pun">]</span><span class="pln"> warning at </span><span
@@ -55,7 +53,8 @@ tests) </a></p>
 	class="pun">/</span><span class="typ">Client</span><span class="pun">.</span><span
 	class="pln">java</span><span class="pun">:</span><span class="lit">38</span><span
 	class="pun">:</span><span class="lit">0</span><span class="pun">::</span><span
-	class="lit">0</span><span class="pln"> </span><span class="str">"Don\'t use System.out.print*(..). Use a logger API."</span><span
+	class="lit">0</span><span class="pln"> <br></span><span
+	class="str">"Don\'t use System.out.print*(..). Use a logger API."</span><span
 	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
 	class="pun">]</span><span class="pln"> &nbsp;see also</span><span
 	class="pun">:</span><span class="pln"> com</span><span class="pun">/</span><span
@@ -83,17 +82,21 @@ construction is used which declares a weave-time warning: </a></p>
 	class="pun">=</span><span class="pln"> &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="str">"Don't use System.out.print*(..). Use a logger API."</span><span
 	class="pun">;</span></a></pre>
+<p><a name="How_it_works_under_the_hood">Here is the complete
+code of the </a><a
+	href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/policy/compiletime/NoSysOutAspect.java"
+	rel="nofollow">NoSysOutAspect</a>.</p>
 <h3><a name="Use_only_private_fields_in_your_classes">Use only
 private fields in your classes</a></h3>
 <p><a name="Use_only_private_fields_in_your_classes">It's always
 a good practice to not expose directly the non final fields of your
-classes if the class accessible outside his package.Expose this fields
-by providing accessor methods. Joshua Bloch in his "Effective Java
-(2-end edition)" book explains very well why </a><a
+classes if the class accessible outside his package.This fields sould be
+exposed by providing accessor methods. Joshua Bloch in his "Effective
+Java (2-end edition)" book explains very well why </a><a
 	href="http://books.google.be/books?id=ka2VUBqHiWkC&amp;printsec=frontcover&amp;dq=effective+java+item+43&amp;hl=fr#PPA71,M1"
 	rel="nofollow">it should not use public fields.</a> This rule, as the
-first one is applied at compile time so the output of the compiler
-should be:</p>
+first one, is applied at compile time so the output of the compiler
+would be:</p>
 <pre class="prettyprint"><span class="pun">[</span><span
 	class="pln">iajc</span><span class="pun">]</span><span class="pln"> warning at </span><span
 	class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span
@@ -113,7 +116,8 @@ should be:</p>
 	class="typ">CompileTimePolicy</span><span class="pun">.</span><span
 	class="pln">java</span><span class="pun">:</span><span class="lit">43</span><span
 	class="pun">:</span><span class="lit">0</span><span class="pun">::</span><span
-	class="lit">0</span><span class="pln"> </span><span class="str">"Don\'t use non final public, protected or default fields. Make all non final fields private and use set/get methods."</span><span
+	class="lit">0</span><span class="pln"> <br></span><span
+	class="str">"Don\'t use non final public, protected or default fields. Make all non final fields private and use set/get methods."</span><span
 	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
 	class="pun">]</span><span class="pln"> &nbsp;see also</span><span
 	class="pun">:</span><span class="pln"> com</span><span class="pun">/</span><span
@@ -141,7 +145,10 @@ mechanism of weave-time warning is used. Here is the AspectJ pointcut: </a></p>
 	class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">" Make all non final fields private and use set/get methods."</span><span
 	class="pun">;</span><span class="pln"><br></span></a></pre>
-<p><a name="How_it_works_under_the_hood"> </a></p>
+<p><a name="How_it_works_under_the_hood">Here is the complete
+code of the </a><a
+	href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/policy/compiletime/OnlyPrivateFieldsAspect.java"
+	rel="nofollow">OnlyPrivateFieldsAspect</a>.</p>
 <h3><a
 	name="Return_interfaces_of_an_object_from_a_method,_not_a_implementati">Return
 interfaces of an object from a method, not a implementation class.</a></h3>
@@ -153,7 +160,7 @@ variables and fields should declared using the interface type. Basically
 code like this should be avoid : </a></p>
 <pre class="prettyprint"><a
 	name="Return_interfaces_of_an_object_from_a_method,_not_a_implementati"><span
-	class="pln">&nbsp; </span><span class="com">//don't return a implemenation and don't use as parameter an implementation</span><span
+	class="pln">&nbsp; </span><span class="com">//don't return a implementation and don't use as parameter an implementation</span><span
 	class="pln"><br>&nbsp; </span><span class="kwd">public</span><span
 	class="pln"> </span><span class="typ">HashMap</span><span class="pun">&lt;</span><span
 	class="typ">String</span><span class="pun">,</span><span class="typ">String</span><span
@@ -181,8 +188,8 @@ replaced by: </a></p>
 	name="Return_interfaces_of_an_object_from_a_method,_not_a_implementati">The
 <tt>aoplib4j</tt> offer a limited implementation for this rule. Firstly,
 it verifies only the return values of the methods (the same rule should
-apply of class fields and method parameters) and it can verifies only
-the sub-clases of the <tt>java.util.Collection</tt> and <tt>java.util.Map</tt>;
+apply of class fields and method parameters) and it verifies only the
+sub-classes of the <tt>java.util.Collection</tt> and <tt>java.util.Map</tt>;
 the </a><a href="http://code.google.com/p/aoplib4j/issues/detail?id=35"
 	rel="nofollow">issue#35</a> has been created for a more general
 implementation. This rule is also a compile time warning and the <tt>ajc</tt>
@@ -207,7 +214,8 @@ message warning will be:</p>
 	class="typ">CompileTimePolicy</span><span class="pun">.</span><span
 	class="pln">java</span><span class="pun">:</span><span class="lit">67</span><span
 	class="pun">:</span><span class="lit">0</span><span class="pun">::</span><span
-	class="lit">0</span><span class="pln"> </span><span class="str">"Return the Collection interface or another interface not the real implementation"</span><span
+	class="lit">0</span><span class="pln"> <br></span><span
+	class="str">"Return the Collection interface or another interface not the real implementation"</span><span
 	class="pln"><br></span><span class="pun">[</span><span class="pln">iajc</span><span
 	class="pun">]</span><span class="pln"> &nbsp;see also</span><span
 	class="pun">:</span><span class="pln"> com</span><span class="pun">/</span><span
@@ -327,6 +335,10 @@ return values of subclasses of <tt>java.util.Map</tt>: </a></p>
 	class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">"implementation"</span><span
 	class="pun">;</span></a></pre>
+<p><a name="How_it_works_under_the_hood">Here is the complete
+code of the </a><a
+	href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/policy/compiletime/UseInterfacesAspect.java"
+	rel="nofollow">UseInterfacesAspect</a>.</p>
 <h3><a
 	name="Return_empty_arrays_or_collections_from_a_method,_not_nulls.">Return
 empty arrays or collections from a method, not nulls.</a></h3>
@@ -406,4 +418,6 @@ used. </a></p>
 	class="pun">}</span><span class="pln"><br></span></a></pre>
 <p><a name="How_it_works_under_the_hood">As you can see this
 rule have a major drawback; the faulty code must be executed in order to
-be found. </a>
+be found. Here is the complete code of the </a><a
+	href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/policy/runtime/ReturnEmptyCollectionsAspect.java"
+	rel="nofollow">ReturnEmptyCollectionsAspect</a>.</p>

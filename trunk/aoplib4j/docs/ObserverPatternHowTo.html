@@ -6,7 +6,6 @@
 <div style="font-style: italic; margin-top: 3px;">How to mplement
 the Observer pattern using annotations.</div>
 
-</div>
 <h3><a name="Introduction">Introduction</a></h3>
 <p><a name="Introduction">This page is a small tutorial about
 how to implement the </a><a
@@ -18,13 +17,13 @@ to implement the Observer pattern with annotations (in 10 seconds)</a></h3>
 <ul>
 	<li><a
 		name="How_to_implement_the_Observer_pattern_with_annotations_(in_10_se">Annotate
-	the Subject classes with the <tt>Subject</tt> annotation </a></li>
+	the Subject classes with the <tt>Aoplib4jSubject</tt> annotation </a></li>
 	<li><a
 		name="How_to_implement_the_Observer_pattern_with_annotations_(in_10_se">Annotate
-	the Observer classes with the <tt>Observer</tt> annotation </a></li>
+	the Observer classes with the <tt>Aoplib4jObserver</tt> annotation </a></li>
 	<li><a
 		name="How_to_implement_the_Observer_pattern_with_annotations_(in_10_se">Annotate
-	(some of) the Subject methods with the <tt>RegisterObserver</tt>
+	(some of) the Subject methods with the <tt>Aoplib4jRegisterObserver</tt>
 	annotation to be used for attaching Observers to the Subject. </a></li>
 	<li><a
 		name="How_to_implement_the_Observer_pattern_with_annotations_(in_10_se">Annotate
@@ -32,7 +31,7 @@ to implement the Observer pattern with annotations (in 10 seconds)</a></h3>
 	annotation to notify the attached Observers. </a></li>
 	<li><a
 		name="How_to_implement_the_Observer_pattern_with_annotations_(in_10_se">Annotate
-	(some of) the Subject methods with the <tt>UnregisterObservers</tt>
+	(some of) the Subject methods with the <tt>Aoplib4jUnregisterObservers</tt>
 	annotation for removing the attached Observers. </a></li>
 	<li><a
 		name="How_to_implement_the_Observer_pattern_with_annotations_(in_10_se">For
@@ -68,18 +67,18 @@ questions: </a></p>
 objects are Subjects and which are Observers ?</a></h4>
 <blockquote><a
 	name="Which_objects_are_Subjects_and_which_are_Observers_?">The
-classes that will have the role of Subject must be annotated with the <tt>Subject</tt>
+classes that will have the role of Subject must be annotated with the <tt>Aoplib4jSubject</tt>
 annotation and the classes that will have the role of Observer must be
 annotated with the <tt>Observer</tt> annotation. </a></blockquote>
 <p><a name="Which_objects_are_Subjects_and_which_are_Observers_?">Code
 example (from the JUnit tests): </a></p>
 <pre class="prettyprint"><a
 	name="Which_objects_are_Subjects_and_which_are_Observers_?"><span
-	class="lit">@Subject</span><span class="pln"><br></span><span
+	class="lit">@Aoplib4jSubject</span><span class="pln"><br></span><span
 	class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span
 	class="pln"> </span><span class="typ">Dealer</span><span class="pln"> </span><span
 	class="pun">{</span><span class="pln"><br></span><span class="pun">....</span><span
-	class="pln"><br><br></span><span class="lit">@Observer</span><span
+	class="pln"><br><br></span><span class="lit">@Aoplib4jObserver</span><span
 	class="pun">(</span><span class="pln">callbackClass </span><span
 	class="pun">=</span><span class="pln"> </span><span class="typ">ClientObserverCallBack</span><span
 	class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span
@@ -102,9 +101,10 @@ that inherits from the <tt>ObserverCallback</tt> class. Here is the
 structure of the <tt>ObserverCallback</tt> class: </a></p>
 <pre class="prettyprint"><a
 	name="What_the_Observer_should_do_when_notified_?"><span
-	class="kwd">public</span><span class="pln"> abstract </span><span
-	class="kwd">class</span><span class="pln"> </span><span class="typ">ObserverCallback</span><span
-	class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">abstract</span><span
+	class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span
+	class="typ">ObserverCallback</span><span class="pln"> </span><span
+	class="pun">{</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
 	class="com">/**<br>&nbsp; &nbsp; &nbsp;* Default constructor.<br>&nbsp; &nbsp; &nbsp;*/</span><span
 	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
 	class="pln"> </span><span class="typ">ObserverCallback</span><span
@@ -112,10 +112,10 @@ structure of the <tt>ObserverCallback</tt> class: </a></p>
 	class="pln"><br><br>&nbsp; &nbsp; </span><span class="pun">}</span><span
 	class="pln"><br><br>&nbsp; &nbsp; </span><span class="com">/**<br>&nbsp; &nbsp; &nbsp;* Method called when a method annotated with the {@link NotifyObservers} <br>&nbsp; &nbsp; &nbsp;* annotation is executed on a class annotated with the {@link Subject}<br>&nbsp; &nbsp; &nbsp;* annotation.<br>&nbsp; &nbsp; &nbsp;* @see NotifyInformation<br>&nbsp; &nbsp; &nbsp;* <br>&nbsp; &nbsp; &nbsp;* @param notifyInformation the object containing the notification <br>&nbsp; &nbsp; &nbsp;* information.<br>&nbsp; &nbsp; &nbsp;*/</span><span
 	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
-	class="pln"> abstract </span><span class="kwd">void</span><span
-	class="pln"> notifyObserver</span><span class="pun">(</span><span
-	class="typ">NotifyInformation</span><span class="pln"> notifyInformation</span><span
-	class="pun">);</span></a></pre>
+	class="pln"> </span><span class="kwd">abstract</span><span class="pln"> </span><span
+	class="kwd">void</span><span class="pln"> notifyObserver</span><span
+	class="pun">(</span><span class="typ">NotifyInformation</span><span
+	class="pln"> notifyInformation</span><span class="pun">);</span></a></pre>
 <p><a name="What_the_Observer_should_do_when_notified_?">The
 Observer can retrieve all the notification informations (the Subject
 method on which the notification was triggered, the method arguments,
@@ -146,21 +146,21 @@ interface. </a></p>
 should the relationship begin and end ?</a></h4>
 <p><a name="When_should_the_relationship_begin_and_end_?">For
 attaching the Observers to the Subject must annotate a method (or more)
-with the <tt>RegisterObserver</tt> annotation. The annotated method must
-have a single parameter and this single parameter should be a class
-annotated with the <tt>Observer</tt> annotation. The methods annotated
-with the <tt>RegisterObserver</tt> having more that one parameter or
-having as parameter a class that is not annotated with <tt>Observer</tt>
-will be ignored by the framework. </a></p>
+with the <tt>Aoplib4jRegisterObserver</tt> annotation. The annotated
+method must have a single parameter and this single parameter should be
+a class annotated with the <tt>Observer</tt> annotation. The methods
+annotated with the <tt>Aoplib4jRegisterObserver</tt> having more that
+one parameter or having as parameter a class that is not annotated with
+<tt>Observer</tt> will be ignored by the framework. </a></p>
 <p><a name="When_should_the_relationship_begin_and_end_?">Code
 example (from the JUnit tests): </a></p>
 <pre class="prettyprint"><a
 	name="When_should_the_relationship_begin_and_end_?"><span
-	class="lit">@Subject</span><span class="pln"><br></span><span
+	class="lit">@Aoplib4jSubject</span><span class="pln"><br></span><span
 	class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span
 	class="pln"> </span><span class="typ">Dealer</span><span class="pln"> </span><span
 	class="pun">{</span><span class="pln"><br></span><span class="pun">...</span><span
-	class="pln"><br><br>&nbsp; &nbsp; </span><span class="lit">@RegisterObserver</span><span
+	class="pln"><br><br>&nbsp; &nbsp; </span><span class="lit">@Aoplib4jRegisterObserver</span><span
 	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
 	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
 	class="kwd">void</span><span class="pln"> addClient</span><span
@@ -170,7 +170,8 @@ example (from the JUnit tests): </a></p>
 	class="pun">..</span></a></pre>
 <p><a name="When_should_the_relationship_begin_and_end_?">To
 remove all the Observers attached to a Subject call any method on
-Subject annotated with the <tt>UnregisterObservers</tt> annotation. </a></p>
+Subject annotated with the <tt>Aoplib4jUnregisterObservers</tt>
+annotation. </a></p>
 <h3><a name="The_implementation:under_the_hood">The
 implementation:under the hood</a></h3>
 <p><a name="The_implementation:under_the_hood">Under the hood
@@ -178,12 +179,11 @@ the AspectJ framework is used. </a></p>
 <h4><a name="Which_objects_are_Subjects_and_which_are_Observers_?">Which
 objects are Subjects and which are Observers ?</a></h4>
 <p><a name="Which_objects_are_Subjects_and_which_are_Observers_?">In
-the <tt>org.aoplib4j.gof.observer.internal</tt>
-package the framework contains an implementation of the Observer
-pattern. The Subject class is represented by the <tt>GofSubject</tt>
-interface and his implementation <tt>GofSubjectImpl</tt>; the Observer
-class is represented by the <tt>GofObserver</tt> interface and his
-implementation <tt>GofObserver</tt>. </a></p>
+the <tt>org.aoplib4j.gof.observer.internal</tt> package the framework
+contains an implementation of the Observer pattern. The Subject class is
+represented by the <tt>GofSubject</tt> interface and his implementation
+<tt>GofSubjectImpl</tt>; the Observer class is represented by the <tt>GofObserver</tt>
+interface and his implementation <tt>GofObserver</tt>. </a></p>
 <p><a name="Which_objects_are_Subjects_and_which_are_Observers_?">Here
 are de definition of the <tt>GofObserver</tt> interface and <tt>GofSubject</tt>
 interface: </a></p>
@@ -214,8 +214,8 @@ interface: </a></p>
 	class="pun">}</span><span class="pln"><br></span></a></pre>
 <p><a name="Which_objects_are_Subjects_and_which_are_Observers_?">So,
 under the hood (using the AspectJ mixins feature), all the classes
-annotated with <tt>Subject</tt> annotation will automatically implement
-the <tt>GofSubject</tt> interface and will have injected as
+annotated with <tt>Aoplib4jSubject</tt> annotation will automatically
+implement the <tt>GofSubject</tt> interface and will have injected as
 implementation the code from the <tt>GofSubjectImpl</tt>. </a></p>
 <p><a name="Which_objects_are_Subjects_and_which_are_Observers_?">All
 the classes annotated with the <tt>Observer</tt> annotation will
@@ -229,10 +229,10 @@ see how to declare the mixins using @AspectJ: </a></p>
 	class="kwd">final</span><span class="pln"> </span><span class="kwd">class</span><span
 	class="pln"> </span><span class="typ">ObserverAspect</span><span
 	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
-	class="com">/**<br>&nbsp; &nbsp; &nbsp;* the classes annotated with the <br>&nbsp; &nbsp; &nbsp;* {@link org.aoplib4j.gof.observer.Subject} annotation <br>&nbsp; &nbsp; &nbsp;* will automatically <br>&nbsp; &nbsp; &nbsp;* implement the {@link GofSubject} interface and the implementation<br>&nbsp; &nbsp; &nbsp;* will be {@link GofSubjectImpl}.<br>&nbsp; &nbsp; &nbsp;*/</span><span
+	class="com">/**<br>&nbsp; &nbsp; &nbsp;* the classes annotated with the <br>&nbsp; &nbsp; &nbsp;* {@link org.aoplib4j.gof.observer.Aoplib4jSubject} annotation <br>&nbsp; &nbsp; &nbsp;* will automatically <br>&nbsp; &nbsp; &nbsp;* implement the {@link GofSubject} interface and the implementation<br>&nbsp; &nbsp; &nbsp;* will be {@link GofSubjectImpl}.<br>&nbsp; &nbsp; &nbsp;*/</span><span
 	class="pln"><br>&nbsp; &nbsp; </span><span class="lit">@DeclareParents</span><span
 	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; value </span><span
-	class="pun">=</span><span class="pln"> </span><span class="str">"@org.aoplib4j.gof.observer.Subject *"</span><span
+	class="pun">=</span><span class="pln"> </span><span class="str">"@org.aoplib4j.gof.observer.Aoplib4jSubject *"</span><span
 	class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; defaultImpl </span><span
 	class="pun">=</span><span class="pln"> </span><span class="typ">GofSubjectImpl</span><span
 	class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span
@@ -244,7 +244,7 @@ see how to declare the mixins using @AspectJ: </a></p>
 	class="pln"><br>&nbsp; &nbsp; </span><span class="lit">@DeclareParents</span><span
 	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; value </span><span
 	class="pun">=</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="str">"@org.aoplib4j.gof.observer.Observer *"</span><span
+	class="str">"@org.aoplib4j.gof.observer.Aoplib4jObserver *"</span><span
 	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
 	class="kwd">private</span><span class="pln"> </span><span class="typ">GofObserver</span><span
 	class="pln"> observer </span><span class="pun">=</span><span
@@ -255,8 +255,8 @@ should the Subject send a notification to its Observers ?</a></h4>
 <p><a
 	name="When_should_the_Subject_send_a_notification_to_its_Observers_?">For
 the notification part, the Subject class must annotate methods with the
-<tt>RegisterObserver</tt> annotation. Here is the @AspectJ pointcut that
-intercept the annotated methods.: </a></p>
+<tt>Aoplib4jRegisterObserver</tt> annotation. Here is the @AspectJ
+pointcut that intercept the annotated methods.: </a></p>
 <pre class="prettyprint"><a
 	name="When_should_the_Subject_send_a_notification_to_its_Observers_?"><span
 	class="pln">&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
@@ -264,7 +264,7 @@ intercept the annotated methods.: </a></p>
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">"@org.aoplib4j.gof.observer"</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="pun">+</span><span class="pln"> </span><span class="str">".RegisterObserver * * (..)) "</span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">".Aoplib4jRegisterObserver * * (..)) "</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">"&amp;&amp; this(sbj) &amp;&amp; args(obs)"</span><span
 	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
@@ -329,7 +329,7 @@ that intercepts the call of a <tt>NotifyObservers</tt> annotated method:
 used advice is @AfterReturning</a><a
 	href="/p/aoplib4j/w/edit/AfterReturning">?</a>. So, for every attached
 Observer retrieve the <tt>ObserverCallback</tt> class (from the <tt>callbackClass</tt>
-attribute of the <tt>Observer</tt> annotation), and call the <tt>ObserverCallback#notifyObserver(NotifyInformation)</tt>
+attribute of the <tt>Aoplib4jObserver</tt> annotation), and call the <tt>ObserverCallback#notifyObserver(NotifyInformation)</tt>
 method.</p>
 <p>I think it's simpler just to show the code:</p>
 <pre class="prettyprint"><span class="pln">&nbsp; </span><span
@@ -413,7 +413,7 @@ method.</p>
 <h4><a name="When_should_the_relationship_begin_and_end_?">When
 should the relationship begin and end ?</a></h4>
 <p><a name="When_should_the_relationship_begin_and_end_?">For
-attaching the Observers to Subject a method annotated with <tt>@RegisterObserver</tt>
+attaching the Observers to Subject a method annotated with <tt>@Aoplib4jRegisterObserver</tt>
 should be called. Here is the pointcut and the advice: </a></p>
 <pre class="prettyprint"><a
 	name="When_should_the_relationship_begin_and_end_?"><span
@@ -422,7 +422,7 @@ should be called. Here is the pointcut and the advice: </a></p>
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">"@org.aoplib4j.gof.observer"</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="pun">+</span><span class="pln"> </span><span class="str">".RegisterObserver * * (..)) "</span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">".Aoplib4jRegisterObserver * * (..)) "</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">"&amp;&amp; this(sbj) &amp;&amp; args(obs)"</span><span
 	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
@@ -456,14 +456,14 @@ should be called. Here is the pointcut and the advice: </a></p>
 	class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; </span><span
 	class="pun">}</span></a></pre>
 <p><a name="When_should_the_relationship_begin_and_end_?">For
-detach the Observers from the Subject a method annotated with <tt>@UnregisterObservers</tt>
+detach the Observers from the Subject a method annotated with <tt>@Aoplib4jUnregisterObservers</tt>
 should be called. Here is the pointcut and the advice: </a></p>
 <pre class="prettyprint"><a
 	name="When_should_the_relationship_begin_and_end_?"><span
 	class="pln">&nbsp; &nbsp;</span><span class="lit">@Pointcut</span><span
 	class="pun">(</span><span class="str">"execution(@org.aoplib4j.gof.observer."</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
-	class="pun">+</span><span class="pln"> </span><span class="str">"UnregisterObservers * * (..))"</span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">"Aoplib4jUnregisterObservers * * (..))"</span><span
 	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
 	class="pun">+</span><span class="pln"> </span><span class="str">" &amp;&amp; this(sbj)"</span><span
 	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
@@ -484,6 +484,10 @@ should be called. Here is the pointcut and the advice: </a></p>
 	class="pun">.</span><span class="pln">deleteObservers</span><span
 	class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; </span><span
 	class="pun">}</span></a></pre>
+<p><a name="When_should_the_relationship_begin_and_end_?">And
+here is the complete code of the </a><a
+	href="http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/gof/observer/internal/ObserverAspect.java"
+	rel="nofollow">ObserverAspect</a>.</p>
 <h3><a name="Enhancements">Enhancements</a></h3>
 <ol>
 	<li><a name="Enhancements">It will be a good idea to add a
@@ -497,4 +501,3 @@ should be called. Here is the pointcut and the advice: </a></p>
 	constructor by introspection (see </a><a
 		href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance%28%29"
 		rel="nofollow">Class.newInstance()</a>).</li>
-<ol>		
