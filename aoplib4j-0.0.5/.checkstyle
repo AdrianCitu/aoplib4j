@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileset-config file-format-version="1.2.0" simple-config="true">
+    <local-check-config name="aopLib4jCheckstyle" location="tools/checkstyle/aopLib4JCheckstyle.xml" type="project" description="">
+        <additional-data name="protect-config-file" value="false"/>
+    </local-check-config>
+    <fileset name="all" enabled="true" check-config-name="aopLib4jCheckstyle" local="true">
+        <file-match-pattern match-pattern="." include-pattern="true"/>
+    </fileset>
+    <filter name="FilesFromPackage" enabled="true">
+        <filter-data value="src/test/java"/>
+        <filter-data value="src/test/java/com"/>
+        <filter-data value="src/test/java/com/google"/>
+        <filter-data value="src/test/java/com/google/code"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/failurehandling"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/fieldvalidation"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/gof"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/gof/observer"/>
+        <filter-data value="src/test/java/com/google/code/aoplib4j/aspectj/gof/observer/client"/>
+    </filter>
+</fileset-config>

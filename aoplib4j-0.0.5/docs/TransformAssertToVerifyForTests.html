@@ -1,0 +1,434 @@
+<span style="font-size: 120%; font-weight: bold;">TransformAssertToVerifyForTests</span>
+&nbsp;
+
+
+<div style="font-style: italic; margin-top: 3px;">How to use the
+test assert modification aspect.</div>
+
+
+<h3><a name="Introduction">Introduction</a></h3>
+<p><a name="Introduction">The main idea of the aspect is to
+modify the way a unit test behaves or to be more specific, how a test
+assertion violation behaves. </a></p>
+<p><a name="Introduction">In order to better explain what I
+understand by "modify the way a unit test behaves", let's take a very
+simple JUnit test case: </a></p>
+<pre class="prettyprint"><a name="Introduction"><span
+	class="pln">&nbsp; &nbsp; </span><span class="lit">@Test</span><span
+	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
+	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+	class="kwd">void</span><span class="pln"> assertsTest</span><span
+	class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="typ">String</span><span class="pln"> str </span><span
+	class="pun">=</span><span class="pln"> </span><span class="kwd">null</span><span
+	class="pun">;</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; assertNotNull</span><span
+	class="pun">(</span><span class="str">"String str should not be null"</span><span
+	class="pun">,</span><span class="pln"> str</span><span class="pun">);</span><span
+	class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; str </span><span
+	class="pun">=</span><span class="pln"> </span><span class="str">""</span><span
+	class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; assertEquals</span><span
+	class="pun">(</span><span class="str">"String str should have the lenght of 1"</span><span
+	class="pun">,</span><span class="pln"> str</span><span class="pun">.</span><span
+	class="pln">length</span><span class="pun">(),</span><span class="pln"> </span><span
+	class="lit">1</span><span class="pun">);</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br></span></a></pre>
+<p><a name="Introduction">If the test is executed then the
+output will be the following : </a></p>
+<pre class="prettyprint"><a name="Introduction"><span
+	class="pln">java</span><span class="pun">.</span><span class="pln">lang</span><span
+	class="pun">.</span><span class="typ">AssertionError</span><span
+	class="pun">:</span><span class="pln"> </span><span class="typ">String</span><span
+	class="pln"> str should </span><span class="kwd">not</span><span
+	class="pln"> be </span><span class="kwd">null</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">junit</span><span class="pun">.</span><span
+	class="typ">Assert</span><span class="pun">.</span><span class="pln">fail</span><span
+	class="pun">(</span><span class="typ">Assert</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">71</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">junit</span><span class="pun">.</span><span
+	class="typ">Assert</span><span class="pun">.</span><span class="pln">assertTrue</span><span
+	class="pun">(</span><span class="typ">Assert</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">34</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">junit</span><span class="pun">.</span><span
+	class="typ">Assert</span><span class="pun">.</span><span class="pln">assertNotNull</span><span
+	class="pun">(</span><span class="typ">Assert</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">359</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at com</span><span
+	class="pun">.</span><span class="pln">observer</span><span class="pun">.</span><span
+	class="typ">SimpleTest</span><span class="pun">.</span><span
+	class="pln">assertsTest</span><span class="pun">(</span><span
+	class="typ">SimpleTest</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">33</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="pun">...</span><span class="pln"><br></span></a></pre>
+<p><a name="Introduction">If the test is weaved by the <tt>org.aoplib4j.testing.internal.JUnitAspect</tt>
+and then executed, the output will be the following: </a></p>
+<pre class="prettyprint"><a name="Introduction"><span
+	class="pln">junit</span><span class="pun">.</span><span class="pln">framework</span><span
+	class="pun">.</span><span class="typ">AssertionFailedError</span><span
+	class="pun">:</span><span class="pln"> </span><span class="typ">Total</span><span
+	class="pln"> number of failed assertions </span><span class="kwd">is</span><span
+	class="pln"> </span><span class="lit">2</span><span class="pln"><br>java</span><span
+	class="pun">.</span><span class="pln">lang</span><span class="pun">.</span><span
+	class="typ">AssertionError</span><span class="pun">:</span><span
+	class="pln"> </span><span class="typ">String</span><span class="pln"> str should </span><span
+	class="kwd">not</span><span class="pln"> be </span><span class="kwd">null</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">junit</span><span class="pun">.</span><span
+	class="typ">Assert</span><span class="pun">.</span><span class="pln">fail</span><span
+	class="pun">(</span><span class="typ">Assert</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">71</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">junit</span><span class="pun">.</span><span
+	class="typ">Assert</span><span class="pun">.</span><span class="pln">assertTrue</span><span
+	class="pun">(</span><span class="typ">Assert</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">34</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">junit</span><span class="pun">.</span><span
+	class="typ">Assert</span><span class="pun">.</span><span class="pln">assertNotNull</span><span
+	class="pun">(</span><span class="typ">Assert</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">359</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at com</span><span
+	class="pun">.</span><span class="pln">observer</span><span class="pun">.</span><span
+	class="typ">SimpleTest</span><span class="pun">.</span><span
+	class="pln">assertNotNull_aroundBody0</span><span class="pun">(</span><span
+	class="typ">SimpleTest</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">33</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at com</span><span
+	class="pun">.</span><span class="pln">observer</span><span class="pun">.</span><span
+	class="typ">SimpleTest$AjcClosure1</span><span class="pun">.</span><span
+	class="pln">run</span><span class="pun">(</span><span class="typ">SimpleTest</span><span
+	class="pun">.</span><span class="pln">java</span><span class="pun">:</span><span
+	class="lit">1</span><span class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">aspectj</span><span class="pun">.</span><span
+	class="pln">runtime</span><span class="pun">.</span><span class="pln">reflect</span><span
+	class="pun">.</span><span class="typ">JoinPointImpl</span><span
+	class="pun">.</span><span class="pln">proceed</span><span class="pun">(</span><span
+	class="typ">JoinPointImpl</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">149</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; </span><span
+	class="pun">...</span><span class="pln"><br>java</span><span
+	class="pun">.</span><span class="pln">lang</span><span class="pun">.</span><span
+	class="typ">AssertionError</span><span class="pun">:</span><span
+	class="pln"> </span><span class="typ">String</span><span class="pln"> str should have the lenght of </span><span
+	class="lit">1</span><span class="pln"> expected</span><span class="pun">:&lt;</span><span
+	class="lit">0</span><span class="pun">&gt;</span><span class="pln"> but was</span><span
+	class="pun">:&lt;</span><span class="lit">1</span><span class="pun">&gt;</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">junit</span><span class="pun">.</span><span
+	class="typ">Assert</span><span class="pun">.</span><span class="pln">fail</span><span
+	class="pun">(</span><span class="typ">Assert</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">71</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">junit</span><span class="pun">.</span><span
+	class="typ">Assert</span><span class="pun">.</span><span class="pln">failNotEquals</span><span
+	class="pun">(</span><span class="typ">Assert</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">451</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">junit</span><span class="pun">.</span><span
+	class="typ">Assert</span><span class="pun">.</span><span class="pln">assertEquals</span><span
+	class="pun">(</span><span class="typ">Assert</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">99</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at com</span><span
+	class="pun">.</span><span class="pln">observer</span><span class="pun">.</span><span
+	class="typ">SimpleTest</span><span class="pun">.</span><span
+	class="pln">assertEquals_aroundBody2</span><span class="pun">(</span><span
+	class="typ">SimpleTest</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">37</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at com</span><span
+	class="pun">.</span><span class="pln">observer</span><span class="pun">.</span><span
+	class="typ">SimpleTest$AjcClosure3</span><span class="pun">.</span><span
+	class="pln">run</span><span class="pun">(</span><span class="typ">SimpleTest</span><span
+	class="pun">.</span><span class="pln">java</span><span class="pun">:</span><span
+	class="lit">1</span><span class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; at org</span><span
+	class="pun">.</span><span class="pln">aspectj</span><span class="pun">.</span><span
+	class="pln">runtime</span><span class="pun">.</span><span class="pln">reflect</span><span
+	class="pun">.</span><span class="typ">JoinPointImpl</span><span
+	class="pun">.</span><span class="pln">proceed</span><span class="pun">(</span><span
+	class="typ">JoinPointImpl</span><span class="pun">.</span><span
+	class="pln">java</span><span class="pun">:</span><span class="lit">149</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; </span><span
+	class="pun">...</span><span class="pln"><br></span></a></pre>
+<p><a name="Introduction">As you can see, the test execution
+continued after the first assertion violation and all the assertion
+violations are printed at the end of the test execution. In fact the
+aspect transformed every assertion into a verify. </a></p>
+<h3><a name="Transform_Assert_to_Verify_under_the_hood">Transform
+Assert to Verify under the hood</a></h3>
+<p><a name="Transform_Assert_to_Verify_under_the_hood">Under the
+hood the code is structured in an abstract aspect (<tt>org.aoplib4j.testing.internal.AbstractTestingAspect</tt>)
+containing the flow backbone and 2 aspect (one for the JUnit testing
+framework and another for the TestNG testing framework) containing the
+specific implementation details for the JUnit and TestNG. </a></p>
+<p><a name="Transform_Assert_to_Verify_under_the_hood">The
+aspect workflow is the following: </a></p>
+<ul>
+	<li><a name="Transform_Assert_to_Verify_under_the_hood">Intercept
+	the calls of all the <tt>assert*</tt> methods. If any assertion is
+	violated then keep the violation stack trace and continue the
+	execution. </a></li>
+	<li><a name="Transform_Assert_to_Verify_under_the_hood">Intercept
+	the execution of all testing methods. If at the end of the test
+	execution there are any assertion violations then throw a single assert
+	violation containing all the previous assert violations. </a></li>
+</ul>
+<h4><a name="Intercepting_assert*_methods_calls">Intercepting <tt>assert*</tt>
+methods calls</a></h4>
+<p><a name="Intercepting_assert*_methods_calls">As I already
+said, the <tt>org.aoplib4j.testing.internal.AbstractTestingAspect</tt>
+contains the backbone workflow. For the <tt>assert*</tt> method
+interception it contains an abstract pointcut and an abstract advice: </a></p>
+<pre class="prettyprint"><a
+	name="Intercepting_assert*_methods_calls"><span class="lit">@Aspect</span><span
+	class="pln"><br></span><span class="kwd">public</span><span
+	class="pln"> abstract </span><span class="kwd">class</span><span
+	class="pln"> </span><span class="typ">AbstractTestingAspect</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br></span><span
+	class="pun">...</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="com">/**<br>&nbsp; &nbsp; &nbsp;* Abstract pointcut representing the call of a assert method. <br>&nbsp; &nbsp; &nbsp;*/</span><span
+	class="pln"><br>&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
+	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
+	class="pln"> abstract </span><span class="kwd">void</span><span
+	class="pln"> assertCallPointcut</span><span class="pun">();</span><span
+	class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="com">/**<br>&nbsp; &nbsp; &nbsp;* Abstract method representing the advice for the <br>&nbsp; &nbsp; &nbsp;* {@link #assertCallPointcut()}. Normally the child aspects should use<br>&nbsp; &nbsp; &nbsp;* the &lt;code&gt;Around&lt;/code&gt; advice to implement the behavior arround the <br>&nbsp; &nbsp; &nbsp;* call of the assert methods.<br>&nbsp; &nbsp; &nbsp;* &nbsp;<br>&nbsp; &nbsp; &nbsp;* @param pjp object created by the AspectJ framework.<br>&nbsp; &nbsp; &nbsp;* @throws Throwable the exception that can be thrown.<br>&nbsp; &nbsp; &nbsp;* <br>&nbsp; &nbsp; &nbsp;*/</span><span
+	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
+	class="pln"> abstract </span><span class="kwd">void</span><span
+	class="pln"> assertCallAdvice</span><span class="pun">(</span><span
+	class="kwd">final</span><span class="pln"> </span><span class="typ">ProceedingJoinPoint</span><span
+	class="pln"> pjp</span><span class="pun">)</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="kwd">throws</span><span class="pln"> </span><span class="typ">Throwable</span><span
+	class="pun">;</span><span class="pln"> <br></span><span
+	class="pun">...</span><span class="pln"><br></span><span
+	class="pun">}</span></a></pre>
+<p><a name="Intercepting_assert*_methods_calls">The
+implementation of the abstract pointcut and advice for the JUnit
+framework is the following (<tt>org.aoplib4j.testing.internal.JUnitAspect</tt>
+class): </a></p>
+<pre class="prettyprint"><a
+	name="Intercepting_assert*_methods_calls"><span class="lit">@Aspect</span><span
+	class="pln"><br></span><span class="kwd">public</span><span
+	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+	class="kwd">class</span><span class="pln"> </span><span class="typ">JUnitAspect</span><span
+	class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span
+	class="typ">AbstractTestingAspect</span><span class="pln"> </span><span
+	class="pun">{</span><span class="pln"> <br></span><span
+	class="pun">...</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="lit">@Pointcut</span><span class="pun">(</span><span class="str">"call(static public void junit.framework.Assert+.assert*(..))"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || call(static public void org.junit.Assert+.assert*(..))"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="lit">@Override</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span
+	class="pln"> assertCallPointcut</span><span class="pun">()</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br><br><br>&nbsp; &nbsp; </span><span
+	class="lit">@Around</span><span class="pun">(</span><span class="str">"assertCallPointcut()"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="lit">@Override</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span
+	class="pln"> assertCallAdvice</span><span class="pun">(</span><span
+	class="kwd">final</span><span class="pln"> </span><span class="typ">ProceedingJoinPoint</span><span
+	class="pln"> pjp</span><span class="pun">)</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="kwd">throws</span><span class="pln"> </span><span class="typ">Throwable</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pjp</span><span
+	class="pun">.</span><span class="pln">proceed</span><span class="pun">();</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span
+	class="pln"> </span><span class="pun">(</span><span class="typ">AssertionFailedError</span><span
+	class="pln"> junit3Error</span><span class="pun">)</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; storeErrorInformation</span><span
+	class="pun">(</span><span class="pln">junit3Error</span><span
+	class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LOGGER</span><span
+	class="pun">.</span><span class="pln">info</span><span class="pun">(</span><span
+	class="str">"AssertionFailedError "</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> pjp</span><span class="pun">.</span><span
+	class="pln">getSignature</span><span class="pun">().</span><span
+	class="pln">toLongString</span><span class="pun">());</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span
+	class="pln"> </span><span class="pun">(</span><span class="typ">AssertionError</span><span
+	class="pln"> junit4Error</span><span class="pun">)</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; storeErrorInformation</span><span
+	class="pun">(</span><span class="pln">junit4Error</span><span
+	class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LOGGER</span><span
+	class="pun">.</span><span class="pln">info</span><span class="pun">(</span><span
+	class="str">"AssertionFailedError "</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> pjp</span><span class="pun">.</span><span
+	class="pln">getSignature</span><span class="pun">().</span><span
+	class="pln">toLongString</span><span class="pun">());</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br></span><span class="pun">...</span><span
+	class="pln"><br></span><span class="pun">}</span></a></pre>
+<p><a name="Intercepting_assert*_methods_calls">For the
+pointcut, the <tt>call(static public void
+junit.framework.Assert+.assert*(..))</tt> represents the call of an assertion
+method under JUnit 3.x version and <tt>call(static public void
+org.junit.Assert+.assert*(..))</tt> represents an assertion call for the
+JUnit 4. </a></p>
+<p><a name="Intercepting_assert*_methods_calls">The advice
+content is rather simple and clear; execute the pointcut containing the
+assertions and if the execution throws an <tt>junit.framework.AssertionFailedError</tt>
+(for JUnit 3.x) or a <tt>java.lang.AssertionError</tt> (for JUnit 4)
+store it and continue the execution. </a></p>
+<p><a name="Intercepting_assert*_methods_calls">The same
+elements for the TestNG framework are (<tt>org.aoplib4j.testing.internal.TestNGAspect</tt>):
+</a></p>
+<pre class="prettyprint"><a
+	name="Intercepting_assert*_methods_calls"><span class="lit">@Aspect</span><span
+	class="pln"><br></span><span class="kwd">public</span><span
+	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+	class="kwd">class</span><span class="pln"> </span><span class="typ">TestNGAspect</span><span
+	class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span
+	class="typ">AbstractTestingAspect</span><span class="pln"> </span><span
+	class="pun">{</span><span class="pln"><br></span><span class="pun">...</span><span
+	class="pln"><br><br>&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
+	class="pun">(</span><span class="str">"call(static public void org.testng.Assert+.assert*(..))"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="lit">@Override</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span
+	class="pln"> assertCallPointcut</span><span class="pun">()</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
+	class="lit">@Around</span><span class="pun">(</span><span class="str">"assertCallPointcut()"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="lit">@Override</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span
+	class="pln"> assertCallAdvice</span><span class="pun">(</span><span
+	class="kwd">final</span><span class="pln"> </span><span class="typ">ProceedingJoinPoint</span><span
+	class="pln"> pjp</span><span class="pun">)</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="kwd">throws</span><span class="pln"> </span><span class="typ">Throwable</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pjp</span><span
+	class="pun">.</span><span class="pln">proceed</span><span class="pun">();</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span
+	class="pln"> </span><span class="pun">(</span><span class="typ">AssertionError</span><span
+	class="pln"> testNGError</span><span class="pun">)</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; storeErrorInformation</span><span
+	class="pun">(</span><span class="pln">testNGError</span><span
+	class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LOGGER</span><span
+	class="pun">.</span><span class="pln">info</span><span class="pun">(</span><span
+	class="str">"AssertionFailedError "</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> pjp</span><span class="pun">.</span><span
+	class="pln">getSignature</span><span class="pun">().</span><span
+	class="pln">toLongString</span><span class="pun">());</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br></span><span class="pun">...</span><span
+	class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span></a></pre>
+<h4><a name="Intercepting_tests_methods_execution">Intercepting
+tests methods execution</a></h4>
+<p><a name="Intercepting_tests_methods_execution">For the
+interception of the tests methods the <tt>org.aoplib4j.testing.internal.AbstractTestingAspect</tt>
+contains an abstract pointcut and a final(non-abstract) advice: </a></p>
+<pre class="prettyprint"><a
+	name="Intercepting_tests_methods_execution"><span class="lit">@Aspect</span><span
+	class="pln"><br></span><span class="kwd">public</span><span
+	class="pln"> abstract </span><span class="kwd">class</span><span
+	class="pln"> </span><span class="typ">AbstractTestingAspect</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br></span><span
+	class="pun">...</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span
+	class="com">/**<br>&nbsp; &nbsp; &nbsp;* Pointcut representing the execution of a test method. Every child aspect<br>&nbsp; &nbsp; &nbsp;* should write the pointcut proper to his own way of executing tests.<br>&nbsp; &nbsp; &nbsp;*/</span><span
+	class="pln"><br>&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
+	class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">public</span><span
+	class="pln"> abstract </span><span class="kwd">void</span><span
+	class="pln"> executionOfTestMethodPointcut</span><span class="pun">();</span><span
+	class="pln"><br><br>&nbsp; &nbsp; &nbsp;</span><span
+	class="com">/**<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * Advice executed around (&lt;code&gt;Around&lt;/code&gt;) the <br>&nbsp; &nbsp; &nbsp; * {@link #executionOfTestMethodPointcut()} pointcut. The test is <br>&nbsp; &nbsp; &nbsp; * executed (using &lt;code&gt;pjp.proceed()&lt;/code&gt;) and if there is no exception<br>&nbsp; &nbsp; &nbsp; * thrown &nbsp;then a verification of any assertion violation is done.<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * If the test throws an exception (other than {@link AssertionError} which<br>&nbsp; &nbsp; &nbsp; * will be catch by {@link #assertCallAdvice(ProceedingJoinPoint)}), <br>&nbsp; &nbsp; &nbsp; * the advice will catch it, will do a <br>&nbsp; &nbsp; &nbsp; * verification of any assertion violation and if none is violated then<br>&nbsp; &nbsp; &nbsp; * will thrown the initial exception.<br>&nbsp; &nbsp; &nbsp; * <br>&nbsp; &nbsp; &nbsp; * @param pjp aspectJ ProceedingJoinPoint<br>&nbsp; &nbsp; &nbsp; * @return the result of the join point execution (the test method).<br>&nbsp; &nbsp; &nbsp; * @throws Throwable necessary by the {@link ProceedingJoinPoint#proceed()}<br>&nbsp; &nbsp; &nbsp; */</span><span
+	class="pln"><br>&nbsp; &nbsp; </span><span class="lit">@Around</span><span
+	class="pun">(</span><span class="str">"executionOfTestMethodPointcut()"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp;</span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">final</span><span
+	class="pln"> </span><span class="typ">Object</span><span class="pln"> executionOfTestMethodAdvice</span><span
+	class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+	class="kwd">final</span><span class="pln"> </span><span class="typ">ProceedingJoinPoint</span><span
+	class="pln"> pjp</span><span class="pun">)</span><span class="pln"> </span><span
+	class="kwd">throws</span><span class="pln"> </span><span class="typ">Throwable</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+	class="com">//the return value of the test method; normally should be null;</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+	class="typ">Object</span><span class="pln"> returnValue </span><span
+	class="pun">=</span><span class="pln"> </span><span class="kwd">null</span><span
+	class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+	class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;returnValue </span><span
+	class="pun">=</span><span class="pln"> pjp</span><span class="pun">.</span><span
+	class="pln">proceed</span><span class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;checkTheAssertionViolation</span><span
+	class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+	class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span
+	class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span
+	class="pln"> ex</span><span class="pun">)</span><span class="pln"> </span><span
+	class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LOGGER</span><span
+	class="pun">.</span><span class="pln">info</span><span class="pun">(</span><span
+	class="str">"Test "</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> pjp</span><span class="pun">.</span><span
+	class="pln">getStaticPart</span><span class="pun">().</span><span
+	class="pln">getSignature</span><span class="pun">().</span><span
+	class="pln">getDeclaringType</span><span class="pun">()</span><span
+	class="pln"> </span><span class="pun">.</span><span class="pln">getName</span><span
+	class="pun">()</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" thrown the following exception "</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> ex</span><span class="pun">.</span><span
+	class="pln">toString</span><span class="pun">());</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;checkTheAssertionViolation</span><span
+	class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+	class="kwd">throw</span><span class="pln"> ex</span><span class="pun">;</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+	class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+	class="kwd">return</span><span class="pln"> returnValue</span><span
+	class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp;</span><span
+	class="pun">}</span><span class="pln"><br></span><span class="pun">...</span><span
+	class="pln"><br></span><span class="pun">}</span></a></pre>
+<p><a name="Intercepting_tests_methods_execution">The pointcut
+implementation of the <tt>executionOfTestMethodPointcut</tt> for the
+JUnit framework is he following : </a></p>
+<pre class="prettyprint"><a
+	name="Intercepting_tests_methods_execution"><span class="lit">@Aspect</span><span
+	class="pln"><br></span><span class="kwd">public</span><span
+	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+	class="kwd">class</span><span class="pln"> </span><span class="typ">JUnitAspect</span><span
+	class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span
+	class="typ">AbstractTestingAspect</span><span class="pln"> </span><span
+	class="pun">{</span><span class="pln"><br></span><span class="pun">...</span><span
+	class="pln"><br>&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
+	class="pun">(</span><span class="str">"execution(public void junit.framework.TestCase+.test*())"</span><span
+	class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span
+	class="pun">+</span><span class="pln"> </span><span class="str">" || execution(@org.junit.Test * * ())"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="lit">@Override</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span
+	class="pln"> executionOfTestMethodPointcut</span><span class="pun">()</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br></span><span class="pun">...</span><span
+	class="pln"><br></span><span class="pun">}</span></a></pre>
+<p><a name="Intercepting_tests_methods_execution">The <tt>execution(public
+void junit.framework.TestCase+.test*())</tt> represents the execution of the
+JUnit 3.x test methods and the <tt> execution(@org.junit.Test * *
+())</tt> represents the execution of the JUnit 4 test methods. </a></p>
+<p><a name="Intercepting_tests_methods_execution">The same
+pointcut for the TestNG aspect is the following: </a></p>
+<pre class="prettyprint"><a
+	name="Intercepting_tests_methods_execution"><span class="lit">@Aspect</span><span
+	class="pln"><br></span><span class="kwd">public</span><span
+	class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span
+	class="kwd">class</span><span class="pln"> </span><span class="typ">TestNGAspect</span><span
+	class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span
+	class="typ">AbstractTestingAspect</span><span class="pln"> </span><span
+	class="pun">{</span><span class="pln"><br></span><span class="pun">...</span><span
+	class="pln"><br>&nbsp; &nbsp; </span><span class="lit">@Pointcut</span><span
+	class="pun">(</span><span class="str">"execution(@org.testng.annotations.Test * * ())"</span><span
+	class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="lit">@Override</span><span class="pln"><br>&nbsp; &nbsp; </span><span
+	class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span
+	class="pln"> executionOfTestMethodPointcut</span><span class="pun">()</span><span
+	class="pln"> </span><span class="pun">{</span><span class="pln"> &nbsp;<br>&nbsp; &nbsp; </span><span
+	class="pun">}</span><span class="pln"><br></span><span class="pun">...</span><span
+	class="pln"><br></span><span class="pun">}</span>
