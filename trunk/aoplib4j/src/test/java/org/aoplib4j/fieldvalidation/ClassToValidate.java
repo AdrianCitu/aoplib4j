@@ -14,24 +14,24 @@
  */
 package org.aoplib4j.fieldvalidation;
 
-import org.aoplib4j.fieldvalidation.Validate;
+import org.aoplib4j.fieldvalidation.Aoplib4jValidate;
 
 /**
- * Class used by the jUnit tests for the {@link Validate} annotation.
+ * Class used by the jUnit tests for the {@link Aoplib4jValidate} annotation.
  *  
  * @author Adrian Citu
  *
  */
 public class ClassToValidate {
 
-    @Validate(validationClass=StringValidator.class)
+    @Aoplib4jValidate(validationClass=StringValidator.class)
     private String str;
     
     private Integer integer = null;
     
     private int i= 0;
 
-    @Validate(validationClass=StringValidator.class)
+    @Aoplib4jValidate(validationClass=StringValidator.class)
     private static String staticStr;
     
     private static Integer staticInteger;

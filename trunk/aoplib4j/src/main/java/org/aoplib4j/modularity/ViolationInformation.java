@@ -21,7 +21,7 @@ package org.aoplib4j.modularity;
  * violated the boundary and what class and what method was
  * called).
  * 
- * @see ClassBoundary
+ * @see Aoplib4jClassBoundary
  * 
  * @author Adrian Citu
  *
@@ -35,7 +35,7 @@ public interface ViolationInformation {
     
     /**
      * @return the called class canonical name (marked with a 
-     * {@link ClassBoundary}) annotation.
+     * {@link Aoplib4jClassBoundary}) annotation.
      */
     String getCalledClassName();
     

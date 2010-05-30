@@ -16,7 +16,7 @@ package org.aoplib4j.failurehandling.internal;
 
 import java.util.logging.Logger;
 
-import org.aoplib4j.failurehandling.RetryExecution;
+import org.aoplib4j.failurehandling.Aoplib4jRetryExecution;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -40,13 +40,13 @@ public final class RetryExecutionAspect {
 
     /**
      * Pointcut representing the execution of the methods annotated with the
-     * {@link RetryExecution} annotation.
+     * {@link Aoplib4jRetryExecution} annotation.
      * 
      * <pre>
      * AspectJ pointcut:
      * 
      * execution(@org.aoplib4j.failurehandling
-     *  .RetryExecution * * (..)) 
+     *  .Aoplib4jRetryExecution * * (..)) 
      *  && @annotation(retryAnnotation)
      * </pre>
      * 
@@ -55,13 +55,15 @@ public final class RetryExecutionAspect {
      */
     @Pointcut("execution("
             + "@org.aoplib4j.failurehandling"
-            + ".RetryExecution * * (..)) && @annotation(retryAnnotation)")
-    public void retryExecutionPointcut(final RetryExecution retryAnnotation) {
+            + ".Aoplib4jRetryExecution * * (..)) " 
+            + "&& @annotation(retryAnnotation)")
+    public void retryExecutionPointcut(
+            final Aoplib4jRetryExecution retryAnnotation) {
     }
 
     /**
      * Advice executed around the annotated method. 
-     * @see RetryExecution
+     * @see Aoplib4jRetryExecution
      * 
      * @param retryAnnotation
      *            the annotation of the method.
@@ -74,7 +76,8 @@ public final class RetryExecutionAspect {
      *             method.
      */
     @Around("retryExecutionPointcut(retryAnnotation)")
-    public Object retryExecutionAdvice(final RetryExecution retryAnnotation,
+    public Object retryExecutionAdvice(
+            final Aoplib4jRetryExecution retryAnnotation,
             final ProceedingJoinPoint pjp) throws Throwable {
 
         /* retrieve the exception class to catch */

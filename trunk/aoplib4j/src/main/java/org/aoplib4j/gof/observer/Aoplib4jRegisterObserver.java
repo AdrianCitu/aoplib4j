@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 the original author or authors.
+ *  Copyright 2008-2008 the original author or authors.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -12,7 +12,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.aoplib4j.gof.observer;
 
 import java.lang.annotation.ElementType;
@@ -20,21 +19,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
- * Annotation to be used on classes to mark them as a GOF Observer.
- * 
+ * Annotation to be put on methods having a single parameter. If the method 
+ * parameter is annotated with the {@link Aoplib4jObserver} annotation, 
+ * the parameter
+ * will be added as a observer of the current class (if the class is annotated
+ * with the {@link Aoplib4jSubject} annotation). 
+ *  
  * @author Adrian Citu
  *
  */
 @Retention(value = RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Observer {
+@Target(ElementType.METHOD)
+public @interface Aoplib4jRegisterObserver {
 
-    /**
-     * The class that contains the behavior to execute by an Observer of when 
-     * the subject notify a change.
-     * 
-     */
-    Class < ? extends ObserverCallback > callbackClass();
 }

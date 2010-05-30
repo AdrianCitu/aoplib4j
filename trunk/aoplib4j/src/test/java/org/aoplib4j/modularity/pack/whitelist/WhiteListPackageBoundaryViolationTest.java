@@ -14,7 +14,7 @@
  */
 package org.aoplib4j.modularity.pack.whitelist;
 
-import org.aoplib4j.modularity.InjectedPkgBoundary;
+import org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary;
 import org.aoplib4j.modularity.pack.blacklist.BlackListPackageCalledClass;
 import org.aoplib4j.modularity.pack.blacklist.forbiddenpackage.ForbiddenClass;
 import org.aoplib4j.modularity.pack.whitelist.WhiteListPackageCalledClass;
@@ -61,13 +61,13 @@ public class WhiteListPackageBoundaryViolationTest extends TestCase {
     /**
      * Verify that the {@link WhiteListPackageCalledClass} 
      * and {@link BlackListPackageCalledClass} have attached the 
-     * {@link InjectedPkgBoundary}; the {@link PackageAnnotationIntroduction} aspect should
+     * {@link Aoplib4jInjectedPkgBoundary}; the {@link PackageAnnotationIntroduction} aspect should
      * inject this annotation.
      */
     public final void testPackageClassIsAnnotated() {
         assertNotNull(
                 WhiteListPackageCalledClass.class.getAnnotation(
-                        InjectedPkgBoundary.class));
+                        Aoplib4jInjectedPkgBoundary.class));
     }
     
     /**

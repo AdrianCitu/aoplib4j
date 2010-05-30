@@ -14,7 +14,7 @@
  */
 package org.aoplib4j.failurehandling;
 
-import org.aoplib4j.failurehandling.RetryExecution;
+import org.aoplib4j.failurehandling.Aoplib4jRetryExecution;
 
 /**
  * Class used by the failure handling tests.
@@ -39,7 +39,7 @@ public final class ClassWithExceptions {
     /**
      * @throws TestingException the exception thrown by the method.
      */
-    @RetryExecution(exceptionToCatch = TestingException.class, maxRetry = 2)
+    @Aoplib4jRetryExecution(exceptionToCatch = TestingException.class, maxRetry = 2)
     public void throwException() throws TestingException {
        methodExecutionCounter++;
        
@@ -55,7 +55,7 @@ public final class ClassWithExceptions {
      * @param when
      * @throws TestingException the exception thrown by the method.
      */
-    @RetryExecution(exceptionToCatch = TestingException.class, maxRetry = 2)
+    @Aoplib4jRetryExecution(exceptionToCatch = TestingException.class, maxRetry = 2)
     public static void throwExceptionStatic() throws TestingException {
         ClassWithExceptions.staticMethodExecutionCounter++;
         
@@ -69,7 +69,7 @@ public final class ClassWithExceptions {
     /**
      * @throws Testing2Exception the exception thrown by the method.
      */
-    @RetryExecution(exceptionToCatch=Testing2Exception.class, maxRetry=3)
+    @Aoplib4jRetryExecution(exceptionToCatch=Testing2Exception.class, maxRetry=3)
     void throwExceptionPackageProtected() throws Testing2Exception {
         methodExecutionCounter++;
         

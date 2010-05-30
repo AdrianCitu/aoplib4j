@@ -21,12 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to be used on classes to mark them as a GOF Subject.
+ * Annotation to be used on classes to mark them as a GOF Aoplib4jSubject.
  * 
  * @author Adrian Citu
  *
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Subject {
+public @interface Aoplib4jSubject {
 }

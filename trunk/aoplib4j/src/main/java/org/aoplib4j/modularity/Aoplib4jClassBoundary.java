@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface ClassBoundary {
+public @interface Aoplib4jClassBoundary {
 
     /**
      * The list of classes on which the boundary will be applied.

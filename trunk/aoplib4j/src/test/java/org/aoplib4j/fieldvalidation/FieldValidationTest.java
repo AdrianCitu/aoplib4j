@@ -14,13 +14,13 @@
  */
 package org.aoplib4j.fieldvalidation;
 
-import org.aoplib4j.fieldvalidation.Validate;
+import org.aoplib4j.fieldvalidation.Aoplib4jValidate;
 
 import junit.framework.TestCase;
 
 
 /**
- * Test case for testing the {@link Validate} annotation.
+ * Test case for testing the {@link Aoplib4jValidate} annotation.
  * 
  * @author Adrian Citu
  *

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 import org.aoplib4j.fieldvalidation.FieldInformation;
 import org.aoplib4j.fieldvalidation.FieldValidator;
-import org.aoplib4j.fieldvalidation.Validate;
+import org.aoplib4j.fieldvalidation.Aoplib4jValidate;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -44,58 +44,58 @@ public final class FieldValidatorAspect {
     
     /**
      * Pointcut for the assignment of a non-static fields annotated with the 
-     * {@link Validate}.
+     * {@link Aoplib4jValidate}.
      * 
      * <pre>
      * AspectJ pointcut:
-     * set(@org.aoplib4j.fieldvalidation.Validate * *.*)
+     * set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate * *.*)
      *  && @annotation(validateAnnot) 
      *  && args(newValue) 
      *  && this(instance)
      * </pre>
-     * @param validateAnnot the field {@link Validate} annotation.
+     * @param validateAnnot the field {@link Aoplib4jValidate} annotation.
      * @param newValue the new value to be assigned to the field.
      * @param instance the instance on which the intercepted field is present. 
      */
     @Pointcut(
-            "set(@org.aoplib4j.fieldvalidation.Validate "
+            "set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate "
             + "* *.*)" 
             + "&& @annotation(validateAnnot) " 
             + "&& args(newValue) && this(instance)")
     public void validateNonStaticFieldPointcut(
-            final Validate validateAnnot, 
+            final Aoplib4jValidate validateAnnot, 
             final Object newValue, 
             final Object instance) {
     }
     
     /**
      * Pointcut for the assignment of a static fields annotated with the 
-     * {@link Validate}.
+     * {@link Aoplib4jValidate}.
      * <pre>
      * AspectJ pointcut:
-     * set(@org.aoplib4j.fieldvalidation.Validate 
+     * set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate 
      *      static * *.*)
      *  && @annotation(validateAnnot) 
      *  && args(newValue)
      * </pre>
-     * @param validateAnnot the field {@link Validate} annotation.
+     * @param validateAnnot the field {@link Aoplib4jValidate} annotation.
      * @param newValue the new value to be assigned to the field.
      */
     @Pointcut(
-            "set(@org.aoplib4j.fieldvalidation.Validate "
+            "set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate "
             + "static * *.*)"
             + "&& @annotation(validateAnnot) " 
             + "&& args(newValue)")
     public void validateStaticFieldPointcut(
-            final Validate validateAnnot, 
+            final Aoplib4jValidate validateAnnot, 
             final Object newValue) {
     }
     
     /**
      * Advice executed before the assignment of a new value to a field annotated
-     * with {@link Validate} annotation.
+     * with {@link Aoplib4jValidate} annotation.
      *  
-     * @param validateAnnot the field {@link Validate} annotation.
+     * @param validateAnnot the field {@link Aoplib4jValidate} annotation.
      * @param newValue the new value to be assigned to the field.
      * @param jpsp AspectJ joinpoint static part.
      * @param instance the instance on which the intercepted field is present.
@@ -105,7 +105,7 @@ public final class FieldValidatorAspect {
      */
     @Before("validateNonStaticFieldPointcut(validateAnnot, newValue, instance)")
     public void validateFieldAdvice(
-            final Validate validateAnnot, 
+            final Aoplib4jValidate validateAnnot, 
             final Object newValue, 
             final JoinPoint.StaticPart jpsp, 
             final Object instance) throws Exception {
@@ -114,14 +114,14 @@ public final class FieldValidatorAspect {
     }
 
     /**
-     * @param validateAnnot the field {@link Validate} annotation.
+     * @param validateAnnot the field {@link Aoplib4jValidate} annotation.
      * @param newValue the new value to be assigned to the field.
      * @param jpsp AspectJ joinpoint static part.
      * @param instance the instance on which the intercepted field is present.
      * @throws Exception  exception thrown by execution of 
      * {@link FieldValidator#validate(FieldInformation)}.
      */
-    private void validateField(final Validate validateAnnot,
+    private void validateField(final Aoplib4jValidate validateAnnot,
             final Object newValue, final JoinPoint.StaticPart jpsp,
             final Object instance) throws Exception {
         FieldValidator validatorInstance = null;
@@ -183,9 +183,9 @@ public final class FieldValidatorAspect {
 
     /**
      * Advice executed before the assignment of a new value to a static field 
-     * annotated with {@link Validate} annotation.
+     * annotated with {@link Aoplib4jValidate} annotation.
      * 
-     * @param validateAnnot the field {@link Validate} annotation.
+     * @param validateAnnot the field {@link Aoplib4jValidate} annotation.
      * @param newValue the new value to be assigned to the field.
      * @param jpsp AspectJ joinpoint static part.
      * @throws Exception  exception thrown by execution of 
@@ -193,7 +193,7 @@ public final class FieldValidatorAspect {
      */
     @Before("validateStaticFieldPointcut(validateAnnot, newValue)")
     public void validateStaticFieldAdvice(
-            final Validate validateAnnot, 
+            final Aoplib4jValidate validateAnnot, 
             final Object newValue, 
             final JoinPoint.StaticPart jpsp) throws Exception {
         
@@ -204,14 +204,15 @@ public final class FieldValidatorAspect {
      * @param validateAnnot annotation to retrieve the class to instantiate.
      * 
      * @return instance of the class retrieved from the 
-     * {@link Validate#validationClass()}.
+     * {@link Aoplib4jValidate#validationClass()}.
      * 
      * @throws IllegalAccessException if the instantiation fails 
      *          (introspection is used)
      * @throws InstantiationException if the instantiation fails 
      *          (introspection is used)
      */
-    private FieldValidator createValidatorInstance(final Validate validateAnnot)
+    private FieldValidator createValidatorInstance(
+            final Aoplib4jValidate validateAnnot)
         throws InstantiationException, IllegalAccessException {
         
         //TODO use some kind of cache.

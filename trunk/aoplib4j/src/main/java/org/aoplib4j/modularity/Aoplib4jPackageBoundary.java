@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(ElementType.PACKAGE)
-public @interface PackageBoundary {
+public @interface Aoplib4jPackageBoundary {
 
 
     /**

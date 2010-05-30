@@ -16,7 +16,7 @@ package org.aoplib4j.modularity.internal;
 
 import java.lang.reflect.Method;
 
-import org.aoplib4j.modularity.ClassBoundary;
+import org.aoplib4j.modularity.Aoplib4jClassBoundary;
 import org.aoplib4j.modularity.ListType;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,7 +28,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 /**
  * Aspect implementing the modularity at the class level.
  * 
- * @see ClassBoundary
+ * @see Aoplib4jClassBoundary
  *  
  * @author Adrian Citu
  *
@@ -38,13 +38,14 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
 
     /**
      * Pointcut intercepting the call of methods non private and
-     * non static to the classes annotated with the {@link ClassBoundary}
+     * non static to the classes annotated with the 
+     * {@link Aoplib4jClassBoundary}
      * annotations.
      * 
      * <pre>
      *  AspectJ pointcut:
      *   call(!private !static * 
-     *   (@org.aoplib4j.modularity.ClassBoundary *).*(..)) 
+     *   (@org.aoplib4j.modularity.Aoplib4jClassBoundary *).*(..)) 
      *   && target(calledObj) && this(callerObj) && if()
      * </pre>
      * 
@@ -56,11 +57,12 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * @param callerObj instance of the caller object.
      * 
      * @return false if calledObject == callerObject (the call is made on the 
-     * class instance) or if the retrieved {@link ClassBoundary} annotation
+     * class instance) or if the retrieved {@link Aoplib4jClassBoundary} 
+     * annotation
      * from the called class is null.
      */
     @Pointcut("call(!private !static * "
-            + "(@org.aoplib4j.modularity.ClassBoundary *)."
+            + "(@org.aoplib4j.modularity.Aoplib4jClassBoundary *)."
             + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
     public static boolean callOfClassBoundaryPointcut(final Object calledObj,
             final Object callerObj) {
@@ -70,7 +72,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
             return false;
         }
         
-        ClassBoundary boundary = getClassBoundaryAnnotation(calledObj
+        Aoplib4jClassBoundary boundary = getClassBoundaryAnnotation(calledObj
                 .getClass());
 
         //advice is called on a subclass; the annotation is not inherited by
@@ -84,13 +86,13 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
 
     /**
      * Pointcut intercepting the call of methods non private and
-     * static to the classes annotated with the {@link ClassBoundary}
+     * static to the classes annotated with the {@link Aoplib4jClassBoundary}
      * annotations.
      * 
      * <pre>
      *  AspectJ pointcut:
      *    call(!private static * 
-     *    (@org.aoplib4j.modularity.ClassBoundary *).*(..))
+     *    (@org.aoplib4j.modularity.Aoplib4jClassBoundary *).*(..))
      *    && if() 
      * </pre>
      * 
@@ -100,18 +102,20 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * 
      * @param jpsp AspectJ join point static part.
      * 
-     * @return false if the {@link ClassBoundary} annotation retrieved from
+     * @return false if the {@link Aoplib4jClassBoundary} annotation retrieved 
+     * from
      * the calledClass is null true otherwise.
      */
     @Pointcut("call(!private static * "
-            + "(@org.aoplib4j.modularity.ClassBoundary *)."
+            + "(@org.aoplib4j.modularity.Aoplib4jClassBoundary *)."
             + "*(..))  && if()")
     public static boolean callOfStaticClassBoundaryPointcut(
             final JoinPoint.StaticPart jpsp) {
 
         Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
 
-        ClassBoundary boundary = getClassBoundaryAnnotation(calledClass);
+        Aoplib4jClassBoundary boundary = 
+            getClassBoundaryAnnotation(calledClass);
 
         //advice is called on a subclass; the annotation is not inherited by
         //the subclasses.
@@ -137,7 +141,8 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * {@link 
      * org.aoplib4j.modularity.BoundaryViolationCallback}
      * (using
-     * as implementation class taken from {@link ClassBoundary#callbackClass()}
+     * as implementation class taken from 
+     * {@link Aoplib4jClassBoundary#callbackClass()}
      * ) and call the callback method 
      * {@link 
      * org.aoplib4j.modularity.BoundaryViolationCallback
@@ -152,7 +157,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
     public void callOfClassBoundaryAdvice(final Object calledObj,
             final Object callerObj, final JoinPoint jp) {
         
-        ClassBoundary boundary = getClassBoundaryAnnotation(calledObj
+        Aoplib4jClassBoundary boundary = getClassBoundaryAnnotation(calledObj
                 .getClass());
 
         if (boundary != null
@@ -184,7 +189,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * (using
      * as implementation class taken from 
      * {@link 
-     * org.aoplib4j.modularity.ClassBoundary#callbackClass(
+     * org.aoplib4j.modularity.Aoplib4jClassBoundary#callbackClass(
      * )}) 
      * and call the callback method
      * {@link
@@ -195,7 +200,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * @param jpsp AspectJ join point static part.
      * 
      * @see 
-     *   ClassBoundaryAspect#classBoundaryViolated(String, ClassBoundary)
+     *  ClassBoundaryAspect#classBoundaryViolated(String, Aoplib4jClassBoundary)
      * @see  
      * org.aoplib4j.modularity.BoundaryViolationCallback
      */
@@ -205,7 +210,8 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
 
         Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
 
-        ClassBoundary boundary = getClassBoundaryAnnotation(calledClass);
+        Aoplib4jClassBoundary boundary = 
+            getClassBoundaryAnnotation(calledClass);
 
         Method calledMethod = ((MethodSignature) jpsp.getSignature())
                 .getMethod();
@@ -222,30 +228,31 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
     }
     
     /**
-     * Method that returns the {@link ClassBoundary} annotation from the object
+     * Method that returns the {@link Aoplib4jClassBoundary} annotation from the
+     * object
      * passed as parameter or null if the class is not annotated.
      * 
      * @param calledClass
      *            the class from which the annotation should be retrieved.
-     * @return attached {@link ClassBoundary} or null.
+     * @return attached {@link Aoplib4jClassBoundary} or null.
      */
-    private static ClassBoundary getClassBoundaryAnnotation(
+    private static Aoplib4jClassBoundary getClassBoundaryAnnotation(
             final Class< ? > calledClass) {
         
-        return calledClass.getAnnotation(ClassBoundary.class);
+        return calledClass.getAnnotation(Aoplib4jClassBoundary.class);
     }
     
     /**
      * Verifies the violation of class boundary by retrieving the information
-     * from the {@link ClassBoundary} annotation (the classes list, the
+     * from the {@link Aoplib4jClassBoundary} annotation (the classes list, the
      * list type) and comparing with the class name passed as parameter.
      * 
-     * @param classBoundary {@link ClassBoundary} annotation.
+     * @param classBoundary {@link Aoplib4jClassBoundary} annotation.
      * @param callerClassName caller class name.
      * @return true if a boundary violation; false otherwise.
      */
     private boolean classBoundaryViolated(final String callerClassName,
-            final ClassBoundary classBoundary) {
+            final Aoplib4jClassBoundary classBoundary) {
                 
         ListType listType = classBoundary.classesListType();
         Class< ? >[] classesList = classBoundary.classesList();

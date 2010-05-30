@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.aoplib4j.modularity.ListType;
-import org.aoplib4j.modularity.PackageBoundary;
+import org.aoplib4j.modularity.Aoplib4jPackageBoundary;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -31,7 +31,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 /**
  * Aspect implementing the modularity at the package level.
  * 
- * @see PackageBoundary
+ * @see Aoplib4jPackageBoundary
  * 
  * @author Adrian Citu
  *
@@ -53,13 +53,13 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * Pointcut intercepting the call of methods non private and
      * non static to the classes annotated with the 
      * {@link 
-     * org.aoplib4j.modularity.InjectedPkgBoundary}
+     * org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary}
      * annotations.
      * 
      * <pre>
      *  AspectJ pointcut:
      *   call(!private !static * 
-     *   (@org.aoplib4j.modularity.InjectedPkgBoundary *)
+     *   (@org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary *)
      *      .*(..)) 
      *   && target(calledObj) && this(callerObj) && if()
      * </pre>
@@ -74,7 +74,7 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * or if the callerObj and calledObj are the same instance, true otherwise.
      */
     @Pointcut("call(!private !static * "
-   + "(@org.aoplib4j.modularity.InjectedPkgBoundary *)."
+   + "(@org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary *)."
    + "*(..)) " + "&& target(calledObj) && this(callerObj) && if()")
     public static boolean callOfPackageBoundaryPointcut(final Object calledObj,
             final Object callerObj) {
@@ -93,15 +93,16 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
             return false;
         }
         
-        PackageBoundary pkgBoundary = 
-            calledObjPackage.getAnnotation(PackageBoundary.class);
+        Aoplib4jPackageBoundary pkgBoundary = 
+            calledObjPackage.getAnnotation(Aoplib4jPackageBoundary.class);
         
         //should never happen unless the aspectj weaver is buggy
         if (pkgBoundary == null) {
-            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
+            LOGGER.log(Level.WARNING, "Cannot retrieve " 
+                    + Aoplib4jPackageBoundary.class
                     + " annotation from package " + calledObjPackage
                     + "; The package is not annotated with the "
-                    + PackageBoundary.class);
+                    + Aoplib4jPackageBoundary.class);
             
             return false;
         }
@@ -117,7 +118,8 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * (using <code>callerObj</code> parameter) and the package of the called 
      * object (using the <code>calledObj</code> parameter) and then do a 
      * violation check. See
-     * {@link #packageBoundaryViolated(PackageBoundary, String)} for more 
+     * {@link #packageBoundaryViolated(Aoplib4jPackageBoundary, String)} for 
+     * more 
      * information about the boundary violation check.
      * 
      * 
@@ -126,7 +128,8 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * org.aoplib4j.modularity.BoundaryViolationCallback} 
      * (using
      * as implementation class taken from 
-     * {@link PackageBoundary#callbackClass()}) and call the callback method 
+     * {@link Aoplib4jPackageBoundary#callbackClass()}) and call the callback 
+     * method 
      * {@link 
      * org.aoplib4j.modularity.BoundaryViolationCallback
      *  #boundaryViolation(
@@ -146,8 +149,8 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
         
         Package callerObjPackage = callerObj.getClass().getPackage();
         
-        PackageBoundary pkgBoundary = 
-            calledObjPackage.getAnnotation(PackageBoundary.class);
+        Aoplib4jPackageBoundary pkgBoundary = 
+            calledObjPackage.getAnnotation(Aoplib4jPackageBoundary.class);
         
         if (packageBoundaryViolated(pkgBoundary, callerObjPackage.getName())) {
             createAndExecuteCallback(
@@ -158,13 +161,13 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
     /**
      * Pointcut intercepting the call of methods non private and
      * static to the classes annotated with the 
-     * {@link org.aoplib4j.modularity.InjectedPkgBoundary}
+     * {@link org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary}
      * annotations.
      * 
      * <pre>
      *  AspectJ pointcut:
      *    call(!private static * 
-     *    (@org.aoplib4j.modularity.InjectedPkgBoundary *)
+     *    (@org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary *)
      *      .*(..)) 
      * </pre>
      * The pointcut is represented by a static boolean method 
@@ -172,11 +175,12 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * AspectJ in action 2 ed.)
      * 
      * @param jpsp AspectJ join point static part.
-     * @return false if the {@link PackageBoundary} annotation retrieved from
+     * @return false if the {@link Aoplib4jPackageBoundary} annotation 
+     * retrieved from
      * the called class package is null, true otherwise.
      */
     @Pointcut("call(!private static * "
-       + "(@org.aoplib4j.modularity.InjectedPkgBoundary *)."
+       + "(@org.aoplib4j.modularity.Aoplib4jInjectedPkgBoundary *)."
        + "*(..)) && if()")
     public static boolean callOfStaticPackageBoundaryPointcut(
             final JoinPoint.StaticPart jpsp) {
@@ -184,15 +188,16 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
         Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
         Package calledPackage = calledClass.getPackage();
                 
-        PackageBoundary pkgBoundary = 
-            calledPackage.getAnnotation(PackageBoundary.class);
+        Aoplib4jPackageBoundary pkgBoundary = 
+            calledPackage.getAnnotation(Aoplib4jPackageBoundary.class);
         
         //should never happen unless the aspectj weaver is buggy
         if (pkgBoundary == null) {
-            LOGGER.log(Level.WARNING, "Cannot retrieve " + PackageBoundary.class
+            LOGGER.log(Level.WARNING, "Cannot retrieve " 
+                    + Aoplib4jPackageBoundary.class
                     + " annotation from package " + calledPackage
                     + "; The package is not annotated with the "
-                    + PackageBoundary.class);
+                    + Aoplib4jPackageBoundary.class);
             return false;
         }
         
@@ -215,7 +220,8 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * 
      * After having the packages of the caller and the called object a violation
      * check is made.See
-     * {@link #packageBoundaryViolated(PackageBoundary, String)} for more 
+     * {@link #packageBoundaryViolated(Aoplib4jPackageBoundary, String)} 
+     * for more 
      * information about the boundary violation check.
      * 
      * 
@@ -224,7 +230,8 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * org.aoplib4j.modularity.BoundaryViolationCallback} 
      * (using
      * as implementation class taken from 
-     * {@link PackageBoundary#callbackClass()}) and call the callback method 
+     * {@link Aoplib4jPackageBoundary#callbackClass()}) and call the 
+     * callback method 
      * {@link 
      * org.aoplib4j.modularity.BoundaryViolationCallback
      *  #boundaryViolation(
@@ -233,7 +240,8 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
      * @param jpsp AspectJ join point static part.
      * 
      * @see 
-     * PackageBoundaryAspect#packageBoundaryViolated(PackageBoundary, String)
+     *PackageBoundaryAspect#packageBoundaryViolated(
+     *  Aoplib4jPackageBoundary, String)
      */
     @Before("callOfStaticPackageBoundaryPointcut(jpsp)")
     public void callOfStaticPackageBoundaryAdvice(
@@ -243,8 +251,8 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
         Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
         Package calledPackage = calledClass.getPackage();
                 
-        PackageBoundary pkgBoundary = 
-            calledPackage.getAnnotation(PackageBoundary.class);
+        Aoplib4jPackageBoundary pkgBoundary = 
+            calledPackage.getAnnotation(Aoplib4jPackageBoundary.class);
 
         Method calledMethod = 
             ((MethodSignature) jpsp.getSignature()).getMethod();
@@ -271,15 +279,16 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
     
     /**
      * Verifies the violation of package boundary by retrieving the information
-     * from the {@link PackageBoundary} annotation (the packages list, the
+     * from the {@link Aoplib4jPackageBoundary} annotation (the packages list, 
+     * the
      * list type) and comparing with the package name of the caller class.
      * 
-     * @param pkgBoundary {@link PackageBoundary} annotation.
+     * @param pkgBoundary {@link Aoplib4jPackageBoundary} annotation.
      * @param callerObjPackage caller object package.
      * @return true if a boundary violation; false otherwise.
      */
     private boolean packageBoundaryViolated(
-            final PackageBoundary pkgBoundary,
+            final Aoplib4jPackageBoundary pkgBoundary,
             final String callerObjPackage) {
                 
         String[] packagesList = pkgBoundary.packagesList();

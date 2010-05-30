@@ -23,7 +23,7 @@ import java.util.Set;
 /**
  * Implementation of the {@link GofSubject} interface. The content of this class
  * will be introduced by AspectJ into the classes annotated with the 
- * {@link org.aoplib4j.gof.observer.Subject}
+ * {@link org.aoplib4j.gof.observer.Aoplib4jSubject}
  * annotation.
  * 
  * @author Adrian Citu

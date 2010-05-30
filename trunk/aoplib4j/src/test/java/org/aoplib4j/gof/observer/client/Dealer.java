@@ -18,9 +18,9 @@ package org.aoplib4j.gof.observer.client;
 import java.util.Vector;
 
 import org.aoplib4j.gof.observer.NotifyObservers;
-import org.aoplib4j.gof.observer.RegisterObserver;
-import org.aoplib4j.gof.observer.Subject;
-import org.aoplib4j.gof.observer.UnregisterObservers;
+import org.aoplib4j.gof.observer.Aoplib4jRegisterObserver;
+import org.aoplib4j.gof.observer.Aoplib4jSubject;
+import org.aoplib4j.gof.observer.Aoplib4jUnregisterObservers;
 
 
 /**
@@ -29,7 +29,7 @@ import org.aoplib4j.gof.observer.UnregisterObservers;
  * @author Adrian Citu
  *
  */
-@Subject
+@Aoplib4jSubject
 public class Dealer {
 
     /**
@@ -60,7 +60,7 @@ public class Dealer {
     /**
      * @param o a client to add
      */
-    @RegisterObserver
+    @Aoplib4jRegisterObserver
     public final void addClient(final Client o) {
         clients.add(o);
     }
@@ -69,7 +69,7 @@ public class Dealer {
      * @param o a client
      * @param i param.
      */
-    @RegisterObserver
+    @Aoplib4jRegisterObserver
     public final void doSomethingWithClient(final Client o, final int i) {
         //do nothing.
     }
@@ -78,7 +78,7 @@ public class Dealer {
      * @param o a client
      * @param i param.
      */
-    @RegisterObserver
+    @Aoplib4jRegisterObserver
     public static final void staticDoSomethingWithClient(
             final Client o, final int i) {
         //do nothing.
@@ -95,7 +95,7 @@ public class Dealer {
     /**
      * 
      */
-    @UnregisterObservers
+    @Aoplib4jUnregisterObservers
     public void removeAllClients() {
         clients.removeAllElements();
     }
@@ -107,7 +107,7 @@ public class Dealer {
         return this.name;
     }
     
-    @UnregisterObservers
+    @Aoplib4jUnregisterObservers
     public void noDealingAnymore() {
         
     }

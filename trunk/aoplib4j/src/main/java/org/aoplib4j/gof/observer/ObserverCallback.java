@@ -18,7 +18,7 @@ package org.aoplib4j.gof.observer;
 
 /**
  * Abstract class that must be implemented to code the behavior
- * of an {@link Observer} when is notified by a {@link Subject}.
+ * of an {@link Aoplib4jObserver} when is notified by a {@link Aoplib4jSubject}.
  *  
  * @author Adrian Citu
  *
@@ -34,7 +34,8 @@ public abstract class ObserverCallback {
 
     /**
      * Method called when a method annotated with the {@link NotifyObservers} 
-     * annotation is executed on a class annotated with the {@link Subject}
+     * annotation is executed on a class annotated with the 
+     * {@link Aoplib4jSubject}
      * annotation.
      * @see NotifyInformation
      * 

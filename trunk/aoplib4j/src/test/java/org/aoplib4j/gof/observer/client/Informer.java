@@ -15,7 +15,7 @@
 
 package org.aoplib4j.gof.observer.client;
 
-import org.aoplib4j.gof.observer.Observer;
+import org.aoplib4j.gof.observer.Aoplib4jObserver;
 
 
 /**
@@ -24,7 +24,7 @@ import org.aoplib4j.gof.observer.Observer;
  * @author Adrian Citu
  *
  */
-@Observer(callbackClass = InformerObserverCallBack.class)
+@Aoplib4jObserver(callbackClass = InformerObserverCallBack.class)
 public final class Informer extends Client {
 
     public Informer(final String name) {
