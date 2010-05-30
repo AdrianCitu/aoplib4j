@@ -175,7 +175,7 @@ public interface SequenceMethod {
 }
 }}}  
 
-As you can see the {{{SequenceMethod}}} structure is actually a tree; the root of the tree is the {{{rootMethod}} and all the methods called by the root methods are the child nodes. In order to write a diagram you have to walk the tree; all the actual writers use the [http://en.wikipedia.org/wiki/Depth-first_search Depth-First search] traversal technique. If your writer needs also a DFS traversal technique then you can inherits from the {{{org.aoplib4j.uml.DFSDiagramWriter}}} instead of {{{org.aoplib4j.uml.SequenceDiagramWriter}}}.
+As you can see the {{{SequenceMethod}}} structure is actually a tree; the root of the tree is the {{{rootMethod}}} and all the methods called by the root methods are the child nodes. In order to write a diagram you have to walk the tree; all the actual writers use the [http://en.wikipedia.org/wiki/Depth-first_search Depth-First search] traversal technique. If your writer needs also a DFS traversal technique then you can inherits from the {{{org.aoplib4j.uml.DFSDiagramWriter}}} instead of {{{org.aoplib4j.uml.SequenceDiagramWriter}}}.
 
 Here is the structure of the {{{org.aoplib4j.uml.DFSDiagramWriter}}}
 {{{
