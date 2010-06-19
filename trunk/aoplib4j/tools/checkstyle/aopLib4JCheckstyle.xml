@@ -9,12 +9,16 @@
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
     <property name="severity" value="warning"/>
+    
+    <module name="FileLength"/>
     <module name="TreeWalker">
         <property name="tabWidth" value="4"/>
         <module name="JavadocMethod">
             <property name="logLoadErrors" value="true"/>
             <property name="suppressLoadErrors" value="true"/>
         </module>
+  
+        <module name="MissingOverride"/>
         <module name="JavadocType"/>
         <module name="JavadocVariable"/>
         <module name="JavadocStyle"/>
@@ -31,7 +35,6 @@
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
-        <module name="FileLength"/>
         <module name="MethodLength"/>
         <module name="ParameterNumber"/>
         <module name="EmptyForIteratorPad"/>
@@ -92,8 +95,13 @@
             <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="ignore the import"/>
             <property name="ignorePattern" value="^import"/>
         </module>
+        
+        <module name="GenericWhitespace"/>
     </module>
-    <module name="PackageHtml"/>
+    <module name="JavadocPackage">
+        <property name="allowLegacy" value="true"/>
+    </module>
     <module name="NewlineAtEndOfFile"/>
     <module name="Translation"/>
+    <module name="FileTabCharacter"/>
 </module>

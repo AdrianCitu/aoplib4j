@@ -319,11 +319,11 @@
                 dest="${toAddToWebSite.coverage.dir}" 
              src="${coverage.html.dir}"/>
     	
+    	<antcall target="checkstyle"/>
+    	
         <antcall target="executeJUnitTestsWithAspectsWovenByAjc"/>
         	
         <antcall target="executeJUnitTestsWithAspectsWovenByJavaagent"/>
-        	
-        <antcall target="checkstyle"/>
 
     	<antcall target="createAopLib4Jjar"/>
         
@@ -437,7 +437,7 @@
 	 -->
     <target name="checkstyle">
         <taskdef resource="checkstyletask.properties" 
-        	classpath="${checkstyle.lib.dir}/checkstyle-all-4.4.jar" />
+        	classpath="${checkstyle.lib.dir}/checkstyle-all-5.1.jar" />
     	
         <checkstyle config="${checkstyle.lib.dir}/aopLib4JCheckstyle.xml" 
         	failureProperty="checkstyleViolation" maxwarnings="0" maxerrors="0">
