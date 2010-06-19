@@ -134,7 +134,7 @@ public final class SequenceDiagramAspect {
      * for the writing of the diagram.
      * 
      * A pointcut is valid if :
-     * <lu>
+     * <ul>
      *      <li>the pointcut is inside of the control flow of the 
      *    {@link #sequenceDiagramMethodStartPointcut(Aoplib4jSequenceDiagram)}
      *    pointcut, so the 
@@ -144,7 +144,7 @@ public final class SequenceDiagramAspect {
      *      <li> the current depth of the diagram is smaller or equal than 
      *      the maximum diagram depth.
      *      </li>
-     * </lu>
+     * </ul>
      * The pointcut is represented by a static boolean method 
      * because of the use of the <code>if()</code> pointcut (see 7.3.2 from
      * AspectJ in action 2 ed.)
@@ -380,7 +380,7 @@ public final class SequenceDiagramAspect {
      *  diagram.
      *  
      *  The method flow is:
-     *  <lu>
+     *  <ul>
      *      <li>
      *       call 
      *   {@link #sequenceMethodBefore(JoinPoint)}
@@ -404,7 +404,7 @@ public final class SequenceDiagramAspect {
      *       call
      *     {@link #sequenceMethodStartAfterForAllInstances(ProceedingJoinPoint)}
      *      </li>
-     *  </lu>
+     *  </ul>
      *  
      *  
      * @param seqAnnot the annotation.
