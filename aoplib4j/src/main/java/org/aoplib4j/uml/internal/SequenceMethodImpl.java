@@ -41,12 +41,12 @@ final class SequenceMethodImpl implements SequenceMethod {
     /**
      * The return type of the method. 
      */
-    private Class< ? > returnType = null;
+    private Class<?> returnType = null;
     
     /**
      * The types of the method parameters.
      */
-    private Class< ? >[] parameterTypes = null;
+    private Class<?>[] parameterTypes = null;
     
     /**
      * The names of the method parameters.
@@ -88,8 +88,8 @@ final class SequenceMethodImpl implements SequenceMethod {
      * @param caller the caller method.
      */
      SequenceMethodImpl(final String clsName, final String metdName, 
-            final boolean[] stsOrCons, final Class< ? > retType,
-            final Class< ? >[] paramTypes, final String[] paramNames,
+            final boolean[] stsOrCons, final Class<?> retType,
+            final Class<?>[] paramTypes, final String[] paramNames,
             final SequenceMethod ... caller) {
         super();
         
@@ -125,14 +125,14 @@ final class SequenceMethodImpl implements SequenceMethod {
     /**
      * {@inheritDoc}
      */
-    public Class< ? > getReturnType() {
+    public Class<?> getReturnType() {
         return this.returnType;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Class< ? >[] getParameterTypes() {
+    public Class<?>[] getParameterTypes() {
         return this.parameterTypes;
     }
 

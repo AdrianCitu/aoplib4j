@@ -48,8 +48,8 @@ public final class JUnitAspect extends AbstractTestingAspect {
      * </pre>
      */
     @Pointcut("call(static public void junit.framework.Assert+.assert*(..))"
-    		+ " || call(static public void org.junit.Assert+.assert*(..))")
-    @Override		
+            + " || call(static public void org.junit.Assert+.assert*(..))")
+    @Override
     public void assertCallPointcut() {
         
     }

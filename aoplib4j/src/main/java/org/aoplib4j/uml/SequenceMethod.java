@@ -45,12 +45,12 @@ public interface SequenceMethod {
     /**
      * @return the method return type.
      */
-    Class< ? > getReturnType();
+    Class<?> getReturnType();
 
     /**
      * @return method parameters types.
      */
-    Class< ? >[] getParameterTypes();
+    Class<?>[] getParameterTypes();
 
     /**
      * @return method parameter names.

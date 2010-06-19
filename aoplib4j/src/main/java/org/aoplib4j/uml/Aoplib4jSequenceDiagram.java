@@ -38,7 +38,7 @@ public @interface Aoplib4jSequenceDiagram {
     /**
      * Writer implementation used to write the diagram.
      */
-    Class < ? extends SequenceDiagramWriter > diagramWriter();
+    Class<? extends SequenceDiagramWriter> diagramWriter();
     
     /**
      * The maximum number of participants in the diagram; default to 

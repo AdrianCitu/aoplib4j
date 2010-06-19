@@ -57,7 +57,7 @@ abstract class AbstractBoundary {
      * @param calledMethod the called method
      * @param callerSte the caller stacke trace.
      */
-     void createAndExecuteCallback(final Class< ? > calledClass,
+     void createAndExecuteCallback(final Class<?> calledClass,
             final Aoplib4jClassBoundary classBoundary, 
             final Aoplib4jPackageBoundary pkgBoundary,
             final Method calledMethod,
@@ -103,7 +103,7 @@ abstract class AbstractBoundary {
              final Aoplib4jPackageBoundary pkgBoundary)
              throws InstantiationException, IllegalAccessException {
          
-         Class< ? extends BoundaryViolationCallback> callBackClass = null;
+         Class<? extends BoundaryViolationCallback> callBackClass = null;
          
          if (classBoundary == null) {
              callBackClass = pkgBoundary.callbackClass();

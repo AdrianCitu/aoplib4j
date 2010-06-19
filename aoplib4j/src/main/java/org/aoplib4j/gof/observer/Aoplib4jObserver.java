@@ -36,5 +36,5 @@ public @interface Aoplib4jObserver {
      * the subject notify a change.
      * 
      */
-    Class < ? extends ObserverCallback > callbackClass();
+    Class<? extends ObserverCallback> callbackClass();
 }

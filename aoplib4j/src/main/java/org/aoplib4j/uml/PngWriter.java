@@ -78,7 +78,7 @@ public final class PngWriter extends DFSDiagramWriter {
      */
     private void generateThePngFile(final String diagramFullPath) {
         
-        Class< ? > sequenceMainClass = PngWriter.loadClass(SEQUENCE_MAIN_CLASS);
+        Class<?> sequenceMainClass = PngWriter.loadClass(SEQUENCE_MAIN_CLASS);
         Method mainMethod = null;
         
         if (sequenceMainClass != null) {
@@ -137,7 +137,7 @@ public final class PngWriter extends DFSDiagramWriter {
      * 
      * @see ClassLoader#loadClass(String)
      */
-     static Class< ? > loadClass(final String classToLoad) {
+     static Class<?> loadClass(final String classToLoad) {
         
         if (classToLoad != null) {
             try {

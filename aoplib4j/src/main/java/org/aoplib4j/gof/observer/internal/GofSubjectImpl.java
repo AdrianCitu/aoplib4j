@@ -34,8 +34,8 @@ public final class GofSubjectImpl implements GofSubject {
     /**
      * set of attached observers.
      */
-    private Set < GofObserver > observers = 
-        Collections.synchronizedSet(new HashSet< GofObserver >());
+    private Set<GofObserver> observers = 
+        Collections.synchronizedSet(new HashSet<GofObserver>());
     
     /**
      * {@inheritDoc}

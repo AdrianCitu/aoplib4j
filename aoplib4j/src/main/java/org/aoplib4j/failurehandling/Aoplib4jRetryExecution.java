@@ -45,7 +45,7 @@ public @interface Aoplib4jRetryExecution {
      *
      * The exception to catch that will trigger a re-execution.
      */
-    Class < ? extends Throwable > exceptionToCatch();
+    Class<? extends Throwable> exceptionToCatch();
     
     /**
      * The time to wait between 2 executions.

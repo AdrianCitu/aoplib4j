@@ -37,7 +37,7 @@ public @interface Aoplib4jClassBoundary {
     /**
      * The list of classes on which the boundary will be applied.
      */
-    Class< ? >[] classesList();
+    Class<?>[] classesList();
     
     /**
      * The class the will be instantiated by the framework when a 
@@ -46,7 +46,7 @@ public @interface Aoplib4jClassBoundary {
      * 
      * @see LogViolationCallback
      */
-    Class < ? extends BoundaryViolationCallback > callbackClass() 
+    Class<? extends BoundaryViolationCallback> callbackClass() 
         default LogViolationCallback.class;
     
     /**

@@ -18,7 +18,9 @@
             <property name="suppressLoadErrors" value="true"/>
         </module>
   
-        <module name="MissingOverride"/>
+        <module name="MissingOverride">
+             <property name="javaFiveCompatibility" value="true"/>
+        </module>
         <module name="JavadocType"/>
         <module name="JavadocVariable"/>
         <module name="JavadocStyle"/>

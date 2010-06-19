@@ -185,7 +185,7 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
     public static boolean callOfStaticPackageBoundaryPointcut(
             final JoinPoint.StaticPart jpsp) {
 
-        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
+        Class<?> calledClass = jpsp.getSignature().getDeclaringType();
         Package calledPackage = calledClass.getPackage();
                 
         Aoplib4jPackageBoundary pkgBoundary = 
@@ -248,7 +248,7 @@ public final class PackageBoundaryAspect extends AbstractBoundary {
             final JoinPoint.StaticPart jpsp) {
         
 
-        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
+        Class<?> calledClass = jpsp.getSignature().getDeclaringType();
         Package calledPackage = calledClass.getPackage();
                 
         Aoplib4jPackageBoundary pkgBoundary = 
