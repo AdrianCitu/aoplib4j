@@ -154,7 +154,7 @@ public final class ObserverAspect {
             Aoplib4jObserver annotation =
                 ob.getClass().getAnnotation(Aoplib4jObserver.class);
 
-            Class < ? extends ObserverCallback > callbackClass =
+            Class<? extends ObserverCallback> callbackClass =
                 annotation.callbackClass();
 
             ObserverCallback instance = callbackClass.newInstance();

@@ -450,8 +450,8 @@ public final class SequenceDiagramAspect {
         
         String className = sig.getDeclaringTypeName();
         String methodName = CONSTRUCTOR_METHOD_NAME;
-        Class< ? > returnType = null;
-        Class< ? >[] parameterTypes = {};
+        Class<?> returnType = null;
+        Class<?>[] parameterTypes = {};
         String[] parameterNames = {};
         
         boolean[] isStaticAndConstructor = {false, false};
@@ -524,7 +524,7 @@ public final class SequenceDiagramAspect {
         
         SequenceDiagramWriter returnValue = null; 
         
-        Class < ? extends SequenceDiagramWriter > writter = 
+        Class<? extends SequenceDiagramWriter> writter = 
             seqAnnot.diagramWriter();
         
         LOGGER.info("Creating a sequence diagram writer instance of " 

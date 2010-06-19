@@ -259,7 +259,7 @@ public final class CodeToDiagramWriter extends DFSDiagramWriter {
         this.messagesBuffer
         .append("text=\"").append(meth.getMethodName()).append("(");
         
-        Class< ? >[] paramTypes = meth.getParameterTypes();
+        Class<?>[] paramTypes = meth.getParameterTypes();
         
         for (int i = 0; i < paramTypes.length; i++) {
             this.messagesBuffer.append(paramTypes[i].toString());

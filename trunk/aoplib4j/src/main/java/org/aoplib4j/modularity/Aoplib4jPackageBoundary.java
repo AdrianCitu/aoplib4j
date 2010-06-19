@@ -46,7 +46,7 @@ public @interface Aoplib4jPackageBoundary {
      * 
      * @see LogViolationCallback
      */
-    Class < ? extends BoundaryViolationCallback > callbackClass() 
+    Class<? extends BoundaryViolationCallback> callbackClass() 
         default LogViolationCallback.class;
     
     /**

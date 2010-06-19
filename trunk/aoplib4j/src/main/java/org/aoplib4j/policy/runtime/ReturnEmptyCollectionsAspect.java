@@ -57,7 +57,7 @@ public final class ReturnEmptyCollectionsAspect
      * </pre>
      */
     @Pointcut("execution("
-    		+ "(java.util.Map+"
+            + "(java.util.Map+"
             + " || java.util.Collection+"
             + " || java.lang.Object[]+)"
             + " *..*.*(..)) ")

@@ -100,7 +100,7 @@ public final class SEQUENCEWriter extends DFSDiagramWriter {
         strWrit.append(meth.getMethodName()).append("(");
 
         String[] parametersNames = meth.getParameterNames();
-        Class< ? >[] parametersTypes = meth.getParameterTypes();
+        Class<?>[] parametersTypes = meth.getParameterTypes();
 
         for (int i = 0; i < parametersNames.length - 1; i++) {
             strWrit.append(parametersTypes[i].getCanonicalName()).append(" ")

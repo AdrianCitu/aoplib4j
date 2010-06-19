@@ -81,7 +81,7 @@ public final class RetryExecutionAspect {
             final ProceedingJoinPoint pjp) throws Throwable {
 
         /* retrieve the exception class to catch */
-        final Class< ? extends Throwable> exceptionToCatch = retryAnnotation
+        final Class<? extends Throwable> exceptionToCatch = retryAnnotation
                 .exceptionToCatch();
 
         /* the maximum number of method re-execution */

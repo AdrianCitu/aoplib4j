@@ -37,5 +37,5 @@ public @interface Aoplib4jValidate {
      * {@link FieldValidator#validate(FieldInformation)} method for validating
      * the annotated field.
      */
-    Class < ? extends FieldValidator > validationClass();
+    Class<? extends FieldValidator> validationClass();
 }

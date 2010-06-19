@@ -217,7 +217,7 @@ public final class FieldValidatorAspect {
         
         //TODO use some kind of cache.
         //TODO find a better solution than creating a new instance at every call
-        Class < ? extends FieldValidator > validatorClass = 
+        Class<? extends FieldValidator> validatorClass = 
             validateAnnot.validationClass();
         
         LOGGER.info("Creating a validator instance of " + validatorClass);

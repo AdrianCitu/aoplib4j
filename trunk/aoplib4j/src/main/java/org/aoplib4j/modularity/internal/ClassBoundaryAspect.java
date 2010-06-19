@@ -112,7 +112,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
     public static boolean callOfStaticClassBoundaryPointcut(
             final JoinPoint.StaticPart jpsp) {
 
-        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
+        Class<?> calledClass = jpsp.getSignature().getDeclaringType();
 
         Aoplib4jClassBoundary boundary = 
             getClassBoundaryAnnotation(calledClass);
@@ -208,7 +208,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
     public void callOfStaticClassBoundaryAdvice(
             final JoinPoint.StaticPart jpsp) {
 
-        Class< ? > calledClass = jpsp.getSignature().getDeclaringType();
+        Class<?> calledClass = jpsp.getSignature().getDeclaringType();
 
         Aoplib4jClassBoundary boundary = 
             getClassBoundaryAnnotation(calledClass);
@@ -237,7 +237,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
      * @return attached {@link Aoplib4jClassBoundary} or null.
      */
     private static Aoplib4jClassBoundary getClassBoundaryAnnotation(
-            final Class< ? > calledClass) {
+            final Class<?> calledClass) {
         
         return calledClass.getAnnotation(Aoplib4jClassBoundary.class);
     }
@@ -255,7 +255,7 @@ public final class ClassBoundaryAspect extends AbstractBoundary {
             final Aoplib4jClassBoundary classBoundary) {
                 
         ListType listType = classBoundary.classesListType();
-        Class< ? >[] classesList = classBoundary.classesList();
+        Class<?>[] classesList = classBoundary.classesList();
         
         String[] classesNamesList = new String[classesList.length];
         
