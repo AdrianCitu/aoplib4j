@@ -1,0 +1,123 @@
+### Introduction ###
+This page is a small tutorial about the `@Aoplib4jValidate` annotation.
+
+### How to use the `@Aoplib4jValidate` annotation (in 2 seconds) ###
+
+  1. Create your own validation class extending the `FieldValidator` class.
+  1. Annotate the field to validate with the `@Aoplib4jValidate` annotation and pass as value of the `validationClass` your own validation class name.
+
+
+### How to use the `@Aoplib4jValidate` annotation (in 5 minutes) ###
+The `@Aoplib4jValidate` annotation is should be added on fields on which a validation should be done.
+The annotation have a single parameter (`validationClass`) representing the class that will be instantiated and used for the validation.
+
+Code example (taken from the JUnit tests):
+
+```
+public class ClassToValidate {
+
+    @Aoplib4jValidate(validationClass=StringValidator.class)
+    private String str;
+
+    @Aoplib4jValidate(validationClass=StringValidator.class)
+    private static String staticStr;
+
+    ...
+```
+
+The `validationClass` parameter should be a class that inherits from the `FieldValidator` abstract class.
+The structure of the `FieldValidator` :
+
+```
+public abstract class FieldValidator {
+    
+    /**
+     * The default constructor.
+     */
+    public FieldValidator() {
+        
+    }
+    
+    /**
+     * Method to implement the validation of the field.
+     * 
+     * @param fldInfor object containing the information about the field
+     * validation.
+     * @throws Exception any exception to signal that the new value to be 
+     * assigned to the field is not valid.
+     */
+    public abstract void validate(FieldInformation fldInfor) 
+        throws Exception;
+}
+```
+
+The `FieldInformation` is an interface class containing useful informations for the validation process; the field name, the old value of the field, the new value to be assigned to the field.
+The structure of the `FieldInformation` interface.
+
+```
+public interface FieldInformation {
+
+    /**
+     * @return the field actual value.
+     */
+    Object getFieldValue();
+    
+    /**
+     * @return the new value that should be assigned to the field.
+     */
+    Object getNewValueToAssign();
+    
+    /**
+     * @return the field name.
+     */
+    String getFieldName();
+    
+    /**
+     * @return true if the field is static, false otherwise.
+     */
+    boolean isStaticField();
+}
+```
+
+
+### The `@Aoplib4jValidate` annotation: under the hood ###
+For the validation process the work flow is the following:
+  * Intercept the assignment of a field annotated with `Aoplib4jValidate`
+
+> The @AspectJ pointcuts for intercepting the assignment of a field:
+    * static fields
+```
+    @Pointcut(
+            "set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate "
+            + "static * *.*)"
+            + "&& @annotation(validateAnnot) " 
+            + "&& args(newValue)")
+    void validateStaticFieldPointcut(
+            final Aoplib4jValidate validateAnnot, 
+            final Object newValue) {
+    }
+```
+    * non-static fields
+```
+    @Pointcut(
+            "set(@org.aoplib4j.fieldvalidation.Aoplib4jValidate "
+            + "* *.*)" 
+            + "&& @annotation(validateAnnot) " 
+            + "&& args(newValue) && this(instance)")
+    void validateNonStaticFieldPointcut(
+            final Aoplib4jValidate validateAnnot, 
+            final Object newValue, 
+            final Object instance) {
+    }
+```
+> For triggering the validation the @Before advice is used.
+
+  * Create an instance of `FieldInformation`
+  * Create an instance of `FieldValidator`
+    1. Retrieve the class object from the `validationClass` parameter of the annotation ( the annotation is retrieved using @AspectJ @annotation pointcut).
+    1. Create a new instance by introspection (using the non argument constructor).
+  * Do the validation by calling `FieldValidator#validate(FieldInformation fldInfor) `
+And here is the complete code of [FieldValidatorAspect](http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/fieldvalidation/internal/FieldValidatorAspect.java)
+
+### Critics, enhancements and ... what i don't like about this solution ###
+  * The user validation class must inherit from `FieldValidator` class. It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the validation class using the non-arguments constructor by introspection (see [Class.newInstance()](http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance())).

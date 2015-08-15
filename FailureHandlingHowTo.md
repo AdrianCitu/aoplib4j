@@ -1,0 +1,35 @@
+### Introduction ###
+This page is a small tutorial about the `@Aoplib4jRetryExecution` annotation.
+
+
+
+### How to use the `@Aoplib4jRetryExecution` annotation (in 5 minutes) ###
+Annotate the method for which you want to handle the execution failure. The annotation have two mandatory parameters (`maxRetry`), `exceptionToCatch` and an optional parameter `waitTime`.
+
+  * The `maxRetry` parameter must contains the number of times the annotated method should be re-executed.
+  * The `exceptionToCatch` should contain the exception class that will trigger the re-execution of the method.
+  * The `waitTime` represents the time in milliseconds to wait before two consecutive executions.
+
+Code example:
+
+```
+...
+    @Aoplib4jRetryExecution(exceptionToCatch = TestingException1.class, maxRetry = 2)
+    public void throwException() throws TestingException1, TestingException2  {
+...
+
+```
+
+### The `@Aoplib4jRetryExecution` annotation: under the hood ###
+Under the hood the @AspectJ framework it is used. The pointcut for intercepting the methods annotated with the `@Aoplib4jRetryExecution` is :
+
+```
+    @Pointcut("execution("
+            + "@org.aoplib4j.failurehandling"
+            + ".Aoplib4jRetryExecution * * (..)) && @annotation(retryAnnotation)")
+```
+The `@Around` advice it is used.
+Here is the complete code of the [RetryExecutionAspect](http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/failurehandling/internal/RetryExecutionAspect.java).
+
+### Critics and enhancements ###
+An enhancement would be to add more than one exception to catch.

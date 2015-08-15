@@ -1,0 +1,293 @@
+### Introduction ###
+This page is a small tutorial about the `@Aoplib4jSequenceDiagram` annotation.
+
+### How to use the `@Aoplib4jSequenceDiagram` annotation (in 2 seconds) ###
+
+  1. **Optional**)Create your own diagram writer class extending the `SequenceDiagramWriter`.
+  1. nnotate the method(s) for which you want to generate the sequence diagram with the `@Aoplib4jSequenceDiagram` annotation and add as value for the `diagramWriter` attribute your own writer class name one of the writers offered by `AopLib4j`.
+  1. xecute the annotated method and retrieve the file representing the sequence diagram from the java.io.tmpdir folder (the diagram name is `ClassName.annotateMethodName().txt`)
+
+### How to use the `@Aoplib4jSequenceDiagram` annotation (in 10 minutes) ###
+
+Annotate with the `@Aoplib4jSequenceDiagram` annotation the method for which a sequence diagram should be generated.
+The annotation have a one mandatory parameter (`diagramWriter`) representing the class that will be instantiated and used for the writing of the sequence diagram and two optional parameters: `diagramDepth` representing the maximum number of participants in the diagram and `diagramFullPath` representing the full path where the diagram will be written.
+
+Code example of `Aoplib4jSequenceDiagram` use(taken from the JUnit tests):
+
+```
+public class ActorClass ...
+
+    //Write the diagram using the SEQUENCEWriter; the diagram will be written
+    //into the java.io.tmpdir/ActorClass.staticMethod().txt file
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class)
+    public static void staticMethod() {
+    ....
+    }
+
+
+    //Write the diagram using the SEQUENCEWriter; the diagram will be written
+    //into the /aoplib4jtests/main.seq file.
+    @Aoplib4jSequenceDiagram(diagramWriter = SEQUENCEWriter.class, 
+            diagramFullPath = "/aoplib4jtests/main.seq", diagramDepth = 30)
+    public void actorMethod() {
+    ....
+    }
+    
+```
+
+#### Use the `AopLib4j` diagram writers ####
+The `AopLib4j` library offers 3 sequence writers:
+  1. `org.aoplib4j.uml.SEQUENCEWriter` is a writer for the [SEQUENCE](http://www.zanthan.com/itymbi/archives/cat_sequence.html) project. Here is an example of a SEQUENCE diagram :
+```
+
+ActorClass.actorMethod() -> void{
+Class1.constructor(java.lang.String str) -> void;
+Class1.method1Class1() -> String;
+ActorClass.[static]staticPrivateMethod(java.lang.Integer in) -> void;
+}
+```
+  1. `org.aoplib4j.uml.CodeToDiagramWriter` is a writer for the [CODETODIAGRAM](http://www.assembla.com/wiki/show/codetodiagram) project. Here is an example of a CODETODIAGRAM diagram:
+```
+<?xml version="1.0"encoding="UTF-8"?>
+<sequence>
+<actors>
+<actor id="org.aoplib4j.uml.codetodiagram.ActorClass" type="user">ActorClass</actor>
+<actor id="org.aoplib4j.uml.Class1" type="system">Class1</actor>
+</actors>
+<messages>
+<message type="call" from="org.aoplib4j.uml.codetodiagram.ActorClass" to="org.aoplib4j.uml.Class1" 
+text="constructor(class java.lang.String)"/>
+<message type="return" from="org.aoplib4j.uml.Class1" to="org.aoplib4j.uml.codetodiagram.ActorClass" 
+text="constructor(class java.lang.String)"/>
+<message type="call" from="org.aoplib4j.uml.codetodiagram.ActorClass" to="org.aoplib4j.uml.Class1" 
+text="method1Class1()"/>
+<message type="return" from="org.aoplib4j.uml.Class1" to="org.aoplib4j.uml.codetodiagram.ActorClass" 
+text="method1Class1()"/>
+<message type="call" from="org.aoplib4j.uml.codetodiagram.ActorClass" to="org.aoplib4j.uml.codetodiagram.ActorClass" 
+text="staticPrivateMethod(class java.lang.Integer)"/>
+<message type="return" from="org.aoplib4j.uml.codetodiagram.ActorClass" to="org.aoplib4j.uml.codetodiagram.ActorClass" 
+text="staticPrivateMethod(class java.lang.Integer)"/>
+</messages>
+
+</sequence>
+
+```
+  1. `org.aoplib4j.uml.PngWriter` is a writer that will generate a [png](http://en.wikipedia.org/wiki/Portable_Network_Graphics) file (this writer use under the hood the `org.aoplib4j.uml.SEQUENCEWriter`) writer.
+  1. ~~org.aoplib4j.uml.Pic2PlotWriter~~ is a writer for the [GNU plotutils pic2plot](http://www.gnu.org/software/plotutils/manual/html_chapter/plotutils_4.html). The implementation is not completely finished (due to some complexities of the pic file format). The [bug#79](https://code.google.com/p/aoplib4j/issues/detail?id=9) contains the a patch with the partial implementation; feel free to participate/propose a new or enhanced implementation.
+
+
+#### Create your own writer ####
+If you want to create your own writer implementation it should write class that inherits from the `SequenceDiagramWriter` abstract class.
+
+Here are the most important parts of the `SequenceDiagramWriter` (the full code is here [org.aoplib4j.uml.SequenceDiagramWriter](http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/uml/SequenceDiagramWriter.java)):
+
+```
+public abstract class SequenceDiagramWriter {
+    
+    /**
+     * Default constructor.
+     * 
+     */
+    public SequenceDiagramWriter() {
+    }
+    
+    /**
+     * Write the diagram starting from the root method which is passed
+     * as parameter.
+     * 
+     * @param rootMethod the root method; the first method of the diagram.
+     * 
+     * @throws IOException I/O exception if any error writing.
+     */
+    public abstract void write(final SequenceMethod rootMethod) 
+        throws IOException;
+ ...
+}
+```
+As you can see you have to implement only one method` public abstract void write(final SequenceMethod rootMethod)`.
+The `SequenceMethod` is an interface containing informations about the annotated method. A `SequenceMethod` contains all the necessary informations concerning a  method that will be part of the sequence diagram: method name, method class, method is static/nonStatic/constructor, return type of the method, parameters types, parameter names, methods that this method calls and the method that called this method.
+
+The structure of the `SequenceMethod` interface.
+
+```
+public interface SequenceMethod {
+
+    /**
+     * @return the (full) class name of which this method is attached to.
+     * 
+     * @see #getSimpleClassName()
+     */
+    String getClassName();
+
+    /**
+     * @return the method name.
+     */
+     String getMethodName();
+
+    /**
+     * @return the method return type.
+     */
+    Class< ? > getReturnType();
+
+    /**
+     * @return method parameters types.
+     */
+    Class< ? >[] getParameterTypes();
+
+    /**
+     * @return method parameter names.
+     */
+    String[] getParameterNames();
+
+    /**
+     * @return the collection of children.
+     */
+    List<SequenceMethod> getChildren();
+
+    /**
+     * @return the parent (the caller) of this method.
+     */
+    SequenceMethod getParent();
+
+    /**
+     * @return true if the node have children attached, false otherwise.
+     */
+    boolean haveChildren();
+
+    /**
+     * @return true if the method is static, false otherwise.
+     */
+    boolean isStatic();
+
+    /**
+     * @return true if the method is a constructor, false otherwise
+     */
+    boolean isConstructor();
+
+    /**
+     * @return the simple (no package) class name; returns null if the class
+     * name is null.
+     */
+    String getSimpleClassName();
+
+}
+```
+
+As you can see the `SequenceMethod` structure is actually a tree; the root of the tree is the `rootMethod` and all the methods called by the root methods are the child nodes. In order to write a diagram you have to walk the tree; all the actual writers use the [Depth-First search](http://en.wikipedia.org/wiki/Depth-first_search) traversal technique. If your writer needs also a DFS traversal technique then you can inherits from the `org.aoplib4j.uml.DFSDiagramWriter` instead of `org.aoplib4j.uml.SequenceDiagramWriter`.
+
+Here is the structure of the `org.aoplib4j.uml.DFSDiagramWriter`
+```
+public abstract class DFSDiagramWriter extends SequenceDiagramWriter {
+
+    /**
+     * Method called only one time at the beginning of the diagram writing.
+     *  
+     * @param meth the root method.
+     * @throws IOException if any exception when writing.
+     */
+    public abstract void writeHeader(SequenceMethod meth) throws IOException;
+
+    /**
+     * Last method called the end for the diagram writing.
+     * @param meth the root method
+     * @throws IOException if any exception when writing.
+     */
+    public abstract void writeFooter(SequenceMethod meth) throws IOException;
+
+    /**
+     * Method called for writing a method called BEFORE the call of the 
+     * {@link #write(SequenceMethod)} on the children.
+     * 
+     * @param meth the method to write
+     * @throws IOException if any problem writing.
+     */
+    public abstract void writeMethodBeforeChildren(final SequenceMethod meth) 
+        throws IOException;
+
+    /**
+     * Method called for writing a method called AFTER the call of the 
+     * {@link #write(SequenceMethod)} on the children.
+     * 
+     * @param meth the method to write
+     * @throws IOException if any problem writing.
+     */
+    public abstract void writeMethodAfterChildren(final SequenceMethod meth) 
+        throws IOException;
+}
+
+```
+
+### The `@Aoplib4jSequenceDiagram` annotation: under the hood ###
+The aspect that manages under the hood the creation of the sequence diagrams is  `org.aoplib4j.uml.SequenceDiagramAspect`. The `SequenceDiagramAspect` aspect use the [per-control-flow](http://www.eclipse.org/aspectj/doc/released/progguide/semantics-aspects.html#aspect-instantiation) instantiation model:
+```
+@Aspect("percflow( " 
+        + "execution("
+        + "@org.aoplib4j.uml.Aoplib4jSequenceDiagram * * (..)))")
+public final class SequenceDiagramAspect {
+.....
+}
+```
+So, an instance of `SequenceDiagramAspect` is created for every execution of a method annotated with the `Aoplib4jSequenceDiagram` annotation.
+
+The `SequenceDiagramAspect` aspect contains the following pointcuts:
+  * `sequenceDiagramMethodStartPointcut` pointcut
+```
+    @Pointcut("execution("
+            + "@org.aoplib4j.uml.Aoplib4jSequenceDiagram * * (..))"
+            + " && @annotation(seqAnnot)")       
+    public void sequenceDiagramMethodStartPointcut(
+            final Aoplib4jSequenceDiagram seqAnnot) {
+    }
+```
+The  `sequenceDiagramMethodStartPointcut` intercepts the execution of the methods annotated with the `Aoplib4jSequenceDiagram`, and the `@annotation` pointcut is used to recover the methods annotation.
+  * `sequenceMethodsPointcut` pointcut
+```
+    @Pointcut("validSequenceDiagramPointcut()"
+     + "&& (execution(* *.*(..)) || execution(*.new(..)))" 
+     + "&& !within (org.aoplib4j.uml.internal.SequenceDiagramAspect)"
+     + "&& !cflow (execution (* org.aoplib4j.uml.SequenceDiagramWriter+.*(..)))"
+     + "&& !within (org.aoplib4j.uml.SequenceDiagram)"
+     + "&& !within (org.aoplib4j.uml.SequenceMethod+)"
+     + "&& !within (org.aoplib4j.*.internal.*)"
+            )    
+    public void sequenceMethodsPointcut() {
+
+    }
+```
+The `sequenceMethodsPointcut` intercepts the execution of all the methods inside the flow of a method annotated with `Aoplib4jSequenceDiagram` beside the methods inside the `SequenceDiagramWriter`, `SequenceDiagram` and `SequenceMethod` which are not part of the original flow. To know if an method execution is inside the flow of an annotated method the `validSequenceDiagramPointcut` pointcut is used.
+  * `validSequenceDiagramPointcut` pointcut
+```
+    @Pointcut("if()")
+    public static boolean validSequenceDiagramPointcut() {
+        
+       boolean aspectAttached = Aspects.hasAspect(SequenceDiagramAspect.class);
+       
+       if (aspectAttached) {
+           SequenceDiagramAspect instance = 
+               Aspects.aspectOf(SequenceDiagramAspect.class);
+           
+           // instance.maxDiagramDepth - 1 because the next executed method will
+           //increase the actual diagram depth with 1.
+           
+           return (instance.insideSequenceDiagram
+               && instance.seqDiagram.getDiagramDepth() 
+                   <= instance.seqDiagram.getMaxDiagramDepth() - 1);
+       } else {
+           return false;
+       }
+ 
+    }
+```
+> The `validSequenceDiagramPointcut` pointcut is used to distinguish if a pointcut is a valid pointcut for the writing of the (sequence)diagram.
+> A pointcut is valid if :
+    * the pointcut is inside of the control flow of the `sequenceDiagramMethodStartPointcut(Aoplib4jSequenceDiagram)` pointcut, so the
+`SequenceDiagramAspect.insideSequenceDiagram` field is true.
+    * the current depth of the diagram is smaller or equal than the maximum diagram depth.
+> The `cflow()` pointcut is not use because it is not a statically determinable pointcut and so the `around` and `aflter` advices cannot be applied.
+
+Here is the complete code of the [SequenceDiagramAspect](http://code.google.com/p/aoplib4j/source/browse/trunk/aoplib4j/src/main/java/org/aoplib4j/uml/internal/SequenceDiagramAspect.java).
+
+### Critics, enhancements and ... what i don't like about this solution ###
+  * The user validation class must inherit from `SequenceDiagramWriter` class. It would be much better to just implement a Java interface. In the actual implementation the user must inherit from a class because the framework instantiate the writer class using the non-arguments constructor by introspection (see [Class.newInstance()](http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Class.html#newInstance())).
+  * I don't like the way the `validSequenceDiagramPointcut` is designed; the use of the `execution(* *.*(..)) || execution(*.new(..)))` pointcut is very expensive for the weaver (compiler or runtime), but it was the only way to intercept the execution of all the methods inside the flow of a annotated method and to use the pointcut with the `around` advice.
+

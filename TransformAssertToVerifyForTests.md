@@ -1,0 +1,257 @@
+### Introduction ###
+The main idea of the aspect is to modify the way a unit test behaves or to be more specific, how a test assertion violation behaves.
+
+In order to better explain what I understand by "modify the way a unit test behaves", let's take a very simple JUnit test case:
+```
+    @Test
+    public final void assertsTest() {
+        String str = null;
+
+        assertNotNull("String str should not be null", str);
+
+        str = "";
+               
+        assertEquals("String str should have the lenght of 1", str.length(), 1);        
+        
+    }
+
+```
+
+If the test is executed then the output will be the following :
+
+```
+java.lang.AssertionError: String str should not be null
+	at org.junit.Assert.fail(Assert.java:71)
+	at org.junit.Assert.assertTrue(Assert.java:34)
+	at org.junit.Assert.assertNotNull(Assert.java:359)
+	at com.observer.SimpleTest.assertsTest(SimpleTest.java:33)
+    ...
+
+```
+
+If the test is weaved by the `org.aoplib4j.testing.internal.JUnitAspect` and then executed, the output will be the following:
+
+```
+junit.framework.AssertionFailedError: Total number of failed assertions is 2
+java.lang.AssertionError: String str should not be null
+	at org.junit.Assert.fail(Assert.java:71)
+	at org.junit.Assert.assertTrue(Assert.java:34)
+	at org.junit.Assert.assertNotNull(Assert.java:359)
+	at com.observer.SimpleTest.assertNotNull_aroundBody0(SimpleTest.java:33)
+	at com.observer.SimpleTest$AjcClosure1.run(SimpleTest.java:1)
+	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
+  ...
+java.lang.AssertionError: String str should have the lenght of 1 expected:<0> but was:<1>
+	at org.junit.Assert.fail(Assert.java:71)
+	at org.junit.Assert.failNotEquals(Assert.java:451)
+	at org.junit.Assert.assertEquals(Assert.java:99)
+	at com.observer.SimpleTest.assertEquals_aroundBody2(SimpleTest.java:37)
+	at com.observer.SimpleTest$AjcClosure3.run(SimpleTest.java:1)
+	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
+  ...
+
+```
+
+As you can see, the test execution continued after the first assertion violation and all the assertion violations are printed at the end of the test execution.
+In fact the aspect transformed every assertion into a verify.
+
+### Transform Assert to Verify under the hood ###
+Under the hood the code is structured in an abstract aspect (`org.aoplib4j.testing.internal.AbstractTestingAspect`) containing the flow backbone and 2 aspect (one for the JUnit testing framework and another for the TestNG testing framework) containing the specific implementation details for the JUnit and TestNG.
+
+The aspect workflow is the following:
+  * Intercept the calls of all the `assert*` methods. If any assertion is violated then keep the violation stack trace and continue the execution.
+  * Intercept the execution of all testing methods. If at the end of the test execution there are any assertion violations then throw a single assert violation containing all the previous assert violations.
+
+#### Intercepting `assert*` methods calls ####
+
+As I already said, the `org.aoplib4j.testing.internal.AbstractTestingAspect` contains the backbone workflow. For the `assert*` method interception it contains an abstract pointcut and an abstract advice:
+
+```
+@Aspect
+public abstract class AbstractTestingAspect {
+...
+    /**
+     * Abstract pointcut representing the call of a assert method. 
+     */
+    @Pointcut
+    public abstract void assertCallPointcut();
+
+        /**
+     * Abstract method representing the advice for the 
+     * {@link #assertCallPointcut()}. Normally the child aspects should use
+     * the <code>Around</code> advice to implement the behavior arround the 
+     * call of the assert methods.
+     *  
+     * @param pjp object created by the AspectJ framework.
+     * @throws Throwable the exception that can be thrown.
+     * 
+     */
+    public abstract void assertCallAdvice(final ProceedingJoinPoint pjp) 
+        throws Throwable; 
+...
+}
+```
+
+The implementation of the abstract pointcut and advice for the JUnit framework is the following (`org.aoplib4j.testing.internal.JUnitAspect` class):
+```
+@Aspect
+public final class JUnitAspect extends AbstractTestingAspect { 
+...
+    @Pointcut("call(static public void junit.framework.Assert+.assert*(..))"
+    		+ " || call(static public void org.junit.Assert+.assert*(..))")
+    @Override		
+    public void assertCallPointcut() {
+        
+    }
+
+
+    @Around("assertCallPointcut()")
+    @Override
+    public void assertCallAdvice(final ProceedingJoinPoint pjp) 
+        throws Throwable {
+        
+        try {
+            pjp.proceed();
+        } catch (AssertionFailedError junit3Error) {            
+            storeErrorInformation(junit3Error);
+            
+            LOGGER.info("AssertionFailedError " 
+                    + pjp.getSignature().toLongString());
+        } catch (AssertionError junit4Error) {
+            storeErrorInformation(junit4Error);
+            
+            LOGGER.info("AssertionFailedError " 
+                    + pjp.getSignature().toLongString());
+        }
+
+    }
+...
+}
+```
+
+For the pointcut, the `call(static public void junit.framework.Assert+.assert*(..))` represents the call of an assertion method under JUnit 3.x version and `call(static public void org.junit.Assert+.assert*(..))` represents an assertion call for the JUnit 4.
+
+The advice content is rather simple and clear; execute the pointcut containing the assertions and if the execution throws an `junit.framework.AssertionFailedError` (for JUnit 3.x) or a `java.lang.AssertionError` (for JUnit 4) store it and continue the execution.
+
+
+The same elements for the TestNG framework are (`org.aoplib4j.testing.internal.TestNGAspect`):
+```
+@Aspect
+public final class TestNGAspect extends AbstractTestingAspect {
+...
+
+    @Pointcut("call(static public void org.testng.Assert+.assert*(..))")
+    @Override
+    public void assertCallPointcut() {
+        
+    }
+
+    @Around("assertCallPointcut()")
+    @Override
+    public void assertCallAdvice(final ProceedingJoinPoint pjp) 
+        throws Throwable {
+        
+        try {
+            pjp.proceed();
+        } catch (AssertionError testNGError) {
+            storeErrorInformation(testNGError);
+            
+            LOGGER.info("AssertionFailedError " 
+                    + pjp.getSignature().toLongString());
+        }
+    }
+...
+}
+
+```
+
+#### Intercepting tests methods execution ####
+For the interception of the tests methods the  `org.aoplib4j.testing.internal.AbstractTestingAspect` contains an abstract pointcut
+and a final(non-abstract) advice:
+
+```
+@Aspect
+public abstract class AbstractTestingAspect {
+...
+
+    /**
+     * Pointcut representing the execution of a test method. Every child aspect
+     * should write the pointcut proper to his own way of executing tests.
+     */
+    @Pointcut
+    public abstract void executionOfTestMethodPointcut();
+
+     /**
+      * 
+      * Advice executed around (<code>Around</code>) the 
+      * {@link #executionOfTestMethodPointcut()} pointcut. The test is 
+      * executed (using <code>pjp.proceed()</code>) and if there is no exception
+      * thrown  then a verification of any assertion violation is done.
+      * 
+      * If the test throws an exception (other than {@link AssertionError} which
+      * will be catch by {@link #assertCallAdvice(ProceedingJoinPoint)}), 
+      * the advice will catch it, will do a 
+      * verification of any assertion violation and if none is violated then
+      * will thrown the initial exception.
+      * 
+      * @param pjp aspectJ ProceedingJoinPoint
+      * @return the result of the join point execution (the test method).
+      * @throws Throwable necessary by the {@link ProceedingJoinPoint#proceed()}
+      */
+    @Around("executionOfTestMethodPointcut()")
+     public final Object executionOfTestMethodAdvice(
+             final ProceedingJoinPoint pjp) throws Throwable {
+         
+         //the return value of the test method; normally should be null;
+         Object returnValue = null;
+         
+         try {
+             returnValue = pjp.proceed();
+             checkTheAssertionViolation();
+         } catch (Exception ex) {
+             LOGGER.info("Test " 
+              + pjp.getStaticPart().getSignature().getDeclaringType() .getName()
+              + " thrown the following exception "
+              + ex.toString());
+             
+             checkTheAssertionViolation();
+             
+             throw ex;
+         }
+             
+         return returnValue;
+     }
+...
+}
+```
+
+The pointcut implementation of the `executionOfTestMethodPointcut` for the JUnit framework is he following :
+
+```
+@Aspect
+public final class JUnitAspect extends AbstractTestingAspect {
+...
+    @Pointcut("execution(public void junit.framework.TestCase+.test*())"
+            + " || execution(@org.junit.Test * * ())")
+    @Override        
+    public void executionOfTestMethodPointcut() {
+        
+    }
+...
+}
+```
+
+The `execution(public void junit.framework.TestCase+.test*())` represents the execution of the JUnit 3.x test methods and the ` execution(@org.junit.Test * * ())` represents the execution of the JUnit 4 test methods.
+
+The same pointcut for the TestNG aspect is the following:
+```
+@Aspect
+public final class TestNGAspect extends AbstractTestingAspect {
+...
+    @Pointcut("execution(@org.testng.annotations.Test * * ())")
+    @Override
+    public void executionOfTestMethodPointcut() {  
+    }
+...
+}
+```

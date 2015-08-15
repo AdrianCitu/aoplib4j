@@ -1,0 +1,18 @@
+### Introduction ###
+This page describes how to use/weave the aoplib4j aspects into your own projects.
+
+
+#### Weave aspects at runtime using "load time weaving" (LTW) ####
+  * download aoplib4j
+  * add in the project classpath the `aoplib4j-x.x.x.jar` and `ascpectjrt.jar`
+  * compile your project
+  * enable LTW of aspects by executing your application with the -javaagent:pathto/aspectjweaver.jar
+
+For more details about LTW please refer to the [The AspectJ Development Environment Guide - chapter 5](http://www.eclipse.org/aspectj/doc/released/devguide/ltw-configuration.html#enabling-load-time-weaving)
+
+#### Weave aspect at compile time using ajc compiler ####
+  * download and install AspectJ
+  * download aoplib4j
+  * compile your project code with ajc (AspectJ Compiler); use the `-aspectpath pathto/aoplib4j-x.x.x.jar` compiler option to weave the aoplib4j aspects into the project code.
+
+For the full list of ajc options please refer to the [The AspectJ Development Environment Guide - chapter 2](http://www.eclipse.org/aspectj/doc/released/devguide/ajc-ref.html)
